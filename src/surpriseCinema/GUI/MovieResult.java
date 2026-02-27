@@ -294,7 +294,7 @@ public class MovieResult extends JPanel {
     // ===========================
     // DATA CLASS
     // ===========================
-    static class Movie {git
+    static class Movie {
         String name, genre, rated, imdb, story;
 
         Movie(String name, String genre, String rated, String imdb, String story) {
