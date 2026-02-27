@@ -1,11 +1,15 @@
 package GUI;
 
+import app.Appframe;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 
-public class SignUp extends JFrame {
+public class SignUp extends JPanel {
+
+    private final Appframe app;
 
     private static final int W = 390;
     private static final int H = 720;
@@ -13,16 +17,15 @@ public class SignUp extends JFrame {
     private final Image bg;
     private final Image logo;
 
-    public SignUp() {
-        setSize(W, H);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setUndecorated(true);
+    public SignUp(Appframe app) {
+        this.app = app;
+
+        setLayout(new BorderLayout());
 
         bg = new ImageIcon("resources/images/Background.png").getImage();
         logo = new ImageIcon("resources/images/Logo.png").getImage();
 
-        setContentPane(new SignUpPanel());
+        add(new SignUpPanel(), BorderLayout.CENTER);
     }
 
     static class RoundedField extends JTextField {
@@ -169,47 +172,64 @@ public class SignUp extends JFrame {
         SignUpPanel() {
             setLayout(null);
 
-            int x = 45;
-            int fieldW = 300;
-            int fieldH = 46;
+            int fieldW = 260;
+            int fieldH = 42;
             int gap = 26;
-            int startY = 268;
+            int startY = 257;
+            int x = 57;
 
             placeField("Name", nameField, x, startY, fieldW, fieldH);
             placeField("Email", emailField, x, startY + (fieldH + gap), fieldW, fieldH);
-            placeField("Password", passwordField, x, startY + 2*(fieldH + gap), fieldW, fieldH);
-            placeField("Age", ageField, x, startY + 3*(fieldH + gap), fieldW, fieldH);
-            placeField("Gender", genderField, x, startY + 4*(fieldH + gap), fieldW, fieldH);
+            placeField("Password", passwordField, x, startY + 2 * (fieldH + gap), fieldW, fieldH);
+            placeField("Age", ageField, x, startY + 3 * (fieldH + gap), fieldW, fieldH);
+            placeField("Gender", genderField, x, startY + 4 * (fieldH + gap), fieldW, fieldH);
 
             addMouseMotionListener(new MouseMotionAdapter() {
                 @Override public void mouseMoved(MouseEvent e) {
-                    if (buttonRect != null)
-                        hover = buttonRect.contains(e.getPoint());
+                    if (buttonRect != null) hover = buttonRect.contains(e.getPoint());
+                    setCursor(new Cursor(hover ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR));
                     repaint();
                 }
             });
 
             addMouseListener(new MouseAdapter() {
                 @Override public void mousePressed(MouseEvent e) {
-                    if (buttonRect != null && buttonRect.contains(e.getPoint()))
-                        pressed = true;
+                    if (buttonRect != null && buttonRect.contains(e.getPoint())) pressed = true;
                     repaint();
                 }
 
                 @Override public void mouseReleased(MouseEvent e) {
+                    if (pressed && buttonRect != null && buttonRect.contains(e.getPoint())) {
+
+                        // هنا تقدر تسوي validation وتخزين
+                        String name = nameField.getText().trim();
+                        String email = emailField.getText().trim();
+                        String pass  = new String(passwordField.getPassword());
+                        String age   = ageField.getText().trim();
+                        String gender = (String) genderField.getSelectedItem();
+
+                        // TODO: تحقق/حفظ (اختياري)
+                        // System.out.println(name + " " + email + " " + age + " " + gender);
+
+                        app.showPage(Appframe.PREFERENCES);
+                        pressed = false;
+                        repaint();
+                        return;
+                    }
+
                     pressed = false;
                     repaint();
                 }
             });
         }
 
-        private void placeField(String label, JComponent comp,
-                                int x, int y, int w, int h) {
-
+        private void placeField(String label, JComponent comp, int x, int y, int w, int h) {
             JLabel l = new JLabel(label);
             l.setFont(new Font("Arial", Font.BOLD, 12));
             l.setForeground(Color.WHITE);
-            l.setBounds(x + 6, y - 16, w, 16);
+
+            int labelOffset = 15;
+            l.setBounds(x + labelOffset, y - 16, w, 16);
             add(l);
 
             comp.setBounds(x, y, w, h);
@@ -244,15 +264,13 @@ public class SignUp extends JFrame {
             int btnW = 300;
             int btnH = 55;
             int btnX = (w - btnW) / 2;
-            int btnY = 640;
+            int btnY = 600;
 
             buttonRect = new Rectangle(btnX, btnY, btnW, btnH);
             drawButton(g2, buttonRect, "Sign Up", hover, pressed);
         }
 
-        private void drawButton(Graphics2D g2, Rectangle r,
-                                String text, boolean hover, boolean pressed) {
-
+        private void drawButton(Graphics2D g2, Rectangle r, String text, boolean hover, boolean pressed) {
             int radius = 50;
 
             g2.setColor(Color.WHITE);
@@ -281,9 +299,5 @@ public class SignUp extends JFrame {
 
             g2.drawString(text, tx, ty);
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new SignUp().setVisible(true));
     }
 }
