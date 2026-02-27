@@ -366,6 +366,11 @@ public class Preferences extends JPanel {
         g2.setColor(Color.WHITE);
         g2.fillRoundRect(r.x, r.y, r.width, r.height, 22, 22);
 
+        if (selected) {
+            g2.setColor(new Color(200, 0, 0, 70));
+            g2.fillRoundRect(r.x, r.y, r.width, r.height, 22, 22);
+        }
+
         if (hovered) {
             g2.setColor(new Color(255, 0, 0, 18));
             g2.fillRoundRect(r.x, r.y, r.width, r.height, 22, 22);
