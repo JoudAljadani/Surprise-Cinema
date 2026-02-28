@@ -1,4 +1,4 @@
-package GUI;
+package surpriseCinema.GUI;
 
 import app.Appframe;
 

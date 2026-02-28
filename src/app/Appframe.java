@@ -7,7 +7,6 @@ import java.awt.*;
 
 public class Appframe extends JFrame {
 
-    //Card names for navigation between pages
     public static final String SPLASH = "SPLASH";
     public static final String SIGNUP = "SIGNUP";
     public static final String SIGNIN = "SIGNIN";
@@ -17,20 +16,16 @@ public class Appframe extends JFrame {
     private final JPanel root = new JPanel(layout);
 
     public Appframe() {
-
-        //Window Settings
         setTitle("Surprise Cinema");
         setSize(390, 720);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        //Add all pages and link it with card names
         root.add(new Splash(this), SPLASH);
         root.add(new SignUp(this), SIGNUP);
         root.add(new SignIn(this), SIGNIN);
         root.add(new Preferences(this), PREFERENCES);
 
-        //Use root panel as the main container of this frame
         setContentPane(root);
         showPage(SPLASH);
     }
@@ -51,7 +46,6 @@ public class Appframe extends JFrame {
                     break;
             }
 
-        //Display this page using CardLayout
-        layout.show(root, page);
+            layout.show(root, page);
         }
     }
