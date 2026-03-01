@@ -13,6 +13,8 @@ public class Appframe extends JFrame {
     public static final String SIGNIN = "SIGNIN";
     public static final String PREFERENCES  = "PREFERENCES";
     public static final String MovieResult = "MovieResult";
+    public static final String chooseTimePage = "chooseTimePage";
+    public static final String TicketSuccess = "TicketSuccess";
 
     private final CardLayout layout = new CardLayout();
     private final JPanel root = new JPanel(layout);
@@ -30,10 +32,12 @@ public class Appframe extends JFrame {
         root.add(new SignIn(this), SIGNIN);
         root.add(new Preferences(this), PREFERENCES);
         root.add(new MovieResult(this), MovieResult);
+        root.add(new chooseTimePage(this), chooseTimePage);
+        root.add(new TicketSuccess(this), TicketSuccess);
 
         //Use root panel as the main container of this frame
         setContentPane(root);
-        showPage(SPLASH);
+        showPage(MovieResult);
     }
 
     public void showPage(String page) {
@@ -52,6 +56,12 @@ public class Appframe extends JFrame {
                     break;
                 case MovieResult:
                     setTitle("MovieResult");
+                    break;
+                case chooseTimePage:
+                    setTitle("chooseTimePage");
+                    break;
+                case TicketSuccess:
+                    setTitle("TicketSuccess");
                     break;
             }
 
