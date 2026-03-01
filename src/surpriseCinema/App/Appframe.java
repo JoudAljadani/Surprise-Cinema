@@ -1,4 +1,4 @@
-package app;
+package App;
 
 import surpriseCinema.GUI.*;
 
@@ -8,10 +8,10 @@ import java.awt.*;
 public class Appframe extends JFrame {
 
     //Card names for navigation between pages
-    public static final String SPLASH = "SPLASH";
-    public static final String SIGNUP = "SIGNUP";
-    public static final String SIGNIN = "SIGNIN";
-    public static final String PREFERENCES  = "PREFERENCES";
+    public static final String Splash = "Splash";
+    public static final String SignUp = "SignUp";
+    public static final String SignIn = "SignIn";
+    public static final String Preferences  = "Preferences";
     public static final String MovieResult = "MovieResult";
     public static final String chooseTimePage = "chooseTimePage";
     public static final String TicketSuccess = "TicketSuccess";
@@ -27,38 +27,38 @@ public class Appframe extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         //Add all pages and link it with card names
-        root.add(new Splash(this), SPLASH);
-        root.add(new SignUp(this), SIGNUP);
-        root.add(new SignIn(this), SIGNIN);
-        root.add(new Preferences(this), PREFERENCES);
+        root.add(new Splash(this), Splash);
+        root.add(new SignUp(this), SignUp);
+        root.add(new SignIn(this), SignIn);
+        root.add(new Preferences(this), Preferences);
         root.add(new MovieResult(this), MovieResult);
         root.add(new chooseTimePage(this), chooseTimePage);
         root.add(new TicketSuccess(this), TicketSuccess);
 
         //Use root panel as the main container of this frame
         setContentPane(root);
-        showPage(MovieResult);
+        showPage(Splash);
     }
 
     public void showPage(String page) {
             switch (page) {
-                case SPLASH:
+                case Splash:
                     setTitle("Surprise Cinema");
                     break;
-                case SIGNUP:
+                case SignUp:
                     setTitle("Sign Up");
                     break;
-                case SIGNIN:
+                case SignIn:
                     setTitle("Sign In");
                     break;
-                case PREFERENCES:
+                case Preferences:
                     setTitle("Preferences");
                     break;
                 case MovieResult:
-                    setTitle("MovieResult");
+                    setTitle("Movie Result");
                     break;
                 case chooseTimePage:
-                    setTitle("chooseTimePage");
+                    setTitle("Choose Movie Time ");
                     break;
                 case TicketSuccess:
                     setTitle("TicketSuccess");
