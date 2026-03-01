@@ -1,6 +1,6 @@
-package surpriseCinema.GUI;
+package GUI;
 
-import surpriseCinema.App.Appframe;
+import App.Appframe;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -138,6 +138,10 @@ public class SignIn extends JPanel {
                     if (validClick) {
                         String email = emailField.getText().trim();
                         String pass = new String(passwordField.getPassword());
+
+                        //Show next page
+                        app.showPage(Appframe.HOMEPAGE);
+
                     }
                 }
             });
@@ -181,6 +185,8 @@ public class SignIn extends JPanel {
             g2.setColor(Color.WHITE);
             g2.setFont(new Font("Arial", Font.BOLD, 24));
             String title = "SURPRISE CINEMA";
+
+            //Title position
             FontMetrics fm = g2.getFontMetrics();
             int titleX = (w - fm.stringWidth(title)) / 2;
             int titleY = logoY + logoSize + 26;

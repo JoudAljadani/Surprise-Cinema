@@ -1,4 +1,4 @@
-package surpriseCinema.App;
+package App;
 
 import javax.swing.SwingUtilities;
 

@@ -1,6 +1,6 @@
-package surpriseCinema.GUI;
+package GUI;
 
-import surpriseCinema.App.Appframe;
+import App.Appframe;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -9,10 +9,8 @@ import java.awt.event.*;
 
 public class SignUp extends JPanel {
 
+    //Used to navigate between pages
     private final Appframe app;
-
-    private static final int W = 390;
-    private static final int H = 720;
 
     private final Image bg;
     private final Image logo;
@@ -20,197 +18,168 @@ public class SignUp extends JPanel {
     public SignUp(Appframe app) {
         this.app = app;
 
-        setLayout(new BorderLayout());
-
         bg = new ImageIcon("resources/images/Background.png").getImage();
         logo = new ImageIcon("resources/images/Logo.png").getImage();
 
+        //Set layout and add main panel to center
+        setLayout(new BorderLayout());
         add(new SignUpPanel(), BorderLayout.CENTER);
     }
 
+    //Draw rounded white background
+    private static void paintRoundedBackground(Graphics g, JComponent c, int radius) {
+
+        //Create object and casting to 2D
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        int w = c.getWidth();
+        int h = c.getHeight();
+
+        g2.setColor(Color.WHITE);
+        g2.fillRoundRect(0, 0, w - 1, h - 1, radius, radius);
+
+        //Close
+        g2.dispose();
+    }
+
+    //Styling for text and password fields
+    private static void styleTextField(JComponent c) {
+
+        //Disable default background drawing
+        c.setOpaque(false);
+
+        //Add padding between text and border
+        c.setBorder(new EmptyBorder(12, 14, 12, 14));
+
+        c.setFont(new Font("Arial", Font.PLAIN, 16));
+    }
+
+    //Name Email Age fields
     static class RoundedField extends JTextField {
         private final int radius;
-        private final Color borderColor;
 
-        RoundedField(int radius, Color borderColor) {
+        RoundedField(int radius) {
             this.radius = radius;
-            this.borderColor = borderColor;
-            setOpaque(false);
-            setBorder(new EmptyBorder(12, 14, 12, 14));
-            setFont(new Font("Arial", Font.PLAIN, 16));
-            setForeground(new Color(30, 30, 30));
-            setCaretColor(new Color(30, 30, 30));
+            styleTextField(this);
         }
 
         @Override
         protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-            int w = getWidth();
-            int h = getHeight();
-
-            g2.setColor(Color.WHITE);
-            g2.fillRoundRect(0, 0, w - 1, h - 1, radius, radius);
-
-            g2.dispose();
+            paintRoundedBackground(g, this, radius);
             super.paintComponent(g);
         }
     }
 
+    //Password field
     static class RoundedPasswordField extends JPasswordField {
         private final int radius;
-        private final Color borderColor;
 
-        RoundedPasswordField(int radius, Color borderColor) {
+        RoundedPasswordField(int radius) {
             this.radius = radius;
-            this.borderColor = borderColor;
-            setOpaque(false);
-            setBorder(new EmptyBorder(12, 14, 12, 14));
-            setFont(new Font("Arial", Font.PLAIN, 16));
-            setForeground(new Color(30, 30, 30));
-            setCaretColor(new Color(30, 30, 30));
+            styleTextField(this);
         }
 
         @Override
         protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-            int w = getWidth();
-            int h = getHeight();
-
-            g2.setColor(Color.WHITE);
-            g2.fillRoundRect(0, 0, w - 1, h - 1, radius, radius);
-
-            g2.setStroke(new BasicStroke(1.2f));
-            g2.setColor(borderColor);
-            g2.drawRoundRect(0, 0, w - 1, h - 1, radius, radius);
-
-            g2.dispose();
+            paintRoundedBackground(g, this, radius);
             super.paintComponent(g);
         }
     }
 
+    //Gender dropdown menu
     static class RoundedComboBox extends JComboBox<String> {
-
         private final int radius;
-        private final Color borderColor;
 
-        RoundedComboBox(String[] items, int radius, Color borderColor) {
+        RoundedComboBox(String[] items, int radius) {
+
+            //Send values to the super class
             super(items);
-            this.radius = radius;
-            this.borderColor = borderColor;
 
+            this.radius = radius;
+
+            //Disable default background
             setOpaque(false);
-            setFont(new Font("Arial", Font.PLAIN, 16));
-            setForeground(Color.BLACK);
+
             setBackground(Color.WHITE);
+            setForeground(Color.BLACK);
+            setFont(new Font("Arial", Font.PLAIN, 16));
             setBorder(new EmptyBorder(8, 14, 8, 14));
 
-            setFocusable(false);
-            UIManager.put("ComboBox.focus", new Color(220, 220, 220));
-            UIManager.put("ComboBox.selectionBackground", new Color(235, 235, 235));
-            UIManager.put("ComboBox.selectionForeground", Color.BLACK);
 
-            setRenderer(new DefaultListCellRenderer() {
-                @Override
-                public Component getListCellRendererComponent(
-                        JList<?> list, Object value, int index,
-                        boolean isSelected, boolean cellHasFocus) {
-
-                    JLabel label = (JLabel) super.getListCellRendererComponent(
-                            list, value, index, isSelected, cellHasFocus);
-
-                    label.setForeground(Color.BLACK);
-                    label.setBackground(isSelected ? new Color(235, 235, 235) : Color.WHITE);
-                    return label;
-                }
-            });
-        }
+       }
 
         @Override
+        //Call paintRoundedBackground method to draw rounded white background
         protected void paintComponent(Graphics g) {
-            Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON);
-
-            int w = getWidth();
-            int h = getHeight();
-
-            g2.setColor(Color.WHITE);
-            g2.fillRoundRect(0, 0, w - 1, h - 1, radius, radius);
-
-            g2.setStroke(new BasicStroke(1.2f));
-            g2.setColor(borderColor);
-            g2.drawRoundRect(0, 0, w - 1, h - 1, radius, radius);
-
-            g2.dispose();
+            paintRoundedBackground(g, this, radius);
             super.paintComponent(g);
         }
     }
 
     class SignUpPanel extends JPanel {
 
-        private final Color subtleStroke = new Color(242, 242, 242);
         private final int FIELD_RADIUS = 50;
 
-        private final RoundedField nameField = new RoundedField(FIELD_RADIUS, subtleStroke);
-        private final RoundedField emailField = new RoundedField(FIELD_RADIUS, subtleStroke);
-        private final RoundedPasswordField passwordField = new RoundedPasswordField(FIELD_RADIUS, subtleStroke);
-        private final RoundedField ageField = new RoundedField(FIELD_RADIUS, subtleStroke);
+        private final RoundedField nameField = new RoundedField(FIELD_RADIUS);
+        private final RoundedField emailField = new RoundedField(FIELD_RADIUS);
+        private final RoundedPasswordField passwordField = new RoundedPasswordField(FIELD_RADIUS);
+        private final RoundedField ageField = new RoundedField(FIELD_RADIUS);
+        private final RoundedComboBox genderField = new RoundedComboBox(new String[]{"Male", "Female"}, FIELD_RADIUS);
 
-        private final RoundedComboBox genderField =
-                new RoundedComboBox(new String[]{"Male", "Female"}, FIELD_RADIUS, subtleStroke);
-
+        //Place of the button
         Rectangle buttonRect;
+        //Button initial state
         boolean pressed = false;
 
         SignUpPanel() {
+            //Disable default layout
             setLayout(null);
 
-            int fieldW = 260;
-            int fieldH = 42;
+            //The place and size of the fields
+            int w = 260;
+            int h = 42;
             int gap = 26;
-            int startY = 257;
+            int y = 257;
             int x = 57;
 
-            placeField("Name", nameField, x, startY, fieldW, fieldH);
-            placeField("Email", emailField, x, startY + (fieldH + gap), fieldW, fieldH);
-            placeField("Password", passwordField, x, startY + 2 * (fieldH + gap), fieldW, fieldH);
-            placeField("Age", ageField, x, startY + 3 * (fieldH + gap), fieldW, fieldH);
-            placeField("Gender", genderField, x, startY + 4 * (fieldH + gap), fieldW, fieldH);
+            placeField("Name", nameField, x, y, w, h);
+            placeField("Email", emailField, x, y + (h + gap), w, h);
+            placeField("Password", passwordField, x, y + 2 * (h + gap), w, h);
+            placeField("Age", ageField, x, y + 3 * (h + gap), w, h);
+            placeField("Gender", genderField, x, y + 4 * (h + gap), w, h);
 
             addMouseListener(new MouseAdapter() {
                 @Override
+                //Check if the mouse press happened inside the Sign Up button
                 public void mousePressed(MouseEvent e) {
-                    if (buttonRect != null && buttonRect.contains(e.getPoint())) pressed = true;
+                    pressed = (buttonRect != null && buttonRect.contains(e.getPoint()));
                     repaint();
                 }
 
                 @Override
+                //Check if the mouse press and released was inside the Sign Up button
                 public void mouseReleased(MouseEvent e) {
-                    if (pressed && buttonRect != null && buttonRect.contains(e.getPoint())) {
-
-                        String name = nameField.getText().trim();
-                        String email = emailField.getText().trim();
-                        String pass  = new String(passwordField.getPassword());
-                        String age   = ageField.getText().trim();
-                        String gender = (String) genderField.getSelectedItem();
-
-                        app.showPage(Appframe.PREFERENCES);
-
-                        pressed = false;
-                        repaint();
-                        return;
-                    }
-
+                    boolean validClick = pressed && buttonRect != null && buttonRect.contains(e.getPoint());
                     pressed = false;
                     repaint();
+
+                    //If a valid click = true, perform Sign Up action
+                    if (validClick) {
+                        String name = nameField.getText().trim();
+                        String email = emailField.getText().trim();
+                        String pass = new String(passwordField.getPassword());
+                        String age = ageField.getText().trim();
+                        String gender = (String) genderField.getSelectedItem();
+
+                        //Show next page
+                        app.showPage(Appframe.PREFERENCES);
+                    }
                 }
             });
         }
 
+        //Placed labels and the fields and display it on the screen
         private void placeField(String label, JComponent comp, int x, int y, int w, int h) {
             JLabel l = new JLabel(label);
             l.setFont(new Font("Arial", Font.BOLD, 12));
@@ -218,20 +187,25 @@ public class SignUp extends JPanel {
 
             int labelOffset = 15;
             l.setBounds(x + labelOffset, y - 16, w, 16);
+            //Add to panel
             add(l);
 
             comp.setBounds(x, y, w, h);
+            //Add to panel
             add(comp);
         }
 
         @Override
+        //Draw the logo, background and setTitle and display on the screen
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
 
             Graphics2D g2 = (Graphics2D) g;
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON);
 
+            //To make corner smoother
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            //Get panel width
             int w = getWidth();
 
             g2.drawImage(bg, 0, 0, getWidth(), getHeight(), null);
@@ -244,21 +218,25 @@ public class SignUp extends JPanel {
             g2.setColor(Color.WHITE);
             g2.setFont(new Font("Arial", Font.BOLD, 24));
             String title = "SURPRISE CINEMA";
+
+            //Title position
             FontMetrics fm = g2.getFontMetrics();
             int titleX = (w - fm.stringWidth(title)) / 2;
             int titleY = logoY + logoSize + 26;
             g2.drawString(title, titleX, titleY);
 
+            //Set SignUn button settings and call the drawSignUpButton function
             int btnW = 300;
             int btnH = 55;
             int btnX = (w - btnW) / 2;
             int btnY = 600;
 
             buttonRect = new Rectangle(btnX, btnY, btnW, btnH);
-            drawButton(g2, buttonRect, "Sign Up", pressed);
+            drawSignUpButton(g2, buttonRect, "Sign Up", pressed);
         }
 
-        private void drawButton(Graphics2D g2, Rectangle r, String text, boolean pressed) {
+        //Draw SignUn button
+        private void drawSignUpButton(Graphics2D g2, Rectangle r, String text, boolean pressed) {
             int radius = 50;
 
             g2.setColor(Color.WHITE);
@@ -276,6 +254,7 @@ public class SignUp extends JPanel {
             g2.setColor(Color.BLACK);
             g2.setFont(new Font("Arial", Font.BOLD, 18));
 
+            //Center the Sign In text
             FontMetrics fm = g2.getFontMetrics();
             int tx = r.x + (r.width - fm.stringWidth(text)) / 2;
             int ty = r.y + (r.height + fm.getAscent()) / 2 - 4;

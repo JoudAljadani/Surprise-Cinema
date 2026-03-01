@@ -1,6 +1,6 @@
-package surpriseCinema.App;
+package App;
 
-import surpriseCinema.GUI.*;
+import GUI.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,16 +11,19 @@ public class Appframe extends JFrame {
     public static final String SPLASH = "SPLASH";
     public static final String SIGNUP = "SIGNUP";
     public static final String SIGNIN = "SIGNIN";
-    public static final String PREFERENCES = "PREFERENCES";
-    public static final String MOVIERESULT = "MOVIERESULT";
+    public static final String PREFERENCES  = "PREFERENCES";
+    public static final String MOVIERESULT  = "MOVIERESULT";
     public static final String CHOOSE_TIME = "CHOOSE_TIME";
     public static final String TICKET_SUCCESS = "TICKET_SUCCESS";
+    public static final String HOMEPAGE = "HOMEPAGE";
+    public static final String MYTICKET = "MYTICKET";
+    public static final String HISTORY = "history";
+    public static final String RATE = "rate";
 
     private final CardLayout layout = new CardLayout();
     private final JPanel root = new JPanel(layout);
 
     public Appframe() {
-
         //Window Settings
         setSize(390, 720);
         setLocationRelativeTo(null);
@@ -34,6 +37,10 @@ public class Appframe extends JFrame {
         root.add(new MovieResult(this), MOVIERESULT);
         root.add(new chooseTimePage(this), CHOOSE_TIME);
         root.add(new TicketSuccess(this), TICKET_SUCCESS);
+        root.add(new HomePage(this), HOMEPAGE);
+        root.add(new MyTicket(this), MYTICKET);
+        root.add(new History(this), HISTORY);
+        root.add(new Rate(this), RATE);
 
         //Use root panel as the main container of this frame
         setContentPane(root);
@@ -58,14 +65,25 @@ public class Appframe extends JFrame {
                     setTitle("Movie Result");
                     break;
                 case CHOOSE_TIME:
-                    setTitle("Choose Movie Time ");
+                    setTitle("Choose Time");
                     break;
                 case TICKET_SUCCESS:
-                    setTitle("TicketSuccess");
+                    setTitle("Ticket Success");
+                    break;
+                case HOMEPAGE:
+                    setTitle("Home");
+                    break;
+                case MYTICKET:
+                    setTitle("My Ticket");
+                    break;
+                case HISTORY:
+                    setTitle("History");
+                    break;
+                case RATE:
+                    setTitle("Rate");
                     break;
             }
-
         //Display this page using CardLayout
-        layout.show(root, page);
+            layout.show(root, page);
         }
     }
