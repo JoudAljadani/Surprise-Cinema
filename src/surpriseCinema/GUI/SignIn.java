@@ -1,6 +1,6 @@
-package surpriseCinema.GUI;
+package GUI;
 
-import app.Appframe;
+import App.Appframe;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

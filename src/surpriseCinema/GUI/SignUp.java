@@ -1,6 +1,6 @@
-package surpriseCinema.GUI;
+package GUI;
 
-import app.Appframe;
+import App.Appframe;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -42,7 +42,8 @@ public class SignUp extends JPanel {
             setCaretColor(new Color(30, 30, 30));
         }
 
-        @Override protected void paintComponent(Graphics g) {
+        @Override
+        protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -51,10 +52,6 @@ public class SignUp extends JPanel {
 
             g2.setColor(Color.WHITE);
             g2.fillRoundRect(0, 0, w - 1, h - 1, radius, radius);
-
-            g2.setStroke(new BasicStroke(1.2f));
-            g2.setColor(borderColor);
-            g2.drawRoundRect(0, 0, w - 1, h - 1, radius, radius);
 
             g2.dispose();
             super.paintComponent(g);
@@ -75,7 +72,8 @@ public class SignUp extends JPanel {
             setCaretColor(new Color(30, 30, 30));
         }
 
-        @Override protected void paintComponent(Graphics g) {
+        @Override
+        protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -166,7 +164,6 @@ public class SignUp extends JPanel {
                 new RoundedComboBox(new String[]{"Male", "Female"}, FIELD_RADIUS, subtleStroke);
 
         Rectangle buttonRect;
-        boolean hover = false;
         boolean pressed = false;
 
         SignUpPanel() {
@@ -184,34 +181,25 @@ public class SignUp extends JPanel {
             placeField("Age", ageField, x, startY + 3 * (fieldH + gap), fieldW, fieldH);
             placeField("Gender", genderField, x, startY + 4 * (fieldH + gap), fieldW, fieldH);
 
-            addMouseMotionListener(new MouseMotionAdapter() {
-                @Override public void mouseMoved(MouseEvent e) {
-                    if (buttonRect != null) hover = buttonRect.contains(e.getPoint());
-                    setCursor(new Cursor(hover ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR));
-                    repaint();
-                }
-            });
-
             addMouseListener(new MouseAdapter() {
-                @Override public void mousePressed(MouseEvent e) {
+                @Override
+                public void mousePressed(MouseEvent e) {
                     if (buttonRect != null && buttonRect.contains(e.getPoint())) pressed = true;
                     repaint();
                 }
 
-                @Override public void mouseReleased(MouseEvent e) {
+                @Override
+                public void mouseReleased(MouseEvent e) {
                     if (pressed && buttonRect != null && buttonRect.contains(e.getPoint())) {
 
-                        // هنا تقدر تسوي validation وتخزين
                         String name = nameField.getText().trim();
                         String email = emailField.getText().trim();
                         String pass  = new String(passwordField.getPassword());
                         String age   = ageField.getText().trim();
                         String gender = (String) genderField.getSelectedItem();
 
-                        // TODO: تحقق/حفظ (اختياري)
-                        // System.out.println(name + " " + email + " " + age + " " + gender);
-
                         app.showPage(Appframe.PREFERENCES);
+
                         pressed = false;
                         repaint();
                         return;
@@ -267,19 +255,14 @@ public class SignUp extends JPanel {
             int btnY = 600;
 
             buttonRect = new Rectangle(btnX, btnY, btnW, btnH);
-            drawButton(g2, buttonRect, "Sign Up", hover, pressed);
+            drawButton(g2, buttonRect, "Sign Up", pressed);
         }
 
-        private void drawButton(Graphics2D g2, Rectangle r, String text, boolean hover, boolean pressed) {
+        private void drawButton(Graphics2D g2, Rectangle r, String text, boolean pressed) {
             int radius = 50;
 
             g2.setColor(Color.WHITE);
             g2.fillRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-
-            if (hover) {
-                g2.setColor(new Color(255, 0, 0, 18));
-                g2.fillRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-            }
 
             if (pressed) {
                 g2.setColor(new Color(200, 0, 0, 70));

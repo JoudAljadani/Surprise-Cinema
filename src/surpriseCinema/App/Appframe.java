@@ -1,4 +1,4 @@
-package app;
+package App;
 
 import GUI.*;
 
@@ -7,25 +7,31 @@ import java.awt.*;
 
 public class Appframe extends JFrame {
 
+    //Card names for navigation between pages
     public static final String SPLASH = "SPLASH";
     public static final String SIGNUP = "SIGNUP";
     public static final String SIGNIN = "SIGNIN";
     public static final String PREFERENCES  = "PREFERENCES";
+    public static final String MOVIERESULT  = "MOVIERESULT";
+
 
     private final CardLayout layout = new CardLayout();
     private final JPanel root = new JPanel(layout);
 
     public Appframe() {
-        setTitle("Surprise Cinema");
+        //Window Settings
         setSize(390, 720);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+        //Add all pages and link it with card names
         root.add(new Splash(this), SPLASH);
         root.add(new SignUp(this), SIGNUP);
         root.add(new SignIn(this), SIGNIN);
         root.add(new Preferences(this), PREFERENCES);
+        root.add(new MovieResult(this), MOVIERESULT);
 
+        //Use root panel as the main container of this frame
         setContentPane(root);
         showPage(SPLASH);
     }
@@ -33,7 +39,7 @@ public class Appframe extends JFrame {
     public void showPage(String page) {
             switch (page) {
                 case SPLASH:
-                    setTitle("Splash");
+                    setTitle("Surprise Cinema");
                     break;
                 case SIGNUP:
                     setTitle("Sign Up");
@@ -44,8 +50,11 @@ public class Appframe extends JFrame {
                 case PREFERENCES:
                     setTitle("Preferences");
                     break;
+                case MOVIERESULT:
+                    setTitle("Movie Result");
+                    break;
             }
-
+        //Display this page using CardLayout
             layout.show(root, page);
         }
     }
