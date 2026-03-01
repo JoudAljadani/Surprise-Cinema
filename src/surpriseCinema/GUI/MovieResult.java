@@ -1,6 +1,6 @@
-package GUI;
+package surpriseCinema.GUI;
 
-import App.Appframe;
+import surpriseCinema.App.Appframe;
 
 import javax.swing.*;
 import java.awt.*;
@@ -113,7 +113,7 @@ public class MovieResult extends JPanel {
 
                     // RIGHT: ACCEPT -> next page
                     if (acceptPressed && acceptBtnRect != null && acceptBtnRect.contains(e.getPoint())) {
-                        app.showPage(Appframe.chooseTimePage);
+                        app.showPage(Appframe.CHOOSE_TIME);
                     }
 
                     otherPressed = false;

@@ -1,4 +1,4 @@
-package App;
+package surpriseCinema.App;
 
 import surpriseCinema.GUI.*;
 
@@ -8,13 +8,13 @@ import java.awt.*;
 public class Appframe extends JFrame {
 
     //Card names for navigation between pages
-    public static final String Splash = "Splash";
-    public static final String SignUp = "SignUp";
-    public static final String SignIn = "SignIn";
-    public static final String Preferences  = "Preferences";
-    public static final String MovieResult = "MovieResult";
-    public static final String chooseTimePage = "chooseTimePage";
-    public static final String TicketSuccess = "TicketSuccess";
+    public static final String SPLASH = "SPLASH";
+    public static final String SIGNUP = "SIGNUP";
+    public static final String SIGNIN = "SIGNIN";
+    public static final String PREFERENCES = "PREFERENCES";
+    public static final String MOVIERESULT = "MOVIERESULT";
+    public static final String CHOOSE_TIME = "CHOOSE_TIME";
+    public static final String TICKET_SUCCESS = "TICKET_SUCCESS";
 
     private final CardLayout layout = new CardLayout();
     private final JPanel root = new JPanel(layout);
@@ -27,40 +27,40 @@ public class Appframe extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         //Add all pages and link it with card names
-        root.add(new Splash(this), Splash);
-        root.add(new SignUp(this), SignUp);
-        root.add(new SignIn(this), SignIn);
-        root.add(new Preferences(this), Preferences);
-        root.add(new MovieResult(this), MovieResult);
-        root.add(new chooseTimePage(this), chooseTimePage);
-        root.add(new TicketSuccess(this), TicketSuccess);
+        root.add(new Splash(this), SPLASH);
+        root.add(new SignUp(this), SIGNUP);
+        root.add(new SignIn(this), SIGNIN);
+        root.add(new Preferences(this), PREFERENCES);
+        root.add(new MovieResult(this), MOVIERESULT);
+        root.add(new chooseTimePage(this), CHOOSE_TIME);
+        root.add(new TicketSuccess(this), TICKET_SUCCESS);
 
         //Use root panel as the main container of this frame
         setContentPane(root);
-        showPage(Splash);
+        showPage(SPLASH);
     }
 
     public void showPage(String page) {
             switch (page) {
-                case Splash:
+                case SPLASH:
                     setTitle("Surprise Cinema");
                     break;
-                case SignUp:
+                case SIGNUP:
                     setTitle("Sign Up");
                     break;
-                case SignIn:
+                case SIGNIN:
                     setTitle("Sign In");
                     break;
-                case Preferences:
+                case PREFERENCES:
                     setTitle("Preferences");
                     break;
-                case MovieResult:
+                case MOVIERESULT:
                     setTitle("Movie Result");
                     break;
-                case chooseTimePage:
+                case CHOOSE_TIME:
                     setTitle("Choose Movie Time ");
                     break;
-                case TicketSuccess:
+                case TICKET_SUCCESS:
                     setTitle("TicketSuccess");
                     break;
             }

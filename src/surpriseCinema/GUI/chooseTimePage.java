@@ -1,6 +1,6 @@
 package surpriseCinema.GUI;
 
-import app.Appframe;
+import surpriseCinema.App.Appframe;
 
 import javax.swing.*;
 import java.awt.*;
@@ -77,7 +77,7 @@ public class chooseTimePage extends JPanel {
                     public void mouseReleased(MouseEvent e) {
 
                         if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
-                            app.showPage(Appframe.MovieResult); // يرجع لصفحة الفيلم
+                            app.showPage(Appframe.MOVIERESULT); // يرجع لصفحة الفيلم
                         }
                         backPressed = false;
 
@@ -86,7 +86,7 @@ public class chooseTimePage extends JPanel {
                             //force selection
                             if (selectedSlot == null) { nextPressed = false; repaint(); return; }
 
-                            app.showPage(Appframe.TicketSuccess);
+                            app.showPage(Appframe.TICKET_SUCCESS);
                         }
 
                         nextPressed = false;
