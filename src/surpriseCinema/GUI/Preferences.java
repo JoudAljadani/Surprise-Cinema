@@ -1,6 +1,6 @@
-package surpriseCinema.GUI;
+package GUI;
 
-import app.Appframe;
+import App.Appframe;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,13 +39,8 @@ public class Preferences extends JPanel {
         showGenres();
     }
 
-    private void showGenres() {
-        layout.show(pages, GENRES);
-    }
-
-    private void showCountries() {
-        layout.show(pages, COUNTRIES);
-    }
+    private void showGenres() { layout.show(pages, GENRES); }
+    private void showCountries() { layout.show(pages, COUNTRIES); }
 
     // ===========================
     // PAGE 1: GENRES
@@ -53,11 +48,7 @@ public class Preferences extends JPanel {
     class GenresPanel extends JPanel {
 
         private Rectangle nextBtnRect;
-
-        private boolean btnHover = false;
         private boolean btnPressed = false;
-
-        private Card hoverCard = null;
 
         private final Card[] cards = new Card[]{
                 new Card("Comedy", "😂", "COMEDY"),
@@ -70,27 +61,8 @@ public class Preferences extends JPanel {
 
         GenresPanel() {
 
-            addMouseMotionListener(new MouseMotionAdapter() {
-                @Override
-                public void mouseMoved(MouseEvent e) {
-
-                    hoverCard = null;
-                    for (Card c : cards) {
-                        if (c.rect != null && c.rect.contains(e.getPoint())) {
-                            hoverCard = c;
-                            break;
-                        }
-                    }
-
-                    btnHover = (nextBtnRect != null && nextBtnRect.contains(e.getPoint()));
-
-                    boolean hand = (hoverCard != null) || btnHover;
-                    setCursor(new Cursor(hand ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR));
-                    repaint();
-                }
-            });
-
             addMouseListener(new MouseAdapter() {
+
                 @Override
                 public void mousePressed(MouseEvent e) {
 
@@ -114,15 +86,6 @@ public class Preferences extends JPanel {
                         showCountries();
                     }
                     btnPressed = false;
-                    repaint();
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-                    hoverCard = null;
-                    btnHover = false;
-                    btnPressed = false;
-                    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                     repaint();
                 }
             });
@@ -165,8 +128,7 @@ public class Preferences extends JPanel {
 
             for (Card c : cards) {
                 boolean selected = model.isGenreSelected(c.key);
-                boolean hovered = (hoverCard == c);
-                drawCard(g2, c.rect, c.icon, c.label, selected, hovered);
+                drawCard(g2, c.rect, c.icon, c.label, selected);
             }
 
             int btnW = 300;
@@ -175,7 +137,7 @@ public class Preferences extends JPanel {
             int btnY = 600;
 
             nextBtnRect = new Rectangle(btnX, btnY, btnW, btnH);
-            drawButton(g2, nextBtnRect, "Next", btnHover, btnPressed);
+            drawButton(g2, nextBtnRect, "Next", btnPressed);
         }
     }
 
@@ -187,13 +149,8 @@ public class Preferences extends JPanel {
         private Rectangle saveBtnRect;
         private Rectangle backBtnRect;
 
-        private boolean saveHover = false;
         private boolean savePressed = false;
-
-        private boolean backHover = false;
         private boolean backPressed = false;
-
-        private Card hoverCard = null;
 
         private final Card[] cards = new Card[]{
                 new Card("United States", "🇺🇸", "USA"),
@@ -206,28 +163,8 @@ public class Preferences extends JPanel {
 
         CountriesPanel() {
 
-            addMouseMotionListener(new MouseMotionAdapter() {
-                @Override
-                public void mouseMoved(MouseEvent e) {
-
-                    hoverCard = null;
-                    for (Card c : cards) {
-                        if (c.rect != null && c.rect.contains(e.getPoint())) {
-                            hoverCard = c;
-                            break;
-                        }
-                    }
-
-                    saveHover = (saveBtnRect != null && saveBtnRect.contains(e.getPoint()));
-                    backHover = (backBtnRect != null && backBtnRect.contains(e.getPoint()));
-
-                    boolean hand = (hoverCard != null) || saveHover || backHover;
-                    setCursor(new Cursor(hand ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR));
-                    repaint();
-                }
-            });
-
             addMouseListener(new MouseAdapter() {
+
                 @Override
                 public void mousePressed(MouseEvent e) {
 
@@ -259,22 +196,11 @@ public class Preferences extends JPanel {
                     }
 
                     if (savePressed && saveBtnRect != null && saveBtnRect.contains(e.getPoint())) {
-
+                        // save logic
                     }
 
                     savePressed = false;
                     backPressed = false;
-                    repaint();
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-                    hoverCard = null;
-                    saveHover = false;
-                    savePressed = false;
-                    backHover = false;
-                    backPressed = false;
-                    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                     repaint();
                 }
             });
@@ -317,8 +243,7 @@ public class Preferences extends JPanel {
 
             for (Card c : cards) {
                 boolean selected = model.isCountrySelected(c.key);
-                boolean hovered = (hoverCard == c);
-                drawCard(g2, c.rect, c.icon, c.label, selected, hovered);
+                drawCard(g2, c.rect, c.icon, c.label, selected);
             }
 
             int btnW = 145;
@@ -332,13 +257,13 @@ public class Preferences extends JPanel {
             backBtnRect = new Rectangle(startX, btnY, btnW, btnH);
             saveBtnRect = new Rectangle(startX + btnW + gap, btnY, btnW, btnH);
 
-            drawButton(g2, backBtnRect, "Back", backHover, backPressed);
-            drawButton(g2, saveBtnRect, "Save", saveHover, savePressed);
+            drawButton(g2, backBtnRect, "Back", backPressed);
+            drawButton(g2, saveBtnRect, "Save", savePressed);
         }
     }
 
     // ===========================
-    // SHARED HELPERS
+    // HELPERS
     // ===========================
     private void layoutCardsGrid(Card[] cards, int panelW, int topY, int cols) {
 
@@ -361,13 +286,13 @@ public class Preferences extends JPanel {
         }
     }
 
-    private void drawCard(Graphics2D g2, Rectangle r, String icon, String text, boolean selected, boolean hovered) {
+    private void drawCard(Graphics2D g2, Rectangle r, String icon, String text, boolean selected) {
 
         g2.setColor(Color.WHITE);
         g2.fillRoundRect(r.x, r.y, r.width, r.height, 22, 22);
 
-        if (hovered) {
-            g2.setColor(new Color(255, 0, 0, 18));
+        if (selected) {
+            g2.setColor(new Color(200, 0, 0, 70));
             g2.fillRoundRect(r.x, r.y, r.width, r.height, 22, 22);
         }
 
@@ -391,17 +316,12 @@ public class Preferences extends JPanel {
         }
     }
 
-    private void drawButton(Graphics2D g2, Rectangle r, String text, boolean hover, boolean pressed) {
+    private void drawButton(Graphics2D g2, Rectangle r, String text, boolean pressed) {
 
         int radius = 50;
 
         g2.setColor(Color.WHITE);
         g2.fillRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-
-        if (hover) {
-            g2.setColor(new Color(255, 0, 0, 18));
-            g2.fillRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-        }
 
         if (pressed) {
             g2.setColor(new Color(200, 0, 0, 70));
@@ -422,9 +342,6 @@ public class Preferences extends JPanel {
         g2.drawString(text, tx, ty);
     }
 
-    // ===========================
-    // DATA CLASSES
-    // ===========================
     static class Card {
         String label, icon, key;
         Rectangle rect;
