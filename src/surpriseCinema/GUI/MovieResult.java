@@ -13,17 +13,17 @@ public class MovieResult extends JPanel {
 
     private final Image bg;
 
-    private final Color subtleStroke = new Color(242, 242, 242);
-
     // clickable areas
     private Rectangle otherBtnRect;
     private Rectangle acceptBtnRect;
 
-    private boolean otherHover = false;
     private boolean otherPressed = false;
 
-    private boolean acceptHover = false;
     private boolean acceptPressed = false;
+
+    // back arrow area
+    private Rectangle backRect;
+    private boolean backPressed = false;
 
     // ===== MOCK MOVIES (GUI ONLY) =====
     private final Movie[] movies = new Movie[]{
@@ -72,22 +72,18 @@ public class MovieResult extends JPanel {
 
         MoviePanel() {
 
-            addMouseMotionListener(new MouseMotionAdapter() {
-                @Override
-                public void mouseMoved(MouseEvent e) {
 
-                    otherHover = (otherBtnRect != null && otherBtnRect.contains(e.getPoint()));
-                    acceptHover = (acceptBtnRect != null && acceptBtnRect.contains(e.getPoint()));
-
-                    boolean hand = otherHover || acceptHover;
-                    setCursor(new Cursor(hand ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR));
-                    repaint();
-                }
-            });
 
             addMouseListener(new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
+
+                    // BACK
+                    if (backRect != null && backRect.contains(e.getPoint())) {
+                        backPressed = true;
+                        repaint();
+                        return;
+                    }
 
                     if (otherBtnRect != null && otherBtnRect.contains(e.getPoint())) {
                         otherPressed = true;
@@ -104,6 +100,12 @@ public class MovieResult extends JPanel {
                 @Override
                 public void mouseReleased(MouseEvent e) {
 
+                    // BACK -> Home
+                    if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
+                        //app.showPage(Appframe.HOME); // غيّريها لاسم ثابت الهوم عندك
+                    }
+                    backPressed = false;
+
                     // LEFT: OTHER -> new movie
                     if (otherPressed && otherBtnRect != null && otherBtnRect.contains(e.getPoint())) {
                         pickAnotherMovie();
@@ -111,7 +113,7 @@ public class MovieResult extends JPanel {
 
                     // RIGHT: ACCEPT -> next page
                     if (acceptPressed && acceptBtnRect != null && acceptBtnRect.contains(e.getPoint())) {
-                        //will continue when next page create
+                        app.showPage(Appframe.chooseTimePage);
                     }
 
                     otherPressed = false;
@@ -121,11 +123,9 @@ public class MovieResult extends JPanel {
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    otherHover = false;
-                    acceptHover = false;
                     otherPressed = false;
                     acceptPressed = false;
-                    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                    backPressed = false;
                     repaint();
                 }
             });
@@ -142,6 +142,11 @@ public class MovieResult extends JPanel {
             int h = getHeight();
 
             g2.drawImage(bg, 0, 0, w, h, null);
+            // ===== BACK ARROW (TOP LEFT) =====
+            int bx = 18, by = 32;
+            backRect = new Rectangle(bx, by, 28, 28);
+
+            drawBackArrow(g2, backRect, backPressed);
 
             // ===== PAGE TITLE =====
             g2.setColor(Color.WHITE);
@@ -228,9 +233,10 @@ public class MovieResult extends JPanel {
             otherBtnRect = new Rectangle(startX, btnY, btnW, btnH);
             acceptBtnRect = new Rectangle(startX + btnW + gap, btnY, btnW, btnH);
 
-            drawButton(g2, otherBtnRect, "Other", otherHover, otherPressed);
-            drawButton(g2, acceptBtnRect, "Accept", acceptHover, acceptPressed);
+            drawButton(g2, otherBtnRect, "Other", otherPressed);
+            drawButton(g2, acceptBtnRect, "Accept", acceptPressed);
         }
+
 
         private int drawWrappedReturnEndY(Graphics2D g2, String text, int x, int y, int maxW, int lineH) {
             FontMetrics fm = g2.getFontMetrics();
@@ -260,17 +266,14 @@ public class MovieResult extends JPanel {
     // ===========================
     // BUTTON (same style)
     // ===========================
-    private void drawButton(Graphics2D g2, Rectangle r, String text, boolean hover, boolean pressed) {
+    private void drawButton(Graphics2D g2, Rectangle r, String text, boolean pressed) {
 
         int radius = 50;
 
         g2.setColor(Color.WHITE);
         g2.fillRoundRect(r.x, r.y, r.width, r.height, radius, radius);
 
-        if (hover) {
-            g2.setColor(new Color(255, 0, 0, 18));
-            g2.fillRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-        }
+
 
         if (pressed) {
             g2.setColor(new Color(200, 0, 0, 70));
@@ -304,6 +307,20 @@ public class MovieResult extends JPanel {
             this.imdb = imdb;
             this.story = story;
         }
+    }
+
+    private void drawBackArrow(Graphics2D g2, Rectangle r, boolean pressed) {
+
+        g2.setFont(new Font("Arial", Font.BOLD, 26));
+        g2.setColor(pressed ? new Color(255,255,255,160) : Color.WHITE);
+
+        String arrow = "<";
+        FontMetrics fm = g2.getFontMetrics();
+
+        int ax = r.x + 2;
+        int ay = r.y + fm.getAscent() - 2;
+
+        g2.drawString(arrow, ax, ay);
     }
 }
 
