@@ -1,7 +1,6 @@
-package GUI;
+package surpriseCinema.GUI;
 
-import App.Appframe;
-
+import surpriseCinema.App.Appframe;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -65,14 +64,10 @@ public class MovieResult extends JPanel {
         repaint();
     }
 
-    // ===========================
     // MAIN PANEL
-    // ===========================
     class MoviePanel extends JPanel {
 
         MoviePanel() {
-
-
 
             addMouseListener(new MouseAdapter() {
                 @Override
@@ -102,7 +97,7 @@ public class MovieResult extends JPanel {
 
                     // BACK -> Home
                     if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
-                        //app.showPage(Appframe.HOME); // غيّريها لاسم ثابت الهوم عندك
+                        app.showPage(Appframe.HOMEPAGE); // غيّريها لاسم ثابت الهوم عندك
                     }
                     backPressed = false;
 
@@ -142,23 +137,16 @@ public class MovieResult extends JPanel {
             int h = getHeight();
 
             g2.drawImage(bg, 0, 0, w, h, null);
-            // ===== BACK ARROW (TOP LEFT) =====
-            int bx = 18, by = 32;
-            backRect = new Rectangle(bx, by, 28, 28);
 
-            drawBackArrow(g2, backRect, backPressed);
+            // ===== BACK ARROW (TOP LEFT) =====
+            int backSize = 36, backX = 18, backY = 32;
+            backRect = new Rectangle(backX, backY, backSize, backSize);
+            UIComponents.drawTextBackArrow(g2, backRect, backPressed);
 
             // ===== PAGE TITLE =====
-            g2.setColor(Color.WHITE);
-            g2.setFont(new Font("Arial", Font.BOLD, 22));
-
-            String pageTitle = "Your surprise movie is";
-            FontMetrics fmT = g2.getFontMetrics();
-
-            int titleX = (w - fmT.stringWidth(pageTitle)) / 2;
-            int titleY = 80;
-
-            g2.drawString(pageTitle, titleX, titleY);
+            int titleY = 80, x = w / 2;
+            UIComponents.drawCenteredText(g2,"Your surprise movie is", x, titleY,
+                    UIComponents.FONT_TITLE, UIComponents.TEXT_WHITE);
 
             // ===== BIG MOVIE BOX (poster placeholder) =====
             int boxW = 250;
@@ -174,13 +162,8 @@ public class MovieResult extends JPanel {
             g2.drawRoundRect(boxX, boxY, boxW, boxH, 22, 22);
 
             // poster placeholder text
-            g2.setColor(Color.BLACK);
-            g2.setFont(new Font("Arial", Font.BOLD, 14));
-            String ph = "Movie Poster";
-            FontMetrics fmPH = g2.getFontMetrics();
-            int phX = boxX + (boxW - fmPH.stringWidth(ph)) / 2;
-            int phY = boxY + boxH / 2;
-            g2.drawString(ph, phX, phY);
+            UIComponents.drawCenteredText(g2,"Movie Poster", x, boxY + boxH / 2 + 6,
+                    UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
 
             // ===== MOVIE INFO =====
             Movie m = movies[currentIndex];
@@ -189,43 +172,28 @@ public class MovieResult extends JPanel {
             int infoW = w - 2 * infoX;
             int topY = boxY + boxH + 28;
 
-// 1) Movie name centered
-            g2.setColor(Color.WHITE);
-            g2.setFont(new Font("Arial", Font.BOLD, 20));
-            FontMetrics fmName = g2.getFontMetrics();
-            int nameX = (w - fmName.stringWidth(m.name)) / 2;
-            g2.drawString(m.name, nameX, topY);
+// 1) Movie name
+            UIComponents.drawCenteredText(g2, m.name, x, topY,
+                    new Font("Arial", Font.BOLD, 20), UIComponents.TEXT_WHITE);
 
 // 2) Story left aligned under it
             int storyY = topY + 34;
-            g2.setFont(new Font("Arial", Font.PLAIN, 14));
-            g2.setColor(Color.WHITE);
-
-            int storyEndY = drawWrappedReturnEndY(
-                    g2,
-                    m.story,
-                    infoX,
-                    storyY,
-                    infoW,
-                    18
-            );
-
+            g2.setFont(UIComponents.FONT_BODY);
+            g2.setColor(UIComponents.TEXT_WHITE);
+            int storyEndY = drawWrappedReturnEndY(g2, m.story, infoX, storyY, infoW, 18);
 
 // 3) Genre / Rated / IMDb lighter under story
             int metaY = storyEndY + 22;
 
-            g2.setFont(new Font("Arial", Font.PLAIN, 13)); // أخف
-            g2.setColor(new Color(255, 255, 255, 210));    // أبيض أخف شوي (شفافية)
+            g2.setFont(UIComponents.FONT_BODY);
+            g2.setColor(UIComponents.TEXT_WHITE_SOFT);
 
             g2.drawString("Genre: " + m.genre, infoX, metaY);
             g2.drawString("Rated: " + m.rated, infoX, metaY + 20);
             g2.drawString("IMDb: " + m.imdb, infoX, metaY + 40);
 
             // ===== BUTTONS (BOTTOM) =====
-            int btnW = 145;
-            int btnH = 55;
-            int gap = 14;
-
+            int btnW = 145, btnH = 55, gap = 14;
             int total = btnW * 2 + gap;
             int startX = (w - total) / 2;
             int btnY = 600;
@@ -233,10 +201,9 @@ public class MovieResult extends JPanel {
             otherBtnRect = new Rectangle(startX, btnY, btnW, btnH);
             acceptBtnRect = new Rectangle(startX + btnW + gap, btnY, btnW, btnH);
 
-            drawButton(g2, otherBtnRect, "Other", otherPressed);
-            drawButton(g2, acceptBtnRect, "Accept", acceptPressed);
+            UIComponents.drawPrimaryButton(g2, otherBtnRect, "Other", otherPressed);
+            UIComponents.drawPrimaryButton(g2, acceptBtnRect, "Accept", acceptPressed);
         }
-
 
         private int drawWrappedReturnEndY(Graphics2D g2, String text, int x, int y, int maxW, int lineH) {
             FontMetrics fm = g2.getFontMetrics();
@@ -263,40 +230,7 @@ public class MovieResult extends JPanel {
         }
     }
 
-    // ===========================
-    // BUTTON (same style)
-    // ===========================
-    private void drawButton(Graphics2D g2, Rectangle r, String text, boolean pressed) {
-
-        int radius = 50;
-
-        g2.setColor(Color.WHITE);
-        g2.fillRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-
-
-
-        if (pressed) {
-            g2.setColor(new Color(200, 0, 0, 70));
-            g2.fillRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-        }
-
-        g2.setStroke(new BasicStroke(2f));
-        g2.setColor(new Color(220, 220, 220));
-        g2.drawRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-
-        g2.setColor(Color.BLACK);
-        g2.setFont(new Font("Arial", Font.BOLD, 18));
-
-        FontMetrics fm = g2.getFontMetrics();
-        int tx = r.x + (r.width - fm.stringWidth(text)) / 2;
-        int ty = r.y + (r.height + fm.getAscent()) / 2 - 4;
-
-        g2.drawString(text, tx, ty);
-    }
-
-    // ===========================
     // DATA CLASS
-    // ===========================
     static class Movie {
         String name, genre, rated, imdb, story;
 
@@ -307,20 +241,6 @@ public class MovieResult extends JPanel {
             this.imdb = imdb;
             this.story = story;
         }
-    }
-
-    private void drawBackArrow(Graphics2D g2, Rectangle r, boolean pressed) {
-
-        g2.setFont(new Font("Arial", Font.BOLD, 26));
-        g2.setColor(pressed ? new Color(255,255,255,160) : Color.WHITE);
-
-        String arrow = "<";
-        FontMetrics fm = g2.getFontMetrics();
-
-        int ax = r.x + 2;
-        int ay = r.y + fm.getAscent() - 2;
-
-        g2.drawString(arrow, ax, ay);
     }
 }
 

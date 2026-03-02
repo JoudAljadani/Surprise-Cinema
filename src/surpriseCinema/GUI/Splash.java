@@ -1,7 +1,6 @@
-package GUI;
+package surpriseCinema.GUI;
 
-import App.Appframe;
-
+import surpriseCinema.App.Appframe;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -74,27 +73,15 @@ public class Splash extends JPanel {
 
         g2.drawImage(logo, logoX, logoY, logoSize, logoSize, null);
 
-        //Title
-        g2.setColor(Color.WHITE);
-        g2.setFont(new Font("Arial", Font.BOLD, 28));
-        String title = "SURPRISE CINEMA";
+        // Title
+        int titleY = logoY + logoSize + 25, x = w / 2;
+        UIComponents.drawCenteredText(g2, "SURPRISE CINEMA", x, titleY,
+                UIComponents.FONT_TITLE, UIComponents.TEXT_WHITE);
 
-        FontMetrics fm = g2.getFontMetrics();
-        int titleX = (w - fm.stringWidth(title)) / 2;
-        int titleY = logoY + logoSize  + 25;
-
-        g2.drawString(title, titleX, titleY);
-
-        //Subtitle
-        g2.setColor(Color.BLACK);
-        g2.setFont(new Font("Arial", Font.PLAIN, 16));
-        String sub = "Feel The Story";
-
-        FontMetrics fm2 = g2.getFontMetrics();
-        int subX = (w - fm2.stringWidth(sub)) / 2;
+// Subtitle
         int subY = titleY + 22;
-
-        g2.drawString(sub, subX, subY);
+        UIComponents.drawCenteredText(g2, "Feel The Story", x, subY,
+                UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
 
         //Bottom half circle
         int circleSize = 560;
@@ -111,7 +98,7 @@ public class Splash extends JPanel {
         int btnY = h - 140;
 
         buttonRect = new Rectangle(btnX, btnY, btnW, btnH);
-        drawGetStartedButton(g2, buttonRect, "Get Started", pressed);
+        UIComponents.drawPrimaryButton(g2, buttonRect, "Get Started!", pressed);
 
         String linkText = "I already have an account";
 
@@ -133,32 +120,5 @@ public class Splash extends JPanel {
         );
     }
 
-    private void drawGetStartedButton(Graphics2D g2, Rectangle r, String text, boolean pressed) {
-        int radius = 50;
 
-        g2.setColor(Color.WHITE);
-        g2.fillRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-
-        //Pressed color effect
-        if (pressed) {
-            g2.setColor(new Color(200, 0, 0, 70));
-            g2.fillRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-        }
-
-        //Stroke
-        g2.setColor(new Color(220, 220, 220));
-        g2.setStroke(new BasicStroke(2f));
-        g2.drawRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-
-        //Text color and font
-        g2.setColor(Color.BLACK);
-        g2.setFont(new Font("Arial", Font.BOLD, 18));
-
-        //Text position
-        FontMetrics fm = g2.getFontMetrics();
-        int tx = r.x + (r.width - fm.stringWidth(text)) / 2;
-        int ty = r.y + (r.height + fm.getAscent()) / 2 - 4;
-
-        g2.drawString(text, tx, ty);
-    }
 }

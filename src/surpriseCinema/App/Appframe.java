@@ -1,6 +1,6 @@
-package App;
+package surpriseCinema.App;
 
-import GUI.*;
+import surpriseCinema.GUI.*;
 
 import javax.swing.*;
 import java.awt.*;

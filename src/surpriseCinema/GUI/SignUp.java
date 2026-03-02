@@ -1,7 +1,6 @@
-package GUI;
+package surpriseCinema.GUI;
 
-import App.Appframe;
-
+import surpriseCinema.App.Appframe;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -215,15 +214,8 @@ public class SignUp extends JPanel {
             int logoY = 0;
             g2.drawImage(logo, logoX, logoY, logoSize, logoSize, null);
 
-            g2.setColor(Color.WHITE);
-            g2.setFont(new Font("Arial", Font.BOLD, 24));
-            String title = "SURPRISE CINEMA";
-
-            //Title position
-            FontMetrics fm = g2.getFontMetrics();
-            int titleX = (w - fm.stringWidth(title)) / 2;
             int titleY = logoY + logoSize + 26;
-            g2.drawString(title, titleX, titleY);
+            UIComponents.drawBrandTitle(g2, w, titleY);
 
             //Set SignUn button settings and call the drawSignUpButton function
             int btnW = 300;
@@ -232,34 +224,8 @@ public class SignUp extends JPanel {
             int btnY = 600;
 
             buttonRect = new Rectangle(btnX, btnY, btnW, btnH);
-            drawSignUpButton(g2, buttonRect, "Sign Up", pressed);
+            UIComponents.drawPrimaryButton(g2, buttonRect, "Sign Up", pressed);
         }
 
-        //Draw SignUn button
-        private void drawSignUpButton(Graphics2D g2, Rectangle r, String text, boolean pressed) {
-            int radius = 50;
-
-            g2.setColor(Color.WHITE);
-            g2.fillRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-
-            if (pressed) {
-                g2.setColor(new Color(200, 0, 0, 70));
-                g2.fillRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-            }
-
-            g2.setStroke(new BasicStroke(2f));
-            g2.setColor(new Color(220, 220, 220));
-            g2.drawRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-
-            g2.setColor(Color.BLACK);
-            g2.setFont(new Font("Arial", Font.BOLD, 18));
-
-            //Center the Sign In text
-            FontMetrics fm = g2.getFontMetrics();
-            int tx = r.x + (r.width - fm.stringWidth(text)) / 2;
-            int ty = r.y + (r.height + fm.getAscent()) / 2 - 4;
-
-            g2.drawString(text, tx, ty);
-        }
     }
 }

@@ -1,6 +1,6 @@
-package GUI;
+package surpriseCinema.GUI;
 
-import App.Appframe;
+import surpriseCinema.App.Appframe;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,12 +22,11 @@ public class HomePage extends JPanel {
     private Rectangle ticketRect, prefsRect, historyRect, rateRect;
     private Rectangle surpriseBtnRect;
 
-    // Hover / Press state
+    // Press state
     private enum Target { NONE, TICKET, PREFS, HISTORY, RATE }
-    private Target hoverTarget = Target.NONE;
     private Target pressedTarget = Target.NONE;
 
-    private boolean surpriseHover, surprisePressed;
+    private boolean surprisePressed;
 
     public HomePage(Appframe app) {
         this.app = app;
@@ -47,22 +46,6 @@ public class HomePage extends JPanel {
     class HomePanel extends JPanel {
 
         HomePanel() {
-
-            addMouseMotionListener(new MouseMotionAdapter() {
-                @Override
-                public void mouseMoved(MouseEvent e) {
-
-                    // Surprise button hover
-                    surpriseHover = surpriseBtnRect != null && surpriseBtnRect.contains(e.getPoint());
-
-                    // Cards hover
-                    hoverTarget = getTargetAt(e.getPoint());
-
-                    boolean hand = surpriseHover || hoverTarget != Target.NONE;
-                    setCursor(new Cursor(hand ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR));
-                    repaint();
-                }
-            });
 
             addMouseListener(new MouseAdapter() {
 
@@ -109,9 +92,7 @@ public class HomePage extends JPanel {
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    surpriseHover = false;
                     surprisePressed = false;
-                    hoverTarget = Target.NONE;
                     pressedTarget = Target.NONE;
                     setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                     repaint();
@@ -144,18 +125,13 @@ public class HomePage extends JPanel {
             g2.drawImage(logo, logoX, 0, logoSize, logoSize, null);
 
             // Title
-            g2.setColor(Color.WHITE);
-            g2.setFont(new Font("Arial", Font.BOLD, 24));
-            String title = "SURPRISE CINEMA";
-            FontMetrics fmT = g2.getFontMetrics();
-            g2.drawString(title, (w - fmT.stringWidth(title)) / 2, logoSize + 26);
+            int titleY = logoSize + 26;
+            UIComponents.drawBrandTitle(g2, w, titleY);
 
             // Welcome
-            g2.setColor(new Color(255, 255, 255, 180));
-            g2.setFont(new Font("Arial", Font.PLAIN, 17));
-            String welcome = "Welcome, Emma!";
-            FontMetrics fmW = g2.getFontMetrics();
-            g2.drawString(welcome, (w - fmW.stringWidth(welcome)) / 2, logoSize + 54);
+            int x = w/2, y= logoSize + 54;
+            UIComponents.drawCenteredText(g2, "Welcome, Emma!", x, y,
+                    UIComponents.FONT_SUBTITLE, UIComponents.TEXT_WHITE_SOFT2);
 
             // 4 cards grid
             int cardW = 130, cardH = 110;
@@ -165,112 +141,26 @@ public class HomePage extends JPanel {
             int startY = logoSize + 80;
 
             // IMPORTANT: Rectangles are re-created every repaint (that's why we use Target enum)
-            ticketRect  = new Rectangle(startX, startY, cardW, cardH);
-            prefsRect   = new Rectangle(startX + cardW + gapX, startY, cardW, cardH);
+            ticketRect = new Rectangle(startX, startY, cardW, cardH);
+            prefsRect = new Rectangle(startX + cardW + gapX, startY, cardW, cardH);
             historyRect = new Rectangle(startX, startY + cardH + gapY, cardW, cardH);
-            rateRect    = new Rectangle(startX + cardW + gapX, startY + cardH + gapY, cardW, cardH);
+            rateRect = new Rectangle(startX + cardW + gapX, startY + cardH + gapY, cardW, cardH);
 
-            drawCard(g2, ticketRect,  "Ticket",            ticketImg,
-                    hoverTarget == Target.TICKET, pressedTarget == Target.TICKET);
 
-            drawCard(g2, prefsRect,   "Edit Preferences",  prefsImg,
-                    hoverTarget == Target.PREFS, pressedTarget == Target.PREFS);
+            UIComponents.drawIconCard(g2, ticketRect, "Ticket", ticketImg, pressedTarget == Target.TICKET);
 
-            drawCard(g2, historyRect, "History",           historyImg,
-                    hoverTarget == Target.HISTORY, pressedTarget == Target.HISTORY);
+            UIComponents.drawIconCard(g2, prefsRect, "Edit Preferences", prefsImg, pressedTarget == Target.PREFS);
 
-            drawCard(g2, rateRect,    "Rate Movie",        rateImg,
-                    hoverTarget == Target.RATE, pressedTarget == Target.RATE);
+            UIComponents.drawIconCard(g2, historyRect, "History", historyImg, pressedTarget == Target.HISTORY);
 
+            UIComponents.drawIconCard(g2, rateRect, "Rate Movie", rateImg, pressedTarget == Target.RATE);
             // Surprise button
             int btnW = 300, btnH = 55;
             int btnX = (w - btnW) / 2;
             int btnY = 575;
             surpriseBtnRect = new Rectangle(btnX, btnY, btnW, btnH);
-            drawButton(g2, surpriseBtnRect, "Surprise Me!", surpriseHover, surprisePressed);
-        }
-
-        private void drawCard(Graphics2D g2, Rectangle r, String label, Image icon, boolean hover, boolean pressed) {
-
-            // Shadow
-            g2.setColor(new Color(0, 0, 0, 40));
-            g2.fillRoundRect(r.x + 2, r.y + 3, r.width, r.height, 20, 20);
-
-            // Background
-            g2.setColor(Color.WHITE);
-            g2.fillRoundRect(r.x, r.y, r.width, r.height, 20, 20);
-
-            // Hover overlay
-            if (hover) {
-                g2.setColor(new Color(255, 0, 0, 15));
-                g2.fillRoundRect(r.x, r.y, r.width, r.height, 20, 20);
-            }
-
-            // Press overlay
-            if (pressed) {
-                g2.setColor(new Color(200, 0, 0, 60));
-                g2.fillRoundRect(r.x, r.y, r.width, r.height, 20, 20);
-            }
-
-            // Border
-            g2.setColor(new Color(220, 220, 220));
-            g2.setStroke(new BasicStroke(1.5f));
-            g2.drawRoundRect(r.x, r.y, r.width, r.height, 20, 20);
-
-            // Icon (bigger)
-            int imgSize = 70; // <-- change this if you want even bigger
-            int imgX = r.x + (r.width - imgSize) / 2;
-            int imgY = r.y + 10;
-
-            if (icon != null) {
-                g2.drawImage(icon, imgX, imgY, imgSize, imgSize, null);
-            }
-
-            // Label
-            g2.setColor(Color.BLACK);
-            g2.setFont(new Font("Arial", Font.BOLD, 13));
-            FontMetrics fm = g2.getFontMetrics();
-            g2.drawString(label,
-                    r.x + (r.width - fm.stringWidth(label)) / 2,
-                    r.y + r.height - 14);
+            UIComponents.drawPrimaryButton(g2, surpriseBtnRect, "Surprise Me!", surprisePressed);
         }
     }
 
-    private void drawButton(Graphics2D g2, Rectangle r, String text, boolean hover, boolean pressed) {
-
-        int radius = 50;
-
-        // Shadow
-        g2.setColor(new Color(0, 0, 0, 40));
-        g2.fillRoundRect(r.x + 2, r.y + 4, r.width, r.height, radius, radius);
-
-        // Base
-        g2.setColor(Color.WHITE);
-        g2.fillRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-
-        // Hover overlay
-        if (hover) {
-            g2.setColor(new Color(255, 0, 0, 18));
-            g2.fillRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-        }
-
-        // Press overlay
-        if (pressed) {
-            g2.setColor(new Color(200, 0, 0, 70));
-            g2.fillRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-        }
-
-        // Border
-        g2.setStroke(new BasicStroke(2f));
-        g2.setColor(new Color(220, 220, 220));
-        g2.drawRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-
-        // Text
-        g2.setColor(Color.BLACK);
-        g2.setFont(new Font("Arial", Font.BOLD, 18));
-        FontMetrics fm = g2.getFontMetrics();
-        g2.drawString(text,
-                r.x + (r.width - fm.stringWidth(text)) / 2,
-                r.y + (r.height + fm.getAscent()) / 2 - 4);
-    }
 }

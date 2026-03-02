@@ -1,7 +1,6 @@
 package surpriseCinema.GUI;
 
 import surpriseCinema.App.Appframe;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -16,8 +15,6 @@ public class Preferences extends JPanel {
     private final Image logo;
 
     private final SelectionModel model = new SelectionModel();
-    private final Color subtleStroke = new Color(242, 242, 242);
-
     private final CardLayout layout = new CardLayout();
     private final JPanel pages = new JPanel(layout);
 
@@ -42,9 +39,7 @@ public class Preferences extends JPanel {
     private void showGenres() { layout.show(pages, GENRES); }
     private void showCountries() { layout.show(pages, COUNTRIES); }
 
-    // ===========================
     // PAGE 1: GENRES
-    // ===========================
     class GenresPanel extends JPanel {
 
         private Rectangle nextBtnRect;
@@ -65,7 +60,6 @@ public class Preferences extends JPanel {
 
                 @Override
                 public void mousePressed(MouseEvent e) {
-
                     for (Card c : cards) {
                         if (c.rect != null && c.rect.contains(e.getPoint())) {
                             model.toggleGenre(c.key);
@@ -107,28 +101,20 @@ public class Preferences extends JPanel {
             int logoY = 0;
             g2.drawImage(logo, logoX, logoY, logoSize, logoSize, null);
 
-            g2.setColor(Color.WHITE);
-            g2.setFont(new Font("Arial", Font.BOLD, 24));
-            String title = "SURPRISE CINEMA";
-            FontMetrics fmT = g2.getFontMetrics();
-            int titleX = (w - fmT.stringWidth(title)) / 2;
             int titleY = logoY + logoSize + 26;
-            g2.drawString(title, titleX, titleY);
+            UIComponents.drawBrandTitle(g2, w, titleY);
 
-            g2.setColor(Color.WHITE);
-            g2.setFont(new Font("Arial", Font.PLAIN, 19));
-            String subtitle = "Preferred movie genre?";
-            FontMetrics fmS = g2.getFontMetrics();
-            int subX = (w - fmS.stringWidth(subtitle)) / 2;
-            int subY = titleY + 43;
-            g2.drawString(subtitle, subX, subY);
+            int x = w / 2, y = titleY + 43;
 
-            int cardsTopY = subY + 34;
+            UIComponents.drawCenteredText(g2, "Preferred movie genre?", x, y,
+                    UIComponents.FONT_SUBTITLE, UIComponents.TEXT_WHITE);
+
+            int cardsTopY = y + 34;
             layoutCardsGrid(cards, w, cardsTopY, 2);
 
             for (Card c : cards) {
                 boolean selected = model.isGenreSelected(c.key);
-                drawCard(g2, c.rect, c.icon, c.label, selected);
+                UIComponents.drawSelectableCard(g2, c.rect, c.icon, c.label, selected);
             }
 
             int btnW = 300;
@@ -137,13 +123,10 @@ public class Preferences extends JPanel {
             int btnY = 600;
 
             nextBtnRect = new Rectangle(btnX, btnY, btnW, btnH);
-            drawButton(g2, nextBtnRect, "Next", btnPressed);
-        }
+            UIComponents.drawPrimaryButton(g2, nextBtnRect, "Next", btnPressed);        }
     }
 
-    // ===========================
     // PAGE 2: COUNTRIES
-    // ===========================
     class CountriesPanel extends JPanel {
 
         private Rectangle saveBtnRect;
@@ -176,15 +159,15 @@ public class Preferences extends JPanel {
                         }
                     }
 
+                    if (backBtnRect != null && backBtnRect.contains(e.getPoint())) {
+                        backPressed = true;
+                        repaint();
+                    }
+
                     if (saveBtnRect != null && saveBtnRect.contains(e.getPoint())) {
                         savePressed = true;
                         repaint();
                         return;
-                    }
-
-                    if (backBtnRect != null && backBtnRect.contains(e.getPoint())) {
-                        backPressed = true;
-                        repaint();
                     }
                 }
 
@@ -197,8 +180,8 @@ public class Preferences extends JPanel {
 
                     if (savePressed && saveBtnRect != null && saveBtnRect.contains(e.getPoint())) {
                         // save logic
+                        app.showPage(Appframe.HOMEPAGE);
                     }
-
                     savePressed = false;
                     backPressed = false;
                     repaint();
@@ -243,7 +226,7 @@ public class Preferences extends JPanel {
 
             for (Card c : cards) {
                 boolean selected = model.isCountrySelected(c.key);
-                drawCard(g2, c.rect, c.icon, c.label, selected);
+                UIComponents.drawSelectableCard(g2, c.rect, c.icon, c.label, selected);
             }
 
             int btnW = 145;
@@ -257,14 +240,12 @@ public class Preferences extends JPanel {
             backBtnRect = new Rectangle(startX, btnY, btnW, btnH);
             saveBtnRect = new Rectangle(startX + btnW + gap, btnY, btnW, btnH);
 
-            drawButton(g2, backBtnRect, "Back", backPressed);
-            drawButton(g2, saveBtnRect, "Save", savePressed);
+            UIComponents.drawPrimaryButton(g2, backBtnRect, "Back", backPressed);
+            UIComponents.drawPrimaryButton(g2, saveBtnRect, "Save", savePressed);
         }
     }
 
-    // ===========================
     // HELPERS
-    // ===========================
     private void layoutCardsGrid(Card[] cards, int panelW, int topY, int cols) {
 
         int cardW = 140;
@@ -286,61 +267,6 @@ public class Preferences extends JPanel {
         }
     }
 
-    private void drawCard(Graphics2D g2, Rectangle r, String icon, String text, boolean selected) {
-
-        g2.setColor(Color.WHITE);
-        g2.fillRoundRect(r.x, r.y, r.width, r.height, 22, 22);
-
-        if (selected) {
-            g2.setColor(new Color(200, 0, 0, 70));
-            g2.fillRoundRect(r.x, r.y, r.width, r.height, 22, 22);
-        }
-
-        g2.setStroke(new BasicStroke(2.3f));
-        g2.setColor(selected ? Color.BLACK : subtleStroke);
-        g2.drawRoundRect(r.x, r.y, r.width, r.height, 22, 22);
-
-        g2.setColor(Color.BLACK);
-        g2.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 26));
-        FontMetrics fi = g2.getFontMetrics();
-        int ix = r.x + (r.width - fi.stringWidth(icon)) / 2;
-        int iy = r.y + 34;
-        g2.drawString(icon, ix, iy);
-
-        if (text != null && !text.isEmpty()) {
-            g2.setFont(new Font("Arial", Font.BOLD, 13));
-            FontMetrics ft = g2.getFontMetrics();
-            int tx = r.x + (r.width - ft.stringWidth(text)) / 2;
-            int ty = r.y + 64;
-            g2.drawString(text, tx, ty);
-        }
-    }
-
-    private void drawButton(Graphics2D g2, Rectangle r, String text, boolean pressed) {
-
-        int radius = 50;
-
-        g2.setColor(Color.WHITE);
-        g2.fillRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-
-        if (pressed) {
-            g2.setColor(new Color(200, 0, 0, 70));
-            g2.fillRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-        }
-
-        g2.setStroke(new BasicStroke(2f));
-        g2.setColor(new Color(220, 220, 220));
-        g2.drawRoundRect(r.x, r.y, r.width, r.height, radius, radius);
-
-        g2.setColor(Color.BLACK);
-        g2.setFont(new Font("Arial", Font.BOLD, 18));
-
-        FontMetrics fm = g2.getFontMetrics();
-        int tx = r.x + (r.width - fm.stringWidth(text)) / 2;
-        int ty = r.y + (r.height + fm.getAscent()) / 2 - 4;
-
-        g2.drawString(text, tx, ty);
-    }
 
     static class Card {
         String label, icon, key;
