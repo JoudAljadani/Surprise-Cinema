@@ -11,11 +11,7 @@ public class MyTicket extends JPanel {
     private final Appframe app;
     private final Image bg;
 
-    // back arrow
-    private Rectangle backRect;
-    private boolean backPressed = false;
-
-    // close button
+    // close button only
     private Rectangle closeBtnRect;
     private boolean closePressed = false;
 
@@ -35,12 +31,6 @@ public class MyTicket extends JPanel {
                 @Override
                 public void mousePressed(MouseEvent e) {
 
-                    if (backRect != null && backRect.contains(e.getPoint())) {
-                        backPressed = true;
-                        repaint();
-                        return;
-                    }
-
                     if (closeBtnRect != null && closeBtnRect.contains(e.getPoint())) {
                         closePressed = true;
                         repaint();
@@ -50,22 +40,16 @@ public class MyTicket extends JPanel {
                 @Override
                 public void mouseReleased(MouseEvent e) {
 
-                    if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
-                        app.showPage(Appframe.HOME_PAGE);
-                    }
-
                     if (closePressed && closeBtnRect != null && closeBtnRect.contains(e.getPoint())) {
                         app.showPage(Appframe.HOME_PAGE);
                     }
 
-                    backPressed = false;
                     closePressed = false;
                     repaint();
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    backPressed = false;
                     closePressed = false;
                     repaint();
                 }
@@ -83,11 +67,6 @@ public class MyTicket extends JPanel {
             int h = getHeight();
 
             g2.drawImage(bg, 0, 0, w, h, null);
-
-            // ===== BACK ARROW (no box) =====
-            int backSize = 36, backX = 18, backY = 32;
-            backRect = new Rectangle(backX, backY, backSize, backSize);
-            UIComponents.drawTextBackArrow(g2, backRect, backPressed);
 
             // ===== TITLE =====
             int titleY = 95, x = w / 2;
@@ -109,18 +88,25 @@ public class MyTicket extends JPanel {
 
             // placeholder text
             UIComponents.drawCenteredText(g2, "Ticket details are here", x,
-                    boxY + boxH / 2 + 6, UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
+                    boxY + boxH / 2 + 6,
+                    UIComponents.FONT_BODY,
+                    UIComponents.TEXT_BLACK);
 
             // ===== MESSAGE =====
             int msgY = boxY + boxH + 70;
-            UIComponents.drawCenteredText(g2,"Lights off, volume up, just enjoy the ride!!!", x,
-                    msgY, new Font("Arial", Font.PLAIN, 18), UIComponents.TEXT_WHITE_SOFT);
+            UIComponents.drawCenteredText(g2,
+                    "Lights off, volume up, just enjoy the ride!!!",
+                    x,
+                    msgY,
+                    new Font("Arial", Font.PLAIN, 18),
+                    UIComponents.TEXT_WHITE_SOFT);
 
             // ===== CLOSE BUTTON =====
             int btnW = 300;
             int btnH = 55;
             int btnX = (w - btnW) / 2;
             int btnY = 600;
+
             closeBtnRect = new Rectangle(btnX, btnY, btnW, btnH);
             UIComponents.drawPrimaryButton(g2, closeBtnRect, "Close", closePressed);
         }
