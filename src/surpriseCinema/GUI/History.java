@@ -10,18 +10,14 @@ public class History extends JPanel {
     private final Appframe app;
     private final Image bg;
 
-    private Rectangle backBtnRect;
     private Rectangle closeBtnRect;
     private Rectangle dashBtnRect;
 
-    private boolean backPressed;
     private boolean closePressed;
     private boolean dashPressed;
 
-
     public History(Appframe app) {
         this.app = app;
-
         bg = new ImageIcon("resources/images/Background.png").getImage();
 
         setLayout(new BorderLayout());
@@ -31,12 +27,10 @@ public class History extends JPanel {
     class HistoryPanel extends JPanel {
 
         HistoryPanel() {
-
             addMouseListener(new MouseAdapter() {
 
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    if (backBtnRect != null && backBtnRect.contains(e.getPoint())) backPressed = true;
                     if (dashBtnRect != null && dashBtnRect.contains(e.getPoint())) dashPressed = true;
                     if (closeBtnRect != null && closeBtnRect.contains(e.getPoint())) closePressed = true;
                     repaint();
@@ -44,10 +38,6 @@ public class History extends JPanel {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-
-                    if (backPressed && backBtnRect != null && backBtnRect.contains(e.getPoint())) {
-                        app.showPage(Appframe.HOME_PAGE);
-                    }
 
                     if (dashPressed && dashBtnRect != null && dashBtnRect.contains(e.getPoint())) {
                         app.showPage(Appframe.DASHBOARD);
@@ -57,7 +47,6 @@ public class History extends JPanel {
                         app.showPage(Appframe.HOME_PAGE);
                     }
 
-                    backPressed = false;
                     dashPressed = false;
                     closePressed = false;
                     repaint();
@@ -65,13 +54,13 @@ public class History extends JPanel {
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                     backPressed = false;
-                     dashPressed = false;
-                     closePressed = false;
-                     repaint();
+                    dashPressed = false;
+                    closePressed = false;
+                    repaint();
                 }
             });
         }
+
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -85,11 +74,6 @@ public class History extends JPanel {
 
             // Background
             g2.drawImage(bg, 0, 0, w, h, null);
-
-            // Back arrow (top-left)
-            int backSize = 36, backX = 18, backY = 32;
-            backBtnRect = new Rectangle(backX, backY, backSize, backSize);
-            UIComponents.drawTextBackArrow(g2, backBtnRect, backPressed);
 
             // Title
             UIComponents.drawCenteredText(g2, "Last Bookings", w / 2, 56,
@@ -118,6 +102,7 @@ public class History extends JPanel {
             UIComponents.drawPrimaryButton(g2, dashBtnRect, "Dashboard", dashPressed);
             UIComponents.drawPrimaryButton(g2, closeBtnRect, "Close", closePressed);
         }
+
         private void drawBigBox(Graphics2D g2, Rectangle r) {
 
             // Card base
@@ -131,10 +116,12 @@ public class History extends JPanel {
 
             // ONLY TEXT inside
             String text = "History Booking details are here";
-            UIComponents.drawCenteredText(g2, text, r.x + r.width / 2,
-                    r.y + r.height / 2, new Font("Arial", Font.BOLD, 16), Color.BLACK
+            UIComponents.drawCenteredText(g2, text,
+                    r.x + r.width / 2,
+                    r.y + r.height / 2,
+                    new Font("Arial", Font.BOLD, 16),
+                    Color.BLACK
             );
         }
     }
-
 }
