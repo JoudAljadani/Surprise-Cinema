@@ -1,6 +1,6 @@
-package surpriseCinema.GUI;
+package GUI;
 
-import surpriseCinema.App.Appframe;
+import App.Appframe;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,11 +51,11 @@ public class MyTicket extends JPanel {
                 public void mouseReleased(MouseEvent e) {
 
                     if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
-                        app.showPage(Appframe.HOMEPAGE);
+                        app.showPage(Appframe.HOME_PAGE);
                     }
 
                     if (closePressed && closeBtnRect != null && closeBtnRect.contains(e.getPoint())) {
-                        app.showPage(Appframe.HOMEPAGE);
+                        app.showPage(Appframe.HOME_PAGE);
                     }
 
                     backPressed = false;

@@ -1,6 +1,6 @@
-package surpriseCinema.GUI;
+package GUI;
 
-import surpriseCinema.App.Appframe;
+import App.Appframe;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -103,6 +103,10 @@ public class SignIn extends JPanel {
         //Button initial state
         boolean pressed = false;
 
+        //Back arrow
+        private Rectangle backRect;
+        private boolean backPressed = false;
+
         SignInPanel() {
 
             //Disable default layout
@@ -120,15 +124,29 @@ public class SignIn extends JPanel {
 
             addMouseListener(new MouseAdapter() {
                 @Override
-               //Check if the mouse press happened inside the Sign In button
+                //Check of the mouse press
                 public void mousePressed(MouseEvent e) {
+                    //BACK
+                    if (backRect != null && backRect.contains(e.getPoint())) {
+                        backPressed = true;
+                        repaint();
+                        return;
+                    }
+                    //Sign In
                     pressed = (buttonRect != null && buttonRect.contains(e.getPoint()));
                     repaint();
                 }
 
                 @Override
-               //Check if the mouse was released inside the Sign In button
+               //Check of the mouse released
                 public void mouseReleased(MouseEvent e) {
+                    //Back arrow
+                    if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
+                        app.showPage(Appframe.SPLASH);
+                    }
+                    backPressed = false;
+
+                    //Sign In
                     boolean validClick = pressed && buttonRect != null && buttonRect.contains(e.getPoint());
                     pressed = false;
                     repaint();
@@ -139,9 +157,15 @@ public class SignIn extends JPanel {
                         String pass = new String(passwordField.getPassword());
 
                         //Show next page
-                        app.showPage(Appframe.HOMEPAGE);
+                        app.showPage(Appframe.HOME_PAGE);
 
                     }
+                }
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    pressed = false;
+                    backPressed = false;
+                    repaint();
                 }
             });
         }
@@ -173,8 +197,15 @@ public class SignIn extends JPanel {
             //Get panel width
             int w = getWidth();
 
+            //Background
             g2.drawImage(bg, 0, 0, getWidth(), getHeight(), null);
 
+            //Back arrow
+            int backSize = 36, backX = 18, backY = 32;
+            backRect = new Rectangle(backX, backY, backSize, backSize);
+            UIComponents.drawTextBackArrow(g2, backRect, backPressed);
+
+            //Logo
             int logoSize = 200;
             int logoX = (w - logoSize) / 2;
             int logoY = 0;

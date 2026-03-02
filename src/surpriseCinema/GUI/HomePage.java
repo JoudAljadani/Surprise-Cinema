@@ -1,6 +1,6 @@
-package surpriseCinema.GUI;
+package GUI;
 
-import surpriseCinema.App.Appframe;
+import App.Appframe;
 
 import javax.swing.*;
 import java.awt.*;
@@ -76,9 +76,9 @@ public class HomePage extends JPanel {
                     Target releasedTarget = getTargetAt(e.getPoint());
                     if (pressedTarget != Target.NONE && pressedTarget == releasedTarget) {
                         if (pressedTarget == Target.TICKET)
-                            app.showPage(Appframe.MYTICKET);
+                            app.showPage(Appframe.MY_TICKET);
                         else if (pressedTarget == Target.PREFS)
-                            app.showPage(Appframe.PREFERENCES);
+                            app.showPage(Appframe.PREFERENCES_GENRES);
                         else if (pressedTarget == Target.HISTORY)
                             app.showPage(Appframe.HISTORY);
                         else if (pressedTarget == Target.RATE)

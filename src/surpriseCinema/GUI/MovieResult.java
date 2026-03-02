@@ -1,6 +1,6 @@
-package surpriseCinema.GUI;
+package GUI;
 
-import surpriseCinema.App.Appframe;
+import App.Appframe;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -97,7 +97,7 @@ public class MovieResult extends JPanel {
 
                     // BACK -> Home
                     if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
-                        app.showPage(Appframe.HOMEPAGE); // غيّريها لاسم ثابت الهوم عندك
+                        app.showPage(Appframe.HOME_PAGE);
                     }
                     backPressed = false;
 

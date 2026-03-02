@@ -1,6 +1,6 @@
-package surpriseCinema.GUI;
+package GUI;
 
-import surpriseCinema.App.Appframe;
+import App.Appframe;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -12,9 +12,12 @@ public class History extends JPanel {
 
     private Rectangle backBtnRect;
     private Rectangle closeBtnRect;
+    private Rectangle dashBtnRect;
 
     private boolean backPressed;
     private boolean closePressed;
+    private boolean dashPressed;
+
 
     public History(Appframe app) {
         this.app = app;
@@ -34,6 +37,7 @@ public class History extends JPanel {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     if (backBtnRect != null && backBtnRect.contains(e.getPoint())) backPressed = true;
+                    if (dashBtnRect != null && dashBtnRect.contains(e.getPoint())) dashPressed = true;
                     if (closeBtnRect != null && closeBtnRect.contains(e.getPoint())) closePressed = true;
                     repaint();
                 }
@@ -42,14 +46,19 @@ public class History extends JPanel {
                 public void mouseReleased(MouseEvent e) {
 
                     if (backPressed && backBtnRect != null && backBtnRect.contains(e.getPoint())) {
-                        app.showPage(Appframe.HOMEPAGE);
+                        app.showPage(Appframe.HOME_PAGE);
+                    }
+
+                    if (dashPressed && dashBtnRect != null && dashBtnRect.contains(e.getPoint())) {
+                        app.showPage(Appframe.DASHBOARD);
                     }
 
                     if (closePressed && closeBtnRect != null && closeBtnRect.contains(e.getPoint())) {
-                        app.showPage(Appframe.HOMEPAGE);
+                        app.showPage(Appframe.HOME_PAGE);
                     }
 
                     backPressed = false;
+                    dashPressed = false;
                     closePressed = false;
                     repaint();
                 }
@@ -57,12 +66,12 @@ public class History extends JPanel {
                 @Override
                 public void mouseExited(MouseEvent e) {
                      backPressed = false;
+                     dashPressed = false;
                      closePressed = false;
-                    repaint();
+                     repaint();
                 }
             });
         }
-
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -95,14 +104,20 @@ public class History extends JPanel {
             Rectangle big = new Rectangle(cardX, cardY, cardW, cardH);
             drawBigBox(g2, big);
 
-            // Close button
-            int btnW = 300, btnH = 55;
-            int btnX = (w - btnW) / 2;
+            // ===== BUTTONS (BOTTOM) =====
+            int btnW = 145, btnH = 55, gap = 14;
+            int total = btnW * 2 + gap;
+            int startX = (w - total) / 2;
             int btnY = h - 90;
-            closeBtnRect = new Rectangle(btnX, btnY, btnW, btnH);
+
+            // Left: Dashboard
+            dashBtnRect = new Rectangle(startX, btnY, btnW, btnH);
+            // Right: Close
+            closeBtnRect = new Rectangle(startX + btnW + gap, btnY, btnW, btnH);
+
+            UIComponents.drawPrimaryButton(g2, dashBtnRect, "Dashboard", dashPressed);
             UIComponents.drawPrimaryButton(g2, closeBtnRect, "Close", closePressed);
         }
-
         private void drawBigBox(Graphics2D g2, Rectangle r) {
 
             // Card base

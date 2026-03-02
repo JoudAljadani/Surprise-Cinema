@@ -1,6 +1,6 @@
-package surpriseCinema.GUI;
+package GUI;
 
-import surpriseCinema.App.Appframe;
+import App.Appframe;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -131,6 +131,10 @@ public class SignUp extends JPanel {
         //Button initial state
         boolean pressed = false;
 
+        //Back arrow
+        private Rectangle backRect;
+        private boolean backPressed = false;
+
         SignUpPanel() {
             //Disable default layout
             setLayout(null);
@@ -150,8 +154,15 @@ public class SignUp extends JPanel {
 
             addMouseListener(new MouseAdapter() {
                 @Override
-                //Check if the mouse press happened inside the Sign Up button
+                //Check of the mouse press
                 public void mousePressed(MouseEvent e) {
+                    //Back arrow
+                    if (backRect != null && backRect.contains(e.getPoint())) {
+                        backPressed = true;
+                        repaint();
+                        return;
+                    }
+                    //Sign Up
                     pressed = (buttonRect != null && buttonRect.contains(e.getPoint()));
                     repaint();
                 }
@@ -159,6 +170,13 @@ public class SignUp extends JPanel {
                 @Override
                 //Check if the mouse press and released was inside the Sign Up button
                 public void mouseReleased(MouseEvent e) {
+                    //Back arrow
+                    if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
+                        app.showPage(Appframe.SPLASH);
+                    }
+                    backPressed = false;
+
+                    //Sign Up
                     boolean validClick = pressed && buttonRect != null && buttonRect.contains(e.getPoint());
                     pressed = false;
                     repaint();
@@ -172,8 +190,14 @@ public class SignUp extends JPanel {
                         String gender = (String) genderField.getSelectedItem();
 
                         //Show next page
-                        app.showPage(Appframe.PREFERENCES);
+                        app.showPage(Appframe.PREFERENCES_GENRES);
                     }
+                }
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    pressed = false;
+                    backPressed = false;
+                    repaint();
                 }
             });
         }
@@ -207,8 +231,15 @@ public class SignUp extends JPanel {
             //Get panel width
             int w = getWidth();
 
+            //Background
             g2.drawImage(bg, 0, 0, getWidth(), getHeight(), null);
 
+            //Back arrow
+            int backSize = 36, backX = 18, backY = 32;
+            backRect = new Rectangle(backX, backY, backSize, backSize);
+            UIComponents.drawTextBackArrow(g2, backRect, backPressed);
+
+            //Logo
             int logoSize = 200;
             int logoX = (w - logoSize) / 2;
             int logoY = 0;

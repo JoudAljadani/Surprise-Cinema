@@ -1,6 +1,6 @@
-package surpriseCinema.GUI;
+package GUI;
 
-import surpriseCinema.App.Appframe;
+import App.Appframe;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,8 +45,7 @@ public class TicketSuccess extends JPanel {
                 public void mouseReleased(MouseEvent e) {
 
                     if (backPressed && backBtnRect != null && backBtnRect.contains(e.getPoint())) {
-                        // TODO: رجعيه للهوم لما تسوينها
-                        app.showPage(Appframe.HOMEPAGE);
+                        app.showPage(Appframe.HOME_PAGE);
 
                         // مؤقتًا تقدري ترجعينه لأي صفحة موجودة:
                         // app.showPage(Appframe.SPLASH);

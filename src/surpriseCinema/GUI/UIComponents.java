@@ -1,4 +1,4 @@
-package surpriseCinema.GUI;
+package GUI;
 
 import java.awt.*;
 
