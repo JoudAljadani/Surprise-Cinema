@@ -68,6 +68,31 @@ public class PreferencesGenres extends JPanel {
 
                     //if next, navigate to preferences genres page
                     if (nextPressed && nextBtnRect != null && nextBtnRect.contains(e.getPoint())) {
+
+                        // Force at least one selection
+                        if (selectedGenres.isEmpty()) {
+
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "Please select at least one genre"
+                            );
+
+                            nextPressed = false;
+                            repaint();
+                            return;
+                        }
+
+                        DatabaseQueries.deleteUserGenres(Appframe.currentUser.getEmail());
+                        // Save genres
+                        for (String genre : selectedGenres) {
+
+                            DatabaseQueries.addUserGenre(
+                                    Appframe.currentUser.getEmail(),
+                                    genre
+                            );
+                        }
+
+                        // Go to next page
                         app.showPage(Appframe.PREFERENCES_COUNTRIES);
                     }
                     nextPressed = false;

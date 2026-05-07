@@ -83,6 +83,22 @@ public class PreferencesCountries extends JPanel {
 
                     //if save, navigate to home page
                     if (savePressed && saveBtnRect != null && saveBtnRect.contains(e.getPoint())) {
+                        if (selectedCountries.isEmpty()) {
+                            JOptionPane.showMessageDialog(null, "Please select at least one country");
+                            savePressed = false;
+                            repaint();
+                            return;
+                        }
+
+                        DatabaseQueries.deleteUserCountries(Appframe.currentUser.getEmail());
+
+                        for (String country : selectedCountries) {
+                            DatabaseQueries.addUserCountry(
+                                    Appframe.currentUser.getEmail(),
+                                    country
+                            );
+                        }
+
                         app.showPage(Appframe.HOME_PAGE);
                     }
                     savePressed = false;

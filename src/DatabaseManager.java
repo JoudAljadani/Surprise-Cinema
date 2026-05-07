@@ -73,6 +73,22 @@ public class DatabaseManager {
                             "USER_EMAIL VARCHAR(100))"
             );
             System.out.println("TICKETS table created successfully");
+
+            st.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS USER_GENRES (" +
+                            "ID INT PRIMARY KEY AUTO_INCREMENT, " +
+                            "USER_EMAIL VARCHAR(100), " +
+                            "GENRE VARCHAR(50))"
+            );
+            System.out.println("USER_GENRES table created successfully");
+
+            st.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS USER_COUNTRIES (" +
+                            "ID INT PRIMARY KEY AUTO_INCREMENT, " +
+                            "USER_EMAIL VARCHAR(100), " +
+                            "COUNTRY VARCHAR(50))"
+            );
+            System.out.println("USER_COUNTRIES table created successfully");
             con.close();
         }catch (SQLException e) {
             System.out.println("Table creation error!");

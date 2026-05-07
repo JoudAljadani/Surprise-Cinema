@@ -190,6 +190,7 @@ public class SignUp extends JPanel {
                             User user = new User(name, email, pass, ageNumber, gender);
                             //Save user in database
                             DatabaseQueries.addUser(user);
+                            Appframe.currentUser = user;
                             JOptionPane.showMessageDialog(null, "Account created successfully");
                             //Show next page
                             app.showPage(Appframe.PREFERENCES_GENRES);
