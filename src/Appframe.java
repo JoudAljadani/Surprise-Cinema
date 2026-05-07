@@ -1,10 +1,8 @@
-package App;
-
-import GUI.*;
 
 import javax.swing.*;
 import java.awt.*;
 
+//This class is to manage all pages
 public class Appframe extends JFrame {
 
     //Card names for navigation between pages
@@ -22,7 +20,9 @@ public class Appframe extends JFrame {
     public static final String RATE = "Rate";
     public static final String DASHBOARD = "Dashboard";
 
+    //CardLayout is responsible for switching between pages
     private final CardLayout layout = new CardLayout();
+    //Root panel have all pages
     private final JPanel root = new JPanel(layout);
 
     public Appframe() {
@@ -50,10 +50,13 @@ public class Appframe extends JFrame {
 
         //Use root panel as the main container of this frame
         setContentPane(root);
+        //Start the program with splash page
         showPage(SPLASH);
     }
 
+    //This is to navigate between pages each with its specific name
     public void showPage(String page) {
+
             switch (page) {
                 case SPLASH:
                     setTitle("Surprise Cinema");
@@ -95,7 +98,7 @@ public class Appframe extends JFrame {
                     setTitle("Dashboard");
                     break;
             }
-        //Display this page using CardLayout
+            //Display this page using CardLayout
             layout.show(root, page);
         }
 

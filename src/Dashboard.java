@@ -1,34 +1,36 @@
-package GUI;
-
-import App.Appframe;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
 public class Dashboard extends JPanel {
 
-    private final Appframe app;
-    private final Image bg;
+    //Variables
+    private final Appframe app;//To navigate between pages
+    private final Image bg;//Background image
 
+    //Clickable buttons
     private Rectangle backBtnRect;
     private Rectangle closeBtnRect;
 
     private boolean backPressed;
     private boolean closePressed;
 
-    // Demo data (Genres + counts)
+    //Demo data (Genres + counts) for GUI only
     private final String[] genres = {"Fantasy", "Action", "Drama", "Horror", "Comedy"};
     private final int[] genreCounts = {6, 9, 4, 2, 3};
 
-    // Demo data (Countries + counts)
+    //Demo data (Countries + counts) for GUI only
     private final String[] countries = {"USA", "UK", "Turkey", "Korea", "Italy"};
     private final int[] countryCounts = {8, 5, 4, 3, 2};
 
+    //------------------------------------------------------------
+
     public Dashboard(Appframe app) {
         this.app = app;
+        //Background image
         bg = new ImageIcon("resources/images/Background.png").getImage();
 
+        //Set layout and add main panel to center
         setLayout(new BorderLayout());
         add(new DashPanel(), BorderLayout.CENTER);
     }
@@ -40,7 +42,9 @@ public class Dashboard extends JPanel {
 
                 @Override
                 public void mousePressed(MouseEvent e) {
+                    //if back button is pressed
                     if (backBtnRect != null && backBtnRect.contains(e.getPoint())) backPressed = true;
+                    //if close button is pressed
                     if (closeBtnRect != null && closeBtnRect.contains(e.getPoint())) closePressed = true;
                     repaint();
                 }
@@ -48,14 +52,15 @@ public class Dashboard extends JPanel {
                 @Override
                 public void mouseReleased(MouseEvent e) {
 
+                    //if back, navigate to history page
                     if (backPressed && backBtnRect != null && backBtnRect.contains(e.getPoint())) {
                         app.showPage(Appframe.HISTORY);
                     }
 
+                    //if close, navigate to homepage
                     if (closePressed && closeBtnRect != null && closeBtnRect.contains(e.getPoint())) {
                         app.showPage(Appframe.HOME_PAGE);
                     }
-
                     backPressed = false;
                     closePressed = false;
                     repaint();
@@ -71,41 +76,39 @@ public class Dashboard extends JPanel {
         }
 
         @Override
+        //Draw UI elements
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
 
             Graphics2D g2 = (Graphics2D) g;
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-            int w = getWidth();
-            int h = getHeight();
+            //Make corner smoother
+           g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            // Background
+            //Get panel width and height
+            int w = getWidth(), h = getHeight();
+
+            //Background
             g2.drawImage(bg, 0, 0, w, h, null);
 
-            // Back arrow (UIComponents)
+            //Back arrow
             int backSize = 36, backX = 18, backY = 32;
             backBtnRect = new Rectangle(backX, backY, backSize, backSize);
             UIComponents.drawTextBackArrow(g2, backBtnRect, backPressed);
 
-            // Title (UIComponents)
+            //Title
             UIComponents.drawCenteredText(g2, "Dashboard", w / 2, 56,
                     UIComponents.FONT_TITLE, UIComponents.TEXT_WHITE);
 
-            // ===== BIG CARD =====
-            int cardX = 28;
-            int cardY = 120;
-            int cardW = w - 56;
-            int cardH = 390;
-
+            //Card box
+            int cardX = 28, cardY = 120, cardW = w - 56, cardH = 390;
             drawCard(g2, new Rectangle(cardX, cardY, cardW, cardH));
 
-            // ===== CHARTS AREA INSIDE CARD =====
+            //Charts in the card
             int innerX = cardX + 18;
             int innerW = cardW - 36;
 
-            // Section 1: Genres
+            //First genres
             int sec1TitleY = cardY + 38;
             g2.setFont(new Font("Arial", Font.BOLD, 16));
             g2.setColor(Color.BLACK);
@@ -116,13 +119,13 @@ public class Dashboard extends JPanel {
             int chart1H = 120;
             drawBarChart(g2, chart1X, chart1Y, innerW, chart1H, genres, genreCounts);
 
-            // Divider line
-            int divY = chart1Y + chart1H + 22;
+            //Line between sections
+            int divY = chart1Y + chart1H + 20;
             g2.setColor(new Color(235, 235, 235));
             g2.setStroke(new BasicStroke(1.4f));
             g2.drawLine(innerX, divY, innerX + innerW, divY);
 
-            // Section 2: Countries
+            //Second countries
             int sec2TitleY = divY + 34;
             g2.setFont(new Font("Arial", Font.BOLD, 16));
             g2.setColor(Color.BLACK);
@@ -133,30 +136,22 @@ public class Dashboard extends JPanel {
             int chart2H = 120;
             drawBarChart(g2, chart2X, chart2Y, innerW, chart2H, countries, countryCounts);
 
-            // Close button (UIComponents)
-            int btnW = 300, btnH = 55;
-            int btnX = (w - btnW) / 2;
-            int btnY = h - 90;
+            //Close button
+            int btnW = 300, btnH = 55, btnX = (w - btnW) / 2, btnY = h - 90;
             closeBtnRect = new Rectangle(btnX, btnY, btnW, btnH);
-            UIComponents.drawPrimaryButton(g2, closeBtnRect, "Close", closePressed);
+            UIComponents.drawButton(g2, closeBtnRect, "Close", closePressed);
         }
     }
 
+    //Draw cards
     private void drawCard(Graphics2D g2, Rectangle r) {
-        // Shadow
-        g2.setColor(new Color(0, 0, 0, 45));
-        g2.fillRoundRect(r.x + 3, r.y + 5, r.width, r.height, 24, 24);
-
-        // Base
+        //Base card
         g2.setColor(Color.WHITE);
         g2.fillRoundRect(r.x, r.y, r.width, r.height, 24, 24);
 
-        // Border
-        g2.setColor(new Color(220, 220, 220));
-        g2.setStroke(new BasicStroke(1.5f));
-        g2.drawRoundRect(r.x, r.y, r.width, r.height, 24, 24);
     }
 
+    //Draw barCharts
     private void drawBarChart(Graphics2D g2, int x, int y, int w, int h, String[] labels, int[] values) {
         if (labels == null || values == null || labels.length == 0) return;
 
@@ -172,18 +167,18 @@ public class Dashboard extends JPanel {
             int bx = x + i * (barW + gap);
             int by = y + (h - barH);
 
-            // Bar (same red theme)
+            //Bar
             g2.setColor(new Color(255, 60, 60, 180));
             g2.fillRoundRect(bx, by, barW, barH, 12, 12);
 
-            // Value
+            //Value
             g2.setColor(new Color(80, 80, 80));
             g2.setFont(new Font("Arial", Font.BOLD, 12));
             String val = String.valueOf(values[i]);
             FontMetrics fmV = g2.getFontMetrics();
             g2.drawString(val, bx + (barW - fmV.stringWidth(val)) / 2, by - 6);
 
-            // Label
+            //Lable
             g2.setColor(new Color(120, 120, 120));
             g2.setFont(new Font("Arial", Font.PLAIN, 11));
             String lab = labels[i];

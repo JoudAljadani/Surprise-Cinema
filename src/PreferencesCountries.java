@@ -1,28 +1,22 @@
-package GUI;
-
-import App.Appframe;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class PreferencesCountries extends JPanel {
 
-    private final Appframe app;
-    private final Image bg;
-    private final Image logo;
+    //Variables
+    private final Appframe app;//To navigate between pages
+    private final Image bg;//Background image
+    private final Image logo;//Logo image
 
+    //Clickable buttons
     private Rectangle saveBtnRect;
+    private boolean savePressed = false;
 
-    // Back arrow (top-left)
     private Rectangle backArrowRect;
     private boolean backArrowPressed = false;
 
-    private boolean savePressed = false;
-
-    // ONLY UI state (for colors)
     private final Set<String> selectedCountries = new HashSet<>();
 
     private final Card[] cards = new Card[]{
@@ -34,12 +28,17 @@ public class PreferencesCountries extends JPanel {
             new Card("Spain", "🇪🇸", "SPAIN")
     };
 
+//------------------------------------------------------------
+
     public PreferencesCountries(Appframe app) {
         this.app = app;
 
+        //Background
         bg = new ImageIcon("resources/images/Background.png").getImage();
+        //Logo
         logo = new ImageIcon("resources/images/Logo.png").getImage();
 
+        //Set layout and add main panel to center
         setLayout(new BorderLayout());
         add(new Panel(), BorderLayout.CENTER);
     }
@@ -51,14 +50,14 @@ public class PreferencesCountries extends JPanel {
                 @Override
                 public void mousePressed(MouseEvent e) {
 
-                    // BACK ARROW
+                    //if back arrow is pressed
                     if (backArrowRect != null && backArrowRect.contains(e.getPoint())) {
                         backArrowPressed = true;
                         repaint();
                         return;
                     }
 
-                    // cards toggle (for color only)
+                    //if cards are pressed
                     for (Card c : cards) {
                         if (c.rect != null && c.rect.contains(e.getPoint())) {
                             if (!selectedCountries.add(c.key)) selectedCountries.remove(c.key);
@@ -67,7 +66,7 @@ public class PreferencesCountries extends JPanel {
                         }
                     }
 
-                    // save
+                    //if save button is pressed
                     if (saveBtnRect != null && saveBtnRect.contains(e.getPoint())) {
                         savePressed = true;
                         repaint();
@@ -77,16 +76,15 @@ public class PreferencesCountries extends JPanel {
                 @Override
                 public void mouseReleased(MouseEvent e) {
 
-                    // BACK ARROW ACTION
+                    //if back, navigate to preferences genres page
                     if (backArrowPressed && backArrowRect != null && backArrowRect.contains(e.getPoint())) {
                         app.showPage(Appframe.PREFERENCES_GENRES);
                     }
 
-                    // SAVE ACTION
+                    //if save, navigate to home page
                     if (savePressed && saveBtnRect != null && saveBtnRect.contains(e.getPoint())) {
-                        app.showPage(Appframe.HOME_PAGE); // ✅ (كان عندك HOME_PAGE)
+                        app.showPage(Appframe.HOME_PAGE);
                     }
-
                     savePressed = false;
                     backArrowPressed = false;
                     repaint();
@@ -102,59 +100,57 @@ public class PreferencesCountries extends JPanel {
         }
 
         @Override
+        //Draw UI elements
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
 
             Graphics2D g2 = (Graphics2D) g;
+            //Make corner smoother
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            int w = getWidth();
-            int h = getHeight();
+            //Get panel width and height
+            int w = getWidth(), h = getHeight();
 
-            // background
+            //Background
             g2.drawImage(bg, 0, 0, w, h, null);
 
-            // BACK ARROW (Top Left) using UIComponents
+            //Back arrow
             int backSize = 36, backX = 18, backY = 32;
             backArrowRect = new Rectangle(backX, backY, backSize, backSize);
             UIComponents.drawTextBackArrow(g2, backArrowRect, backArrowPressed);
 
-            // logo
+            //Logo
             int logoSize = 200;
             int logoX = (w - logoSize) / 2;
             int logoY = 0;
             g2.drawImage(logo, logoX, logoY, logoSize, logoSize, null);
 
-            // brand title
+            //Title
             int titleY = logoY + logoSize + 26;
-            UIComponents.drawBrandTitle(g2, w, titleY);
+            UIComponents.drawTitle(g2, w, titleY);
 
-            // subtitle/question
+            //Question
             int cx = w / 2;
             int qY = titleY + 43;
             UIComponents.drawCenteredText(g2, "Preferred movie country?", cx, qY,
                     UIComponents.FONT_SUBTITLE, UIComponents.TEXT_WHITE);
 
-            // cards
+            //Cards (countries)
             int cardsTopY = qY + 34;
             layoutCardsGrid(cards, w, cardsTopY, 2);
-
             for (Card c : cards) {
                 boolean selected = selectedCountries.contains(c.key);
                 UIComponents.drawSelectableCard(g2, c.rect, c.icon, c.label, selected);
             }
 
-            // SAVE button only
-            int btnW = 300, btnH = 55;
-            int btnX = (w - btnW) / 2;
-            int btnY = 600;
-
+            //Save button
+            int btnW = 300, btnH = 55, btnX = (w - btnW) / 2, btnY = 600;
             saveBtnRect = new Rectangle(btnX, btnY, btnW, btnH);
-            UIComponents.drawPrimaryButton(g2, saveBtnRect, "Save", savePressed);
+            UIComponents.drawButton(g2, saveBtnRect, "Save", savePressed);
         }
     }
 
-    // helpers
+    //Lays out the card rectangles in a grid
     private void layoutCardsGrid(Card[] cards, int panelW, int topY, int cols) {
         int cardW = 140, cardH = 82;
         int gapX = 16, gapY = 14;
@@ -173,6 +169,7 @@ public class PreferencesCountries extends JPanel {
         }
     }
 
+    //Data class for each country
     static class Card {
         String label, icon, key;
         Rectangle rect;

@@ -1,6 +1,3 @@
-package GUI;
-
-import App.Appframe;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -8,11 +5,18 @@ import java.awt.event.*;
 
 public class SignIn extends JPanel {
 
-    //Used to navigate between pages
-    private final Appframe app;
+    //Variables
+    private final Appframe app;//To navigate between pages
+    private final Image bg;//Background image
+    private final Image logo;//Logo image
 
-    private final Image bg;
-    private final Image logo;
+    Rectangle buttonRect;//Place of the button
+    boolean pressed = false;//Button initial state
+
+    private Rectangle backRect;//Back arrow
+    private boolean backPressed = false;//Button initial state
+
+    //------------------------------------------------------------
 
     public SignIn(Appframe app) {
         this.app = app;
@@ -31,8 +35,8 @@ public class SignIn extends JPanel {
         //Create object and casting to 2D
         Graphics2D g2 = (Graphics2D) g.create();
 
-        int w = c.getWidth();
-        int h = c.getHeight();
+        //Get panel width and height
+        int w = c.getWidth(), h = c.getHeight();
 
         g2.setColor(Color.WHITE);
         g2.fillRoundRect(0, 0, w - 1, h - 1, radius, radius);
@@ -67,7 +71,6 @@ public class SignIn extends JPanel {
             //Call the function to draw the rectangle
             paintRoundedBackground(g, this, radius);
 
-            //Draw default content (text and caret) by calling the super class
             super.paintComponent(g);
         }
     }
@@ -86,7 +89,6 @@ public class SignIn extends JPanel {
             //Call the function to draw the rectangle
             paintRoundedBackground(g, this, radius);
 
-            //Draw default content (text and caret) by calling the super class
             super.paintComponent(g);
         }
     }
@@ -98,69 +100,73 @@ public class SignIn extends JPanel {
         private final RoundedEmailField emailField = new RoundedEmailField(FIELD_RADIUS);
         private final RoundedPasswordField passwordField = new RoundedPasswordField(FIELD_RADIUS);
 
-        //Place of the button
-        Rectangle buttonRect;
-        //Button initial state
-        boolean pressed = false;
-
-        //Back arrow
-        private Rectangle backRect;
-        private boolean backPressed = false;
-
         SignInPanel() {
 
             //Disable default layout
             setLayout(null);
 
             //The place and size of the both fields
-            int w = 260;
-            int h = 42;
-            int gap = 33;
-            int y = 300;
-            int x = 57;
+            int w = 260, h = 42, gap = 33, y = 300, x = 57;
 
             placeField("Email", emailField, x, y, w, h);
             placeField("Password", passwordField, x, y + (h + gap), w, h);
 
             addMouseListener(new MouseAdapter() {
                 @Override
-                //Check of the mouse press
                 public void mousePressed(MouseEvent e) {
-                    //BACK
+
+                    //if back arrow is pressed
                     if (backRect != null && backRect.contains(e.getPoint())) {
                         backPressed = true;
                         repaint();
                         return;
                     }
-                    //Sign In
-                    pressed = (buttonRect != null && buttonRect.contains(e.getPoint()));
-                    repaint();
+
+                    //if signIn button is pressed
+                    if (buttonRect != null && buttonRect.contains(e.getPoint())) {
+                        pressed = true;
+                        repaint();
+                    }
                 }
 
                 @Override
-               //Check of the mouse released
                 public void mouseReleased(MouseEvent e) {
-                    //Back arrow
+                    //Navigate to Splash page
                     if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
                         app.showPage(Appframe.SPLASH);
                     }
                     backPressed = false;
 
                     //Sign In
-                    boolean validClick = pressed && buttonRect != null && buttonRect.contains(e.getPoint());
-                    pressed = false;
-                    repaint();
+                    if (pressed && buttonRect != null && buttonRect.contains(e.getPoint())) {
+                        //String email = emailField.getText().trim();
+                        //String pass = new String(passwordField.getPassword());
+                        //Navigate to next page (homepage)
+                        //app.showPage(Appframe.HOME_PAGE);
 
-                    //If a valid click = true, perform Sign In action
-                    if (validClick) {
+                        //----------------------------------------------------------------------------
+                        //-----------------------SignIn Implementation HERE---------------------------
+                        //----------------------------------------------------------------------------
                         String email = emailField.getText().trim();
                         String pass = new String(passwordField.getPassword());
 
-                        //Show next page
-                        app.showPage(Appframe.HOME_PAGE);
+                        if (email.isEmpty() || pass.isEmpty()) {
+                            JOptionPane.showMessageDialog(null, "Please enter email and password");
+                            return;
+                        }
 
+                        boolean validUser = UserQueries.loginUser(email, pass);
+
+                        if (validUser) {
+                            app.showPage(Appframe.HOME_PAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Wrong email or password");
+                        }
                     }
+                    pressed = false;
+                    repaint();
                 }
+
                 @Override
                 public void mouseExited(MouseEvent e) {
                     pressed = false;
@@ -170,7 +176,7 @@ public class SignIn extends JPanel {
             });
         }
 
-        //Placed labels and the fields and display it on the screen
+        //Placed labels, fields and display it on the screen
         private void placeField(String label, JComponent comp, int x, int y, int w, int h) {
             JLabel l = new JLabel(label);
             l.setFont(new Font("Arial", Font.BOLD, 12));
@@ -185,7 +191,7 @@ public class SignIn extends JPanel {
         }
 
         @Override
-        //Draw the logo, background and setTitle and display on the screen
+        //Draw UI elements
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
 
@@ -207,23 +213,17 @@ public class SignIn extends JPanel {
 
             //Logo
             int logoSize = 200;
-            int logoX = (w - logoSize) / 2;
-            int logoY = 0;
+            int logoX = (w - logoSize) / 2, logoY = 0;
             g2.drawImage(logo, logoX, logoY, logoSize, logoSize, null);
 
+            //Title
             int titleY = logoY + logoSize + 26;
-            UIComponents.drawBrandTitle(g2, w, titleY);
+            UIComponents.drawTitle(g2, w, titleY);
 
-            //Set SignIn button settings and call the drawSignInButton function
-            int btnW = 300;
-            int btnH = 55;
-            int btnX = (w - btnW) / 2;
-            int btnY = 600;
-
+            //SignIn button
+            int btnW = 300, btnH = 55, btnX = (w - btnW) / 2, btnY = 600;
             buttonRect = new Rectangle(btnX, btnY, btnW, btnH);
-            UIComponents.drawPrimaryButton(g2, buttonRect, "Sign In", pressed);
+            UIComponents.drawButton(g2, buttonRect, "Sign In", pressed);
         }
-
-
     }
 }

@@ -1,32 +1,30 @@
-package GUI;
-
-import App.Appframe;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
 public class TicketSuccess extends JPanel {
 
-    private final Appframe app;
-    private final Image bg;
+    //Variables
+    private final Appframe app;//To navigate between pages
+    private final Image bg;//Background image
 
-    // clickable areas
+    //Clickable button
     private Rectangle backBtnRect;
     private boolean backPressed = false;
+
+//------------------------------------------------------------
 
     public TicketSuccess(Appframe app) {
         this.app = app;
 
+        //Background
         bg = new ImageIcon("resources/images/Background.png").getImage();
 
+        //Set layout and add main panel to center
         setLayout(new BorderLayout());
         add(new TicketPanel(), BorderLayout.CENTER);
     }
 
-    // ===========================
-    // MAIN PANEL
-    // ===========================
     class TicketPanel extends JPanel {
 
         TicketPanel() {
@@ -35,6 +33,7 @@ public class TicketSuccess extends JPanel {
 
                 @Override
                 public void mousePressed(MouseEvent e) {
+                    //if back to home is pressed
                     if (backBtnRect != null && backBtnRect.contains(e.getPoint())) {
                         backPressed = true;
                         repaint();
@@ -43,14 +42,10 @@ public class TicketSuccess extends JPanel {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-
+                    //if back, navigate to home page
                     if (backPressed && backBtnRect != null && backBtnRect.contains(e.getPoint())) {
                         app.showPage(Appframe.HOME_PAGE);
-
-                        // مؤقتًا تقدري ترجعينه لأي صفحة موجودة:
-                        // app.showPage(Appframe.SPLASH);
                     }
-
                     backPressed = false;
                     repaint();
                 }
@@ -64,53 +59,42 @@ public class TicketSuccess extends JPanel {
         }
 
         @Override
-        protected void paintComponent(Graphics g) {
+        protected void paintComponent(Graphics g) {//this is to draw UI elements
             super.paintComponent(g);
 
             Graphics2D g2 = (Graphics2D) g;
+            //Make corner smoother
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            int w = getWidth();
-            int h = getHeight();
+            //Get panel width and height
+            int w = getWidth(), h = getHeight();
 
-            g2.drawImage(bg, 0, 0, w, h, null);
+            g2.drawImage(bg, 0, 0, w, h, null);//background
 
-            // ===== PAGE TITLE =====
+            //Title
             int titleY = 95, x = w / 2;
             UIComponents.drawCenteredText(g2,"Your Ticket is Ready!", x, titleY,
                     UIComponents.FONT_TITLE, UIComponents.TEXT_WHITE);
 
-            // ===== BIG TICKET BOX =====
-            int boxW = 260;
-            int boxH = 300;
-            int boxX = (w - boxW) / 2;
-            int boxY = titleY + 35;
-
+            //Ticket box
+            int boxW = 260, boxH = 300, boxX = (w - boxW) / 2, boxY = titleY + 35;
             g2.setColor(Color.WHITE);
             g2.fillRoundRect(boxX, boxY, boxW, boxH, 22, 22);
 
-            g2.setStroke(new BasicStroke(2f));
-            g2.setColor(new Color(220, 220, 220));
-            g2.drawRoundRect(boxX, boxY, boxW, boxH, 22, 22);
 
-            // placeholder text inside ticket box
+            //Text in the ticket box
             UIComponents.drawCenteredText(g2,"Ticket details are here", x,
                     boxY + boxH / 2 + 6, UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
 
-
-            // ===== ENJOY MESSAGE =====
+            //Enjoying message
             int msgY = boxY + boxH + 70;
             UIComponents.drawCenteredText(g2,"Lights off, volume up, just enjoy the ride!!!", x,
                     msgY, new Font("Arial", Font.PLAIN, 18), UIComponents.TEXT_WHITE_SOFT);
 
-            // ===== BACK BUTTON =====
-            int btnW = 300;
-            int btnH = 55;
-            int btnX = (w - btnW) / 2;
-            int btnY = 600;
-
+            //Back to homepage button and text
+            int btnW = 300, btnH = 55, btnX = (w - btnW) / 2, btnY = 600;
             backBtnRect = new Rectangle(btnX, btnY, btnW, btnH);
-            UIComponents.drawPrimaryButton(g2, backBtnRect, "Back to Home", backPressed);
+            UIComponents.drawButton(g2, backBtnRect, "Back to Home", backPressed);
         }
     }
 }

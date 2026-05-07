@@ -1,18 +1,23 @@
-package GUI;
-
-import App.Appframe;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 
+
 public class SignUp extends JPanel {
 
-    //Used to navigate between pages
-    private final Appframe app;
+    //Variables
+    private final Appframe app;//Used to navigate between pages
+    private final Image bg;//Background image
+    private final Image logo;//Logo image
 
-    private final Image bg;
-    private final Image logo;
+    Rectangle buttonRect;//Place of the button
+    boolean pressed = false;//Button initial state
+
+    private Rectangle backRect;//Back arrow
+    private boolean backPressed = false;//Button initial state
+
+    //------------------------------------------------------------
 
     public SignUp(Appframe app) {
         this.app = app;
@@ -32,8 +37,8 @@ public class SignUp extends JPanel {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        int w = c.getWidth();
-        int h = c.getHeight();
+        //Get panel width and height
+        int w = c.getWidth(), h = c.getHeight();
 
         g2.setColor(Color.WHITE);
         g2.fillRoundRect(0, 0, w - 1, h - 1, radius, radius);
@@ -92,25 +97,18 @@ public class SignUp extends JPanel {
 
         RoundedComboBox(String[] items, int radius) {
 
-            //Send values to the super class
-            super(items);
-
+            super(items);//Send values to the super class
             this.radius = radius;
-
-            //Disable default background
-            setOpaque(false);
-
+            setOpaque(false);//Disable default background
             setBackground(Color.WHITE);
             setForeground(Color.BLACK);
             setFont(new Font("Arial", Font.PLAIN, 16));
             setBorder(new EmptyBorder(8, 14, 8, 14));
-
-
        }
 
         @Override
-        //Call paintRoundedBackground method to draw rounded white background
         protected void paintComponent(Graphics g) {
+            //Call paintRoundedBackground method to draw rounded white background
             paintRoundedBackground(g, this, radius);
             super.paintComponent(g);
         }
@@ -126,26 +124,12 @@ public class SignUp extends JPanel {
         private final RoundedField ageField = new RoundedField(FIELD_RADIUS);
         private final RoundedComboBox genderField = new RoundedComboBox(new String[]{"Male", "Female"}, FIELD_RADIUS);
 
-        //Place of the button
-        Rectangle buttonRect;
-        //Button initial state
-        boolean pressed = false;
-
-        //Back arrow
-        private Rectangle backRect;
-        private boolean backPressed = false;
 
         SignUpPanel() {
-            //Disable default layout
-            setLayout(null);
+            setLayout(null);//Disable default layout
 
             //The place and size of the fields
-            int w = 260;
-            int h = 42;
-            int gap = 26;
-            int y = 257;
-            int x = 57;
-
+            int w = 260, h = 42, gap = 26, y = 257, x = 57;
             placeField("Name", nameField, x, y, w, h);
             placeField("Email", emailField, x, y + (h + gap), w, h);
             placeField("Password", passwordField, x, y + 2 * (h + gap), w, h);
@@ -154,45 +138,93 @@ public class SignUp extends JPanel {
 
             addMouseListener(new MouseAdapter() {
                 @Override
-                //Check of the mouse press
                 public void mousePressed(MouseEvent e) {
-                    //Back arrow
+                    //Check if the press (Back arrow)
                     if (backRect != null && backRect.contains(e.getPoint())) {
                         backPressed = true;
                         repaint();
                         return;
                     }
-                    //Sign Up
+                    //Check if the press (Sign Up)
                     pressed = (buttonRect != null && buttonRect.contains(e.getPoint()));
                     repaint();
                 }
 
-                @Override
-                //Check if the mouse press and released was inside the Sign Up button
-                public void mouseReleased(MouseEvent e) {
-                    //Back arrow
+            //----------------------------------------------------------------------------
+            //-----------------------SignUp Implementation HERE---------------------------
+            //----------------------------------------------------------------------------
+            public void mouseReleased(MouseEvent e) {
+                    //if back arrow, navigate to Splash page
                     if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
                         app.showPage(Appframe.SPLASH);
                     }
+
                     backPressed = false;
 
-                    //Sign Up
-                    boolean validClick = pressed && buttonRect != null && buttonRect.contains(e.getPoint());
-                    pressed = false;
-                    repaint();
+                    //if Sign Up = true, perform Sign Up action
+                    if (pressed && buttonRect != null && buttonRect.contains(e.getPoint())) {
 
-                    //If a valid click = true, perform Sign Up action
-                    if (validClick) {
                         String name = nameField.getText().trim();
                         String email = emailField.getText().trim();
                         String pass = new String(passwordField.getPassword());
                         String age = ageField.getText().trim();
                         String gender = (String) genderField.getSelectedItem();
 
-                        //Show next page
-                        app.showPage(Appframe.PREFERENCES_GENRES);
+                        try {
+                            //Check empty fields
+                            if (name.isEmpty() || email.isEmpty() || pass.isEmpty() || age.isEmpty()) {
+                                JOptionPane.showMessageDialog(null, "Please fill all fields");
+                                return;
+                            }
+
+                            //Convert age from String to int
+                            int ageNumber = Integer.parseInt(age);
+
+                            //Check if email already exists
+                            if (UserQueries.emailExists(email)) {
+                                JOptionPane.showMessageDialog(null, "Email already exists");
+                                return;
+                            }
+
+                            //Create User object
+                            User user = new User(name, email, pass, ageNumber, gender);
+                            //Save user in database
+                            UserQueries.addUser(user);
+                            JOptionPane.showMessageDialog(null, "Account created successfully");
+                            //Show next page
+                            app.showPage(Appframe.PREFERENCES_GENRES);
+
+                        }catch (NumberFormatException ex) {
+                            JOptionPane.showMessageDialog(null, "Age must be a number");
+                        }
                     }
-                }
+                    pressed = false;
+                    repaint();
+            }
+            //----------------------------------------------------------------------------
+
+                /*
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    //if back arrow, navigate to back page (Splash page)
+                    if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
+                        app.showPage(Appframe.SPLASH);
+                    }
+                    backPressed = false;
+
+                    //if Sign Up = true, perform Sign Up action (Navigate to preferences page)
+                    if (pressed && buttonRect != null && buttonRect.contains(e.getPoint())) {
+                        String name = nameField.getText().trim();
+                        String email = emailField.getText().trim();
+                        String pass = new String(passwordField.getPassword());
+                        String age = ageField.getText().trim();
+                        String gender = (String) genderField.getSelectedItem();
+
+                        app.showPage(Appframe.PREFERENCES_GENRES);//Show next page
+                    }
+                    pressed = false;
+                    repaint();
+                }*/
                 @Override
                 public void mouseExited(MouseEvent e) {
                     pressed = false;
@@ -202,7 +234,7 @@ public class SignUp extends JPanel {
             });
         }
 
-        //Placed labels and the fields and display it on the screen
+        //Placed labels, fields and display it on the screen
         private void placeField(String label, JComponent comp, int x, int y, int w, int h) {
             JLabel l = new JLabel(label);
             l.setFont(new Font("Arial", Font.BOLD, 12));
@@ -210,16 +242,14 @@ public class SignUp extends JPanel {
 
             int labelOffset = 15;
             l.setBounds(x + labelOffset, y - 16, w, 16);
-            //Add to panel
-            add(l);
+            add(l);//Add to panel
 
             comp.setBounds(x, y, w, h);
-            //Add to panel
-            add(comp);
+            add(comp);//Add to panel
         }
 
         @Override
-        //Draw the logo, background and setTitle and display on the screen
+        //Draw UI elements
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
 
@@ -245,18 +275,14 @@ public class SignUp extends JPanel {
             int logoY = 0;
             g2.drawImage(logo, logoX, logoY, logoSize, logoSize, null);
 
+            //Title
             int titleY = logoY + logoSize + 26;
-            UIComponents.drawBrandTitle(g2, w, titleY);
+            UIComponents.drawTitle(g2, w, titleY);
 
-            //Set SignUn button settings and call the drawSignUpButton function
-            int btnW = 300;
-            int btnH = 55;
-            int btnX = (w - btnW) / 2;
-            int btnY = 600;
-
+            //Set SignUn button settings and draw it using ui components
+            int btnW = 300, btnH = 55, btnX = (w - btnW) / 2, btnY = 600;
             buttonRect = new Rectangle(btnX, btnY, btnW, btnH);
-            UIComponents.drawPrimaryButton(g2, buttonRect, "Sign Up", pressed);
+            UIComponents.drawButton(g2, buttonRect, "Sign Up", pressed);
         }
-
     }
 }

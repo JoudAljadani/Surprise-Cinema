@@ -1,0 +1,70 @@
+import java.sql.*;
+
+public class DatabaseManager {
+
+    // Database information
+    public static final String URL = "jdbc:mysql://localhost:3306/SurpriseCinemaDB";
+    public static final String USER = "root";
+    public static final String PASSWORD = "JanaBajaba038";
+
+    // Create connection
+    public static Connection connect() {
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(URL, USER, PASSWORD);
+        } catch (SQLException e) {
+            System.out.println("Connection error!");
+            System.out.println(e.getMessage());
+        }
+        return con;
+    }
+
+
+    // Create database
+    public static void createDatabase() {
+
+        Connection con = null;
+
+        try{
+
+            String ConnectionURL = "jdbc:mysql://localhost:3306";
+            con = DriverManager.getConnection(ConnectionURL, USER, PASSWORD);
+            Statement st = con.createStatement();
+
+            st.executeUpdate("CREATE DATABASE IF NOT EXISTS SurpriseCinemaDB");
+            System.out.println("Database created successfully");
+            con.close();
+
+        }catch(SQLException e){
+            System.out.println("Database creation error!");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // Create tables
+    public static void createTables() {
+
+        Connection con = null;
+        try{
+            con = connect();
+            Statement st = con.createStatement();
+
+            // USERS table
+            st.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS USERS (" +
+                            "ID INT PRIMARY KEY AUTO_INCREMENT, " +
+                            "NAME VARCHAR(50), " +
+                            "EMAIL VARCHAR(100), " +
+                            "PASSWORD VARCHAR(30), " +
+                            "AGE INT, " +
+                            "GENDER VARCHAR(20))"
+            );
+            System.out.println("USERS table created successfully");
+            con.close();
+        }catch (SQLException e) {
+            System.out.println("Table creation error!");
+            System.out.println(e.getMessage());
+        }
+    }
+}
+

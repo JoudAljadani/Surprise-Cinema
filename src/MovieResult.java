@@ -1,6 +1,3 @@
-package GUI;
-
-import App.Appframe;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -8,23 +5,24 @@ import java.util.Random;
 
 public class MovieResult extends JPanel {
 
-    private final Appframe app;
+    //Variables
+    private final Appframe app;//To navigate between pages
+    private final Image bg;//Background image
 
-    private final Image bg;
-
-    // clickable areas
+    //Clickable buttons
     private Rectangle otherBtnRect;
     private Rectangle acceptBtnRect;
 
     private boolean otherPressed = false;
-
     private boolean acceptPressed = false;
 
-    // back arrow area
+    //Back arrow button
     private Rectangle backRect;
     private boolean backPressed = false;
 
-    // ===== MOCK MOVIES (GUI ONLY) =====
+//------------------------------------------------------------
+
+    //Mock Movie (just for example in the GUI)
     private final Movie[] movies = new Movie[]{
             new Movie("Interstellar", "Sci-Fi / Drama", "PG-13", "8.6",
                     "A journey beyond the stars to save humanity."),
@@ -40,31 +38,32 @@ public class MovieResult extends JPanel {
                     "Paranormal investigators face a terrifying case.")
     };
 
-    private final Random rnd = new Random();
+    private final Random rnd = new Random();//Random for choosing a movie index
     private int currentIndex = 0;
 
     public MovieResult(Appframe app) {
         this.app = app;
 
+        //Background
         bg = new ImageIcon("resources/images/Background.png").getImage();
 
+        //Set layout and add main panel to center
         setLayout(new BorderLayout());
         add(new MoviePanel(), BorderLayout.CENTER);
 
-        // start with random movie
+        //Start with random movie
         pickAnotherMovie();
     }
 
-    private void pickAnotherMovie() {
+    private void pickAnotherMovie() {//To pick another movie (in a random way)
         int next = rnd.nextInt(movies.length);
         if (movies.length > 1) {
             while (next == currentIndex) next = rnd.nextInt(movies.length);
         }
         currentIndex = next;
-        repaint();
+        repaint();//Refresh after changing selection
     }
 
-    // MAIN PANEL
     class MoviePanel extends JPanel {
 
         MoviePanel() {
@@ -73,19 +72,21 @@ public class MovieResult extends JPanel {
                 @Override
                 public void mousePressed(MouseEvent e) {
 
-                    // BACK
+                    //if back arrow is pressed
                     if (backRect != null && backRect.contains(e.getPoint())) {
                         backPressed = true;
                         repaint();
                         return;
                     }
 
+                    //if other movie button is pressed
                     if (otherBtnRect != null && otherBtnRect.contains(e.getPoint())) {
                         otherPressed = true;
                         repaint();
                         return;
                     }
 
+                    //if accept movie button is pressed
                     if (acceptBtnRect != null && acceptBtnRect.contains(e.getPoint())) {
                         acceptPressed = true;
                         repaint();
@@ -95,18 +96,18 @@ public class MovieResult extends JPanel {
                 @Override
                 public void mouseReleased(MouseEvent e) {
 
-                    // BACK -> Home
+                    //if back arrow, navigate to homePage
                     if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
                         app.showPage(Appframe.HOME_PAGE);
                     }
                     backPressed = false;
 
-                    // LEFT: OTHER -> new movie
+                    //if other button, call another movie and refresh the page
                     if (otherPressed && otherBtnRect != null && otherBtnRect.contains(e.getPoint())) {
                         pickAnotherMovie();
                     }
 
-                    // RIGHT: ACCEPT -> next page
+                    //if accept movie, navigate to choose time page
                     if (acceptPressed && acceptBtnRect != null && acceptBtnRect.contains(e.getPoint())) {
                         app.showPage(Appframe.CHOOSE_TIME);
                     }
@@ -127,84 +128,74 @@ public class MovieResult extends JPanel {
         }
 
         @Override
+        //Draw UI elements
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
 
             Graphics2D g2 = (Graphics2D) g;
+            //Make corner smoother
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-            int w = getWidth();
-            int h = getHeight();
+            //Get panel width and height
+            int w = getWidth(), h = getHeight();
 
+            //Background
             g2.drawImage(bg, 0, 0, w, h, null);
 
-            // ===== BACK ARROW (TOP LEFT) =====
+            //Back arrow
             int backSize = 36, backX = 18, backY = 32;
             backRect = new Rectangle(backX, backY, backSize, backSize);
             UIComponents.drawTextBackArrow(g2, backRect, backPressed);
 
-            // ===== PAGE TITLE =====
+            //Title
             int titleY = 80, x = w / 2;
             UIComponents.drawCenteredText(g2,"Your surprise movie is", x, titleY,
                     UIComponents.FONT_TITLE, UIComponents.TEXT_WHITE);
 
-            // ===== BIG MOVIE BOX (poster placeholder) =====
-            int boxW = 250;
-            int boxH = 240;
-            int boxX = (w - boxW) / 2;
-            int boxY = titleY + 22;
-
+            //movie box
+            int boxW = 250, boxH = 240, boxX = (w - boxW) / 2, boxY = titleY + 22;
             g2.setColor(Color.WHITE);
             g2.fillRoundRect(boxX, boxY, boxW, boxH, 22, 22);
 
-            g2.setStroke(new BasicStroke(2f));
-            g2.setColor(new Color(220, 220, 220));
-            g2.drawRoundRect(boxX, boxY, boxW, boxH, 22, 22);
-
-            // poster placeholder text
+            //Poster placeholder text
             UIComponents.drawCenteredText(g2,"Movie Poster", x, boxY + boxH / 2 + 6,
                     UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
 
-            // ===== MOVIE INFO =====
+            //Movie information
             Movie m = movies[currentIndex];
 
-            int infoX = 60;
-            int infoW = w - 2 * infoX;
-            int topY = boxY + boxH + 28;
+            int infoX = 60, infoW = w - 2 * infoX, topY = boxY + boxH + 28;
 
-// 1) Movie name
+            //Movie name
             UIComponents.drawCenteredText(g2, m.name, x, topY,
                     new Font("Arial", Font.BOLD, 20), UIComponents.TEXT_WHITE);
 
-// 2) Story left aligned under it
+            //Story
             int storyY = topY + 34;
             g2.setFont(UIComponents.FONT_BODY);
             g2.setColor(UIComponents.TEXT_WHITE);
             int storyEndY = drawWrappedReturnEndY(g2, m.story, infoX, storyY, infoW, 18);
 
-// 3) Genre / Rated / IMDb lighter under story
+            //Genre, Rated, IMDb
             int metaY = storyEndY + 22;
-
             g2.setFont(UIComponents.FONT_BODY);
             g2.setColor(UIComponents.TEXT_WHITE_SOFT);
-
             g2.drawString("Genre: " + m.genre, infoX, metaY);
             g2.drawString("Rated: " + m.rated, infoX, metaY + 20);
             g2.drawString("IMDb: " + m.imdb, infoX, metaY + 40);
 
-            // ===== BUTTONS (BOTTOM) =====
-            int btnW = 145, btnH = 55, gap = 14;
-            int total = btnW * 2 + gap;
-            int startX = (w - total) / 2;
-            int btnY = 600;
+            //Other and accept buttons
+            int btnW = 145, btnH = 55, gap = 14, btnY = 600;
+            int total = btnW * 2 + gap, startX = (w - total) / 2;
 
             otherBtnRect = new Rectangle(startX, btnY, btnW, btnH);
-            acceptBtnRect = new Rectangle(startX + btnW + gap, btnY, btnW, btnH);
+            UIComponents.drawButton(g2, otherBtnRect, "Other", otherPressed);
 
-            UIComponents.drawPrimaryButton(g2, otherBtnRect, "Other", otherPressed);
-            UIComponents.drawPrimaryButton(g2, acceptBtnRect, "Accept", acceptPressed);
+            acceptBtnRect = new Rectangle(startX + btnW + gap, btnY, btnW, btnH);
+            UIComponents.drawButton(g2, acceptBtnRect, "Accept", acceptPressed);
         }
 
+        //Splits the text into words and displays it line by line
         private int drawWrappedReturnEndY(Graphics2D g2, String text, int x, int y, int maxW, int lineH) {
             FontMetrics fm = g2.getFontMetrics();
             String[] words = text.split(" ");
@@ -221,19 +212,16 @@ public class MovieResult extends JPanel {
                     line = new StringBuilder(test);
                 }
             }
-
-            if (!line.isEmpty()) {
+            if (!line.isEmpty()) {//Remaining text
                 g2.drawString(line.toString(), x, yy);
             }
-
-            return yy; // last line
+            return yy;//Last line
         }
     }
 
-    // DATA CLASS
+    //Temp data class
     static class Movie {
         String name, genre, rated, imdb, story;
-
         Movie(String name, String genre, String rated, String imdb, String story) {
             this.name = name;
             this.genre = genre;
