@@ -60,6 +60,19 @@ public class DatabaseManager {
                             "GENDER VARCHAR(20))"
             );
             System.out.println("USERS table created successfully");
+
+            st.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS TICKETS (" +
+                            "ID INT PRIMARY KEY AUTO_INCREMENT, " +
+                            "MOVIE_NAME VARCHAR(100), " +
+                            "CINEMA_NAME VARCHAR(100), " +
+                            "HALL VARCHAR(50), " +
+                            "SHOW_DATE VARCHAR(50), " +
+                            "SHOW_TIME VARCHAR(50), " +
+                            "SEAT VARCHAR(20), " +
+                            "USER_EMAIL VARCHAR(100))"
+            );
+            System.out.println("TICKETS table created successfully");
             con.close();
         }catch (SQLException e) {
             System.out.println("Table creation error!");

@@ -155,10 +155,14 @@ public class SignIn extends JPanel {
                             return;
                         }
 
-                        boolean validUser = UserQueries.loginUser(email, pass);
+                        User user = DatabaseQueries.getUserByLogin(email, pass);
+                        if (user != null) {
+                            Appframe.currentUser = user;
 
-                        if (validUser) {
+                            JOptionPane.showMessageDialog(null, "Login successful");
+
                             app.showPage(Appframe.HOME_PAGE);
+
                         } else {
                             JOptionPane.showMessageDialog(null, "Wrong email or password");
                         }

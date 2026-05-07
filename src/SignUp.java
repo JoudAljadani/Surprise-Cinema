@@ -181,7 +181,7 @@ public class SignUp extends JPanel {
                             int ageNumber = Integer.parseInt(age);
 
                             //Check if email already exists
-                            if (UserQueries.emailExists(email)) {
+                            if (DatabaseQueries.emailExists(email)) {
                                 JOptionPane.showMessageDialog(null, "Email already exists");
                                 return;
                             }
@@ -189,7 +189,7 @@ public class SignUp extends JPanel {
                             //Create User object
                             User user = new User(name, email, pass, ageNumber, gender);
                             //Save user in database
-                            UserQueries.addUser(user);
+                            DatabaseQueries.addUser(user);
                             JOptionPane.showMessageDialog(null, "Account created successfully");
                             //Show next page
                             app.showPage(Appframe.PREFERENCES_GENRES);
