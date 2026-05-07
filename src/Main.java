@@ -5,7 +5,7 @@ import javax.swing.SwingUtilities;
 public class Main {
     public static void main(String[] args) {
 
-        // Create DB + tables
+        //Create DB + tables
         DatabaseManager.createDatabase();
         DatabaseManager.createTables();
 

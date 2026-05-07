@@ -6,6 +6,7 @@ import java.awt.*;
 public class Appframe extends JFrame {
 
     public static User currentUser;
+
     //Card names for navigation between pages
     public static final String SPLASH = "SPLASH";
     public static final String SIGNUP = "SIGNUP";
