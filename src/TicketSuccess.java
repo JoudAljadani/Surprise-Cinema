@@ -83,8 +83,28 @@ public class TicketSuccess extends JPanel {
 
 
             //Text in the ticket box
-            UIComponents.drawCenteredText(g2,"Ticket details are here", x,
-                    boxY + boxH / 2 + 6, UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
+            Ticket ticket = Appframe.currentTicket;
+
+            g2.setColor(Color.BLACK);
+            g2.setFont(new Font("Arial", Font.PLAIN, 14));
+
+            if (ticket == null) {
+                UIComponents.drawCenteredText(g2, "No ticket found", x,
+                        boxY + boxH / 2 + 6,
+                        UIComponents.FONT_BODY,
+                        UIComponents.TEXT_BLACK);
+            } else {
+                int textX = boxX + 25;
+                int textY = boxY + 55;
+                int lineGap = 28;
+
+                g2.drawString("Movie: " + ticket.getMovieName(), textX, textY);
+                g2.drawString("Cinema: " + ticket.getCinemaName(), textX, textY + lineGap);
+                g2.drawString("Hall: " + ticket.getHall(), textX, textY + lineGap * 2);
+                g2.drawString("Date: " + ticket.getDate(), textX, textY + lineGap * 3);
+                g2.drawString("Time: " + ticket.getShowTime(), textX, textY + lineGap * 4);
+                g2.drawString("Seat: " + ticket.getSeat(), textX, textY + lineGap * 5);
+            }
 
             //Enjoying message
             int msgY = boxY + boxH + 70;
