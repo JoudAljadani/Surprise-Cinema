@@ -5,7 +5,7 @@ public class DatabaseManager {
     // Database information
     public static final String URL = "jdbc:mysql://localhost:3306/SurpriseCinemaDB";
     public static final String USER = "root";
-    public static final String PASSWORD = "Lena2004";
+    public static final String PASSWORD = "JanaBajaba038";
 
     // Create connection
     public static Connection connect() {

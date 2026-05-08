@@ -198,14 +198,45 @@ public class DatabaseQueries {
             String sql =
                     "DELETE FROM USER_COUNTRIES " +
                             "WHERE USER_EMAIL = '" + email + "'";
-
             st.executeUpdate(sql);
             con.close();
-
         } catch (SQLException e) {
             System.out.println("Delete countries error!");
             System.out.println(e.getMessage());
         }
+    }
+
+    public static Ticket getLatestTicketByEmail(String email) {
+
+        Connection con = null;
+
+        try {
+            con = DatabaseManager.connect();
+            Statement st = con.createStatement();
+            String sql =
+                    "SELECT * FROM TICKETS " +
+                            "WHERE USER_EMAIL = '" + email + "' " +
+                            "ORDER BY ID DESC";
+
+            ResultSet rs = st.executeQuery(sql);
+            if (rs.next()) {
+                String movieName = rs.getString("MOVIE_NAME");
+                String cinemaName = rs.getString("CINEMA_NAME");
+                String hall = rs.getString("HALL");
+                String date = rs.getString("SHOW_DATE");
+                String showTime = rs.getString("SHOW_TIME");
+                String seat = rs.getString("SEAT");
+                String userEmail = rs.getString("USER_EMAIL");
+                con.close();
+                return new Ticket(movieName, cinemaName, hall, date,
+                        showTime, seat, userEmail);
+            }
+            con.close();
+        } catch (SQLException e) {
+            System.out.println("Get latest ticket error!");
+            System.out.println(e.getMessage());
+        }
+        return null;
     }
 
 

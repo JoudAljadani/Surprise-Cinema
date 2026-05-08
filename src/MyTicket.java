@@ -12,7 +12,7 @@ public class MyTicket extends JPanel {
     private Rectangle closeBtnRect;
     private boolean closePressed = false;
 
-//------------------------------------------------------------
+    //------------------------------------------------------------
 
     public MyTicket(Appframe app) {
         this.app = app;
@@ -82,15 +82,50 @@ public class MyTicket extends JPanel {
             g2.setColor(Color.WHITE);
             g2.fillRoundRect(boxX, boxY, boxW, boxH, 22, 22);
 
-            //Text in the ticket box
-            UIComponents.drawCenteredText(g2, "Ticket details are here", x,
-                    boxY + boxH / 2 + 6,
-                    UIComponents.FONT_BODY,
-                    UIComponents.TEXT_BLACK);
+            // If no ticket in memory, get latest ticket from database
+            if (Appframe.currentTicket == null) {
+                Appframe.currentTicket = DatabaseQueries.getLatestTicketByEmail(Appframe.currentUser.getEmail());
+            }
+
+            // Check if the ticket is expired
+            if (Appframe.currentTicket != null) {
+
+                String ticketDate = Appframe.currentTicket.getDate();
+
+                String today = java.time.LocalDate.now().toString();
+
+                // If ticket date is not today, remove it
+                if (ticketDate.compareTo(today) < 0) {
+                    Appframe.currentTicket = null;
+                }
+            }
+
+            // Current ticket
+            Ticket ticket = Appframe.currentTicket;
+
+            if (ticket == null) {//if there is not ticket booked
+                UIComponents.drawCenteredText(g2, "No ticket booked yet", x, boxY + boxH / 2 + 6,
+                        UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
+            } else {
+                int textX = boxX + 25;
+                int textY = boxY + 50;
+                int lineGap = 30;
+
+                g2.setColor(Color.BLACK);
+                g2.setFont(new Font("Arial", Font.PLAIN, 14));
+
+                g2.drawString("Movie: " + ticket.getMovieName(), textX, textY);
+                g2.drawString("Cinema: " + ticket.getCinemaName(), textX, textY + lineGap);
+                g2.drawString("Hall: " + ticket.getHall(), textX, textY + lineGap * 2);
+                g2.drawString("Date: " + ticket.getDate(), textX, textY + lineGap * 3);
+                g2.drawString("Time: " + ticket.getShowTime(), textX, textY + lineGap * 4);
+                g2.drawString("Seat: " + ticket.getSeat(), textX, textY + lineGap * 5);
+            }
+            // --------------------------------------------------------
 
             //Enjoying message
             int msgY = boxY + boxH + 70;
-            UIComponents.drawCenteredText(g2,"Lights off, volume up, just enjoy the ride!!!", x, msgY,
+            UIComponents.drawCenteredText(g2, "Lights off, volume up, just enjoy the ride!", x, msgY,
                     new Font("Arial", Font.PLAIN, 18), UIComponents.TEXT_WHITE_SOFT);
 
             //Close button

@@ -118,6 +118,7 @@ public class chooseTimePage extends JPanel {
 
                         // Save ticket into database
                         DatabaseQueries.addTicket(ticket);
+                        TicketFileManager.saveTicketToFile(ticket);
                         JOptionPane.showMessageDialog(null, "Ticket booked successfully");
                         // Go to success page
                         app.showPage(Appframe.TICKET_SUCCESS);
