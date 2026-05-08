@@ -65,6 +65,8 @@ public class DatabaseManager {
                     "CREATE TABLE IF NOT EXISTS TICKETS (" +
                             "ID INT PRIMARY KEY AUTO_INCREMENT, " +
                             "MOVIE_NAME VARCHAR(100), " +
+                            "MOVIE_GENRE VARCHAR(100), " +
+                            "MOVIE_COUNTRY VARCHAR(100), " +
                             "CINEMA_NAME VARCHAR(100), " +
                             "HALL VARCHAR(50), " +
                             "SHOW_DATE VARCHAR(50), " +

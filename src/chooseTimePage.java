@@ -92,6 +92,9 @@ public class chooseTimePage extends JPanel {
 
                         // Movie name - WILL CHANGE
                         String movieName = "Interstellar";
+                        String movieGenre = "Comedy";
+                        String movieCountry = "USA";
+
                         // Cinema name - WILL CHANGE
                         String cinemaName = "AMC Cinema";
 
@@ -111,7 +114,7 @@ public class chooseTimePage extends JPanel {
                         String userEmail = Appframe.currentUser.getEmail();
 
                         // Create ticket object
-                        Ticket ticket = new Ticket(movieName, cinemaName, hall, date,
+                        Ticket ticket = new Ticket(movieName, movieGenre, movieCountry, cinemaName, hall, date,
                                 showTime, seat, userEmail);
                         Appframe.currentTicket = ticket;
 
