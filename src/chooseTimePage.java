@@ -92,8 +92,8 @@ public class chooseTimePage extends JPanel {
 
                         // Movie name - WILL CHANGE
                         String movieName = "Interstellar";
-                        String movieGenre = "Comedy";
-                        String movieCountry = "USA";
+                        String movieGenre = "Action";
+                        String movieCountry = "Korea";
 
                         // Cinema name - WILL CHANGE
                         String cinemaName = "AMC Cinema";

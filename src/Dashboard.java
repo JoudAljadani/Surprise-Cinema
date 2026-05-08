@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-
+import java.util.ArrayList;
 public class Dashboard extends JPanel {
 
     //Variables
@@ -15,14 +15,11 @@ public class Dashboard extends JPanel {
     private boolean backPressed;
     private boolean closePressed;
 
-    //Demo data (Genres + counts) for GUI only
-    private final String[] genres = {"Fantasy", "Action", "Drama", "Horror", "Comedy"};
-    private final int[] genreCounts = {6, 9, 4, 2, 3};
+    private String[] genres;
+    private int[] genreCounts;
 
-    //Demo data (Countries + counts) for GUI only
-    private final String[] countries = {"USA", "UK", "Turkey", "Korea", "Italy"};
-    private final int[] countryCounts = {8, 5, 4, 3, 2};
-
+    private String[] countries;
+    private int[] countryCounts;
     //------------------------------------------------------------
 
     public Dashboard(Appframe app) {
@@ -33,6 +30,29 @@ public class Dashboard extends JPanel {
         //Set layout and add main panel to center
         setLayout(new BorderLayout());
         add(new DashPanel(), BorderLayout.CENTER);
+    }
+
+    private void loadDashboardData() {
+
+        ArrayList<DashStat> genreStats = DatabaseQueries.getUserGenres(Appframe.currentUser.getEmail());
+
+        genres = new String[genreStats.size()];
+        genreCounts = new int[genreStats.size()];
+
+        for (int i = 0; i < genreStats.size(); i++) {
+            genres[i] = genreStats.get(i).getLabel();
+            genreCounts[i] = genreStats.get(i).getCount();
+        }
+
+        ArrayList<DashStat> countryStats = DatabaseQueries.getUserCountries(Appframe.currentUser.getEmail());
+
+        countries = new String[countryStats.size()];
+        countryCounts = new int[countryStats.size()];
+
+        for (int i = 0; i < countryStats.size(); i++) {
+            countries[i] = countryStats.get(i).getLabel();
+            countryCounts[i] = countryStats.get(i).getCount();
+        }
     }
 
     class DashPanel extends JPanel {
@@ -87,6 +107,10 @@ public class Dashboard extends JPanel {
 
             //Get panel width and height
             int w = getWidth(), h = getHeight();
+
+            if (Appframe.currentUser != null) {
+                loadDashboardData();
+            }
 
             //Background
             g2.drawImage(bg, 0, 0, w, h, null);
