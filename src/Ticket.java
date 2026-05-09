@@ -2,6 +2,7 @@ public class Ticket {
 
     private String movieName;
     private String movieGenre;
+    private String posterUrl;
     private String cinemaName;
     private String hall;
     private String date;
@@ -10,10 +11,11 @@ public class Ticket {
     private String userEmail;
 
     // Constructor
-    public Ticket(String movieName, String movieGenre, String cinemaName, String hall,
+    public Ticket(String movieName, String movieGenre,String posterUrl, String cinemaName, String hall,
             String date, String showTime, String seat, String userEmail) {
         this.movieName = movieName;
         this.movieGenre = movieGenre;
+        this.posterUrl = posterUrl;
         this.cinemaName = cinemaName;
         this.hall = hall;
         this.date = date;
@@ -29,6 +31,10 @@ public class Ticket {
 
     public String getMovieGenre() {
         return movieGenre;
+    }
+
+    public String getPosterUrl() {
+        return posterUrl;
     }
 
     public String getCinemaName() {

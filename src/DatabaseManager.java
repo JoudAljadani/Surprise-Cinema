@@ -66,6 +66,7 @@ public class DatabaseManager {
                             "ID INT PRIMARY KEY AUTO_INCREMENT, " +
                             "MOVIE_NAME VARCHAR(100), " +
                             "MOVIE_GENRE VARCHAR(100), " +
+                            "POSTER_URL VARCHAR(500), " +
                             "CINEMA_NAME VARCHAR(100), " +
                             "HALL VARCHAR(50), " +
                             "SHOW_DATE VARCHAR(50), " +
@@ -82,6 +83,16 @@ public class DatabaseManager {
                             "GENRE VARCHAR(50))"
             );
             System.out.println("USER_GENRES table created successfully");
+
+            st.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS RATINGS (" +
+                            "ID INT PRIMARY KEY AUTO_INCREMENT, " +
+                            "USER_EMAIL VARCHAR(100), " +
+                            "MOVIE_NAME VARCHAR(100), " +
+                            "RATING INT)"
+            );
+            System.out.println("RATINGS table created successfully");
+
             con.close();
         }catch (SQLException e) {
             System.out.println("Table creation error!");

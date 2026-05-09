@@ -88,16 +88,17 @@ public class chooseTimePage extends JPanel {
 
                         String movieName = Appframe.currentMovie.name;
                         String movieGenre = Appframe.currentMovie.genre;
+                        String posterUrl = Appframe.currentMovie.posterUrl;
 
-                        String cinemaName = BookingManager.getRandomCinema();
-                        String hall = BookingManager.generateHall();
-                        String date = BookingManager.generateDate();
-                        String showTime = BookingManager.generateRandomTime(selectedSlot.label);
-                        String seat = BookingManager.generateSeat();
+                        String cinemaName = AppManager.getRandomCinema();
+                        String hall = AppManager.generateHall();
+                        String date = AppManager.generateDate();
+                        String showTime = AppManager.generateRandomTime(selectedSlot.label);
+                        String seat = AppManager.generateSeat();
 
                         String userEmail = Appframe.currentUser.getEmail();
 
-                        Ticket ticket = new Ticket(movieName, movieGenre, cinemaName, hall, date,
+                        Ticket ticket = new Ticket(movieName, movieGenre, posterUrl, cinemaName, hall, date,
                                 showTime, seat, userEmail);
                         Appframe.currentTicket = ticket;
 

@@ -68,9 +68,17 @@ public class Rate extends JPanel {
                         app.showPage(Appframe.HOME_PAGE);
                     }
 
-                    //if submit button, navigate to homepage
+                    //if submit button, save rating then navigate to homepage
                     if (submitPressed && submitBtnRect != null && submitBtnRect.contains(e.getPoint())) {
-                        app.showPage(Appframe.HOME_PAGE);
+
+                        boolean saved = AppManager.submitRating(rating);
+
+                        if (saved) {
+                            JOptionPane.showMessageDialog(null, "Rating submitted successfully");
+                            app.showPage(Appframe.HOME_PAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Please book a ticket and select a rating first");
+                        }
                     }
                     backPressed = false;
                     submitPressed = false;
@@ -97,6 +105,9 @@ public class Rate extends JPanel {
             //Get panel width and height
             int w = getWidth(), h = getHeight();
 
+            if (Appframe.currentTicket == null && Appframe.currentUser != null) {
+                Appframe.currentTicket = DatabaseQueries.getLatestTicketByEmail(Appframe.currentUser.getEmail());
+            }
             //Background
             g2.drawImage(bg, 0, 0, w, h, null);
 
@@ -119,14 +130,37 @@ public class Rate extends JPanel {
             g2.setColor(Color.WHITE);
             g2.fillRoundRect(posterX, posterY, posterW, posterH, 14, 14);
 
-            //Centered text
-            UIComponents.drawCenteredText(g2, "Movie Poster", w / 2,
-                    posterY + posterH / 2 + 6, UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
+            if (Appframe.currentTicket != null) {
+                try {
+                    String posterUrl = Appframe.currentTicket.getPosterUrl();
 
+                    ImageIcon posterIcon = new ImageIcon(new java.net.URL(posterUrl));
+
+                    Image posterImage = posterIcon.getImage();
+
+                    g2.drawImage(posterImage, posterX, posterY, posterW, posterH, null);
+
+                } catch (Exception e) {
+
+                    UIComponents.drawCenteredText(g2, "Movie Poster", w / 2, posterY + posterH / 2 + 6,
+                            UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
+                }
+
+            } else {
+
+                UIComponents.drawCenteredText(g2, "Movie Poster", w / 2, posterY + posterH / 2 + 6,
+                        UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
+            }
             //"Tap to rate" text
             int movieY = posterY + posterH + 35;
-            UIComponents.drawCenteredText(g2, "Tap a star to rate", w / 2,
-                    movieY + 22, UIComponents.FONT_SMALL, UIComponents.TEXT_GRAY);
+            String movieText = "Tap a star to rate";
+
+            if (Appframe.currentTicket != null) {
+                movieText = "What do you think about " + Appframe.currentTicket.getMovieName() + "?";
+            }
+
+            UIComponents.drawCenteredText(g2, movieText, w / 2, movieY + 22,
+                    UIComponents.FONT_SMALL, UIComponents.TEXT_GRAY);
 
             //Stars
             int starSize = 44;

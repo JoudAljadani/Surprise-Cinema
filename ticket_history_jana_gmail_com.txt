@@ -1,0 +1,10 @@
+----- Ticket Booking -----
+Movie: Lilo & Stitch
+Movie Genre: Comedy
+Cinema: Empire Cinema
+Hall: Hall 1
+Date: 2026-05-09
+Time: 7:03 PM
+Seat: D3
+--------------------------
+

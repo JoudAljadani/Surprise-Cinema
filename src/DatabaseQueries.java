@@ -111,9 +111,10 @@ public class DatabaseQueries {
             // (3) Execute SQL statement
             String sql =
                     "INSERT INTO TICKETS " +
-                            "(MOVIE_NAME, MOVIE_GENRE, CINEMA_NAME, HALL, SHOW_DATE, SHOW_TIME, SEAT, USER_EMAIL) " +                            "VALUES (" +
+                            "(MOVIE_NAME, MOVIE_GENRE, POSTER_URL, CINEMA_NAME, HALL, SHOW_DATE, SHOW_TIME, SEAT, USER_EMAIL) " +                            "VALUES (" +
                             "'" + ticket.getMovieName() + "', " +
                             "'" + ticket.getMovieGenre() + "', " +
+                            "'" + ticket.getPosterUrl() + "', " +
                             "'" + ticket.getCinemaName() + "', " +
                             "'" + ticket.getHall() + "', " +
                             "'" + ticket.getDate() + "', " +
@@ -185,6 +186,7 @@ public class DatabaseQueries {
             if (rs.next()) {
                 String movieName = rs.getString("MOVIE_NAME");
                 String movieGenre = rs.getString("MOVIE_GENRE");
+                String posterUrl = rs.getString("POSTER_URL");
                 String cinemaName = rs.getString("CINEMA_NAME");
                 String hall = rs.getString("HALL");
                 String date = rs.getString("SHOW_DATE");
@@ -192,7 +194,7 @@ public class DatabaseQueries {
                 String seat = rs.getString("SEAT");
                 String userEmail = rs.getString("USER_EMAIL");
                 con.close();
-                return new Ticket(movieName, movieGenre, cinemaName, hall, date,
+                return new Ticket(movieName, movieGenre, posterUrl, cinemaName, hall, date,
                         showTime, seat, userEmail);
             }
             con.close();
@@ -228,6 +230,31 @@ public class DatabaseQueries {
             System.out.println(e.getMessage());
         }
         return stats;
+    }
+
+    public static void addRating(String email, String movieName, int rating) {
+
+        Connection con = null;
+
+        try {
+            con = DatabaseManager.connect();
+            Statement st = con.createStatement();
+
+            String sql =
+                    "INSERT INTO RATINGS " +
+                            "(USER_EMAIL, MOVIE_NAME, RATING) " +
+                            "VALUES (" +
+                            "'" + email + "', " +
+                            "'" + movieName + "', " +
+                            rating + ")";
+
+            st.executeUpdate(sql);
+            con.close();
+
+        } catch (SQLException e) {
+            System.out.println("Rating insert error!");
+            System.out.println(e.getMessage());
+        }
     }
 
 }

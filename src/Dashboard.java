@@ -84,8 +84,8 @@ public class Dashboard extends JPanel {
             int w = getWidth(), h = getHeight();
 
             if (Appframe.currentUser != null) {
-                genres = DashboardManager.getGenreLabels(Appframe.currentUser.getEmail());
-                genreCounts = DashboardManager.getGenreCounts(Appframe.currentUser.getEmail());
+                genres = AppManager.getGenreLabels(Appframe.currentUser.getEmail());
+                genreCounts = AppManager.getGenreCounts(Appframe.currentUser.getEmail());
             }
 
             //Background

@@ -170,30 +170,30 @@ public class SignUp extends JPanel {
                         try {
 
                                 // Check empty fields
-                                if (ValidationManager.isSignUpEmpty(name, email, pass, age)) {
+                                if (AppManager.isSignUpEmpty(name, email, pass, age)) {
                                     JOptionPane.showMessageDialog(null, "Please fill all fields");
                                     return;
                                 }
 
                                 // Check email format
-                                if (!ValidationManager.isValidEmail(email)) {
+                                if (!AppManager.isValidEmail(email)) {
                                     JOptionPane.showMessageDialog(null, "Please enter a valid email address");
                                     return;
                                 }
 
                                 // Check password length
-                                if (!ValidationManager.isValidPassword(pass)) {
+                                if (!AppManager.isValidPassword(pass)) {
                                     JOptionPane.showMessageDialog(null, "Password must be at least 9 characters");
                                     return;
                                 }
 
                                 // Check age
-                                if (!ValidationManager.isValidAge(age)) {
+                                if (!AppManager.isValidAge(age)) {
                                     JOptionPane.showMessageDialog(null, "Age must be a number");
                                     return;
                                 }
 
-                                int ageNumber = ValidationManager.convertAge(age);
+                                int ageNumber = AppManager.convertAge(age);
 
                                 // Check if email already exists
                                 if (DatabaseQueries.emailExists(email)) {

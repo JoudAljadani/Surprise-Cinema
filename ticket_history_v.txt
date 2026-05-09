@@ -28,3 +28,33 @@ Time: 6:50 PM
 Seat: B14
 --------------------------
 
+----- Ticket Booking -----
+Movie: Ted
+Movie Genre: Comedy
+Cinema: AMC Cinema
+Hall: Hall 2
+Date: 2026-05-09
+Time: 12:02 PM
+Seat: B14
+--------------------------
+
+----- Ticket Booking -----
+Movie: White Chicks
+Movie Genre: Comedy
+Cinema: Empire Cinema
+Hall: Hall 3
+Date: 2026-05-09
+Time: 12:13 PM
+Seat: D1
+--------------------------
+
+----- Ticket Booking -----
+Movie: The Holiday
+Movie Genre: Comedy
+Cinema: Muvi Cinema
+Hall: Hall 1
+Date: 2026-05-09
+Time: 7:17 PM
+Seat: C5
+--------------------------
+
