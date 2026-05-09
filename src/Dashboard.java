@@ -34,24 +34,21 @@ public class Dashboard extends JPanel {
 
     private void loadDashboardData() {
 
-        ArrayList<DashStat> genreStats = DatabaseQueries.getUserGenres(Appframe.currentUser.getEmail());
+        ArrayList<DashStat> genreStats =
+                DatabaseQueries.getUserGenres(
+                        Appframe.currentUser.getEmail()
+                );
 
         genres = new String[genreStats.size()];
         genreCounts = new int[genreStats.size()];
 
         for (int i = 0; i < genreStats.size(); i++) {
-            genres[i] = genreStats.get(i).getLabel();
-            genreCounts[i] = genreStats.get(i).getCount();
-        }
 
-        ArrayList<DashStat> countryStats = DatabaseQueries.getUserCountries(Appframe.currentUser.getEmail());
+            genres[i] =
+                    genreStats.get(i).getLabel();
 
-        countries = new String[countryStats.size()];
-        countryCounts = new int[countryStats.size()];
-
-        for (int i = 0; i < countryStats.size(); i++) {
-            countries[i] = countryStats.get(i).getLabel();
-            countryCounts[i] = countryStats.get(i).getCount();
+            genreCounts[i] =
+                    genreStats.get(i).getCount();
         }
     }
 

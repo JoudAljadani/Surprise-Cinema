@@ -1,19 +1,15 @@
-
 import javax.swing.*;
 import java.awt.*;
 
-//This class is to manage all pages
 public class Appframe extends JFrame {
 
     public static User currentUser;
     public static Ticket currentTicket;
 
-    //Card names for navigation between pages
     public static final String SPLASH = "SPLASH";
     public static final String SIGNUP = "SIGNUP";
     public static final String SIGNIN = "SIGNIN";
     public static final String PREFERENCES_GENRES = "PREFERENCES GENRES";
-    public static final String PREFERENCES_COUNTRIES = "PREFERENCES COUNTRIES";
     public static final String MOVIERESULT  = "MOVIERESULT";
     public static final String CHOOSE_TIME = "CHOOSE_TIME";
     public static final String TICKET_SUCCESS = "TICKET_SUCCESS";
@@ -23,24 +19,23 @@ public class Appframe extends JFrame {
     public static final String RATE = "Rate";
     public static final String DASHBOARD = "Dashboard";
 
-    //CardLayout is responsible for switching between pages
     private final CardLayout layout = new CardLayout();
-    //Root panel have all pages
     private final JPanel root = new JPanel(layout);
 
+    private MovieResult movieResultPage;
+
     public Appframe() {
-        //Window Settings
         setSize(390, 720);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        //Add all pages and link it with card names
+        movieResultPage = new MovieResult(this);
+
         root.add(new Splash(this), SPLASH);
         root.add(new SignUp(this), SIGNUP);
         root.add(new SignIn(this), SIGNIN);
         root.add(new PreferencesGenres(this), PREFERENCES_GENRES);
-        root.add(new PreferencesCountries(this), PREFERENCES_COUNTRIES);
-        root.add(new MovieResult(this), MOVIERESULT);
+        root.add(movieResultPage, MOVIERESULT);
         root.add(new chooseTimePage(this), CHOOSE_TIME);
         root.add(new TicketSuccess(this), TICKET_SUCCESS);
         root.add(new HomePage(this), HOME_PAGE);
@@ -49,60 +44,63 @@ public class Appframe extends JFrame {
         root.add(new Rate(this), RATE);
         root.add(new Dashboard(this), DASHBOARD);
 
-
-
-        //Use root panel as the main container of this frame
         setContentPane(root);
-        //Start the program with splash page
         showPage(SPLASH);
     }
 
-    //This is to navigate between pages each with its specific name
     public void showPage(String page) {
 
-            switch (page) {
-                case SPLASH:
-                    setTitle("Surprise Cinema");
-                    break;
-                case SIGNUP:
-                    setTitle("Sign Up");
-                    break;
-                case SIGNIN:
-                    setTitle("Sign In");
-                    break;
-                case PREFERENCES_GENRES:
-                    setTitle("Preferences");
-                    break;
-                case PREFERENCES_COUNTRIES:
-                    setTitle("Preferences");
-                    break;
-                case MOVIERESULT:
-                    setTitle("Movie Result");
-                    break;
-                case CHOOSE_TIME:
-                    setTitle("Choose Time");
-                    break;
-                case TICKET_SUCCESS:
-                    setTitle("Ticket Success");
-                    break;
-                case HOME_PAGE:
-                    setTitle("Home");
-                    break;
-                case MY_TICKET:
-                    setTitle("My Ticket");
-                    break;
-                case HISTORY:
-                    setTitle("History");
-                    break;
-                case RATE:
-                    setTitle("Rate");
-                    break;
-                case DASHBOARD:
-                    setTitle("Dashboard");
-                    break;
-            }
-            //Display this page using CardLayout
-            layout.show(root, page);
+        switch (page) {
+            case SPLASH:
+                setTitle("Surprise Cinema");
+                break;
+
+            case SIGNUP:
+                setTitle("Sign Up");
+                break;
+
+            case SIGNIN:
+                setTitle("Sign In");
+                break;
+
+            case PREFERENCES_GENRES:
+                setTitle("Preferences");
+                break;
+
+            case MOVIERESULT:
+                setTitle("Movie Result");
+                movieResultPage.pickAnotherMovie();
+                break;
+
+            case CHOOSE_TIME:
+                setTitle("Choose Time");
+                break;
+
+            case TICKET_SUCCESS:
+                setTitle("Ticket Success");
+                break;
+
+            case HOME_PAGE:
+                setTitle("Home");
+                break;
+
+            case MY_TICKET:
+                setTitle("My Ticket");
+                break;
+
+            case HISTORY:
+                setTitle("History");
+                break;
+
+            case RATE:
+                setTitle("Rate");
+                break;
+
+            case DASHBOARD:
+                setTitle("Dashboard");
+                break;
         }
 
+        layout.show(root, page);
     }
+}

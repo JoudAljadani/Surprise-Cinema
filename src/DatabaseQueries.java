@@ -269,29 +269,4 @@ public class DatabaseQueries {
         return stats;
     }
 
-    public static ArrayList<DashStat> getUserCountries(String email) {
-        ArrayList<DashStat> stats = new ArrayList<>();
-        Connection con = null;
-        try {
-            con = DatabaseManager.connect();
-            Statement st = con.createStatement();
-            String sql =
-                    "SELECT MOVIE_COUNTRY, COUNT(*) AS TOTAL " +
-                            "FROM TICKETS " +
-                            "WHERE USER_EMAIL = '" + email + "' " +
-                            "GROUP BY MOVIE_COUNTRY";
-
-            ResultSet rs = st.executeQuery(sql);
-            while (rs.next()) {
-                String country = rs.getString("MOVIE_COUNTRY");
-                int count = rs.getInt("TOTAL");
-                stats.add(new DashStat(country, count));
-            }
-            con.close();
-        } catch (SQLException e) {
-            System.out.println("Get countries error!");
-            System.out.println(e.getMessage());
-        }
-        return stats;
-    }
 }
