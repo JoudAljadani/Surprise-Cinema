@@ -86,10 +86,7 @@ public class PreferencesGenres extends JPanel {
                         // Save genres
                         for (String genre : selectedGenres) {
 
-                            DatabaseQueries.addUserGenre(
-                                    Appframe.currentUser.getEmail(),
-                                    genre
-                            );
+                            DatabaseQueries.addUserGenre(Appframe.currentUser.getEmail(), genre);
                         }
 
                         // Go to next page
