@@ -131,7 +131,7 @@ public class HomePage extends JPanel {
 
             //Welcome message
             int x = w/2, y= logoSize + 54;
-            UIComponents.drawCenteredText(g2, "Welcome, Emma!", x, y,
+            UIComponents.drawCenteredText(g2, "Welcome "+ Appframe.currentUser.getName(), x, y,
                     UIComponents.FONT_SUBTITLE, UIComponents.TEXT_WHITE_SOFT2);
 
             //4 cards grid

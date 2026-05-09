@@ -9,29 +9,25 @@ public class DatabaseQueries {
         Connection con = null;
 
         try {
-            // (1) Create connection
             con = DatabaseManager.connect();
 
-            // (2) Create statement object
-            Statement st = con.createStatement();
-
-            // (3) Execute SQL statement
             String sql =
                     "INSERT INTO USERS " +
                             "(NAME, EMAIL, PASSWORD, AGE, GENDER) " +
-                            "VALUES (" +
-                            "'" + user.getName() + "', " +
-                            "'" + user.getEmail() + "', " +
-                            "'" + user.getPassword() + "', " +
-                            user.getAge() + ", " +
-                            "'" + user.getGender() + "')";
+                            "VALUES (?, ?, ?, ?, ?)";
 
-            st.executeUpdate(sql);
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPassword());
+            ps.setInt(4, user.getAge());
+            ps.setString(5, user.getGender());
+            ps.executeUpdate();
             System.out.println("User added successfully");
-            // (4) Close connection
             con.close();
 
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println("User Insert error!");
             System.out.println(e.getMessage());
         }
@@ -39,25 +35,20 @@ public class DatabaseQueries {
 
     // Check if email already exists
     public static boolean emailExists(String email) {
-
         Connection con = null;
+
         try {
-            // (1) Create connection
             con = DatabaseManager.connect();
-            // (2) Create statement object
-            Statement st = con.createStatement();
-
-            // (3) Execute query
             String sql =
-                    "SELECT * FROM USERS " +
-                    "WHERE EMAIL = '" + email + "'";
+                    "SELECT * FROM USERS WHERE EMAIL = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
 
-            ResultSet rs = st.executeQuery(sql);
             if (rs.next()) {
                 con.close();
                 return true;
             }
-
             con.close();
         } catch (SQLException e) {
             System.out.println("Email check error!");
@@ -71,19 +62,21 @@ public class DatabaseQueries {
         Connection con = null;
         try {
             con = DatabaseManager.connect();
-            Statement st = con.createStatement();
-
             String sql =
                     "SELECT * FROM USERS " +
-                    "WHERE EMAIL = '" + email + "' " +
-                    "AND PASSWORD = '" + password + "'";
-            ResultSet rs = st.executeQuery(sql);
+                            "WHERE EMAIL = ? AND PASSWORD = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, email);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+
             if (rs.next()) {
                 String name = rs.getString("NAME");
                 String userEmail = rs.getString("EMAIL");
                 String userPassword = rs.getString("PASSWORD");
                 int age = rs.getInt("AGE");
                 String gender = rs.getString("GENDER");
+
                 con.close();
                 return new User(name, userEmail, userPassword, age, gender);
             }
@@ -92,6 +85,7 @@ public class DatabaseQueries {
             System.out.println("Get user login error!");
             System.out.println(e.getMessage());
         }
+
         return null;
     }
 

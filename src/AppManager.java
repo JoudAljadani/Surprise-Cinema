@@ -113,7 +113,7 @@ public class AppManager {
         }
 
     //--------------------------------------------------------
-    //App Manager
+    //App validation
 
     // Check empty sign up fields
     public static boolean isSignUpEmpty(String name, String email, String password, String age) {
