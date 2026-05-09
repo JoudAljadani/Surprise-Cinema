@@ -68,7 +68,29 @@ public class PreferencesGenres extends JPanel {
 
                     //if next, navigate to preferences genres page
                     if (nextPressed && nextBtnRect != null && nextBtnRect.contains(e.getPoint())) {
-                        app.showPage(Appframe.PREFERENCES_COUNTRIES);
+
+                        // Force at least one selection
+                        if (selectedGenres.isEmpty()) {
+
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "Please select at least one genre"
+                            );
+
+                            nextPressed = false;
+                            repaint();
+                            return;
+                        }
+
+                        DatabaseQueries.deleteUserGenres(Appframe.currentUser.getEmail());
+                        // Save genres
+                        for (String genre : selectedGenres) {
+                            DatabaseQueries.addUserGenre(Appframe.currentUser.getEmail(), genre);
+                        }
+
+                        UserPreferences.selectedGenres.clear();
+                        UserPreferences.selectedGenres.addAll(selectedGenres);
+                        app.showPage(Appframe.HOME_PAGE);
                     }
                     nextPressed = false;
                     repaint();
@@ -121,7 +143,7 @@ public class PreferencesGenres extends JPanel {
             //Next button
             int btnW = 300, btnH = 55, btnX = (w - btnW) / 2, btnY = 600;
             nextBtnRect = new Rectangle(btnX, btnY, btnW, btnH);
-            UIComponents.drawButton(g2, nextBtnRect, "Next", nextPressed);
+            UIComponents.drawButton(g2, nextBtnRect, "Save", nextPressed);
         }
     }
 

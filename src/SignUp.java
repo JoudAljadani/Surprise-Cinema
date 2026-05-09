@@ -150,9 +150,6 @@ public class SignUp extends JPanel {
                     repaint();
                 }
 
-            //----------------------------------------------------------------------------
-            //-----------------------SignUp Implementation HERE---------------------------
-            //----------------------------------------------------------------------------
             public void mouseReleased(MouseEvent e) {
                     //if back arrow, navigate to Splash page
                     if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
@@ -224,6 +221,8 @@ public class SignUp extends JPanel {
 
                                 JOptionPane.showMessageDialog(null, "Sign up error: " + ex.getMessage());
                             }
+
+
                     }
                     pressed = false;
                     repaint();
@@ -235,7 +234,7 @@ public class SignUp extends JPanel {
                     backPressed = false;
                     repaint();
                 }
-            });
+            } )  ;
         }
 
         //Placed labels, fields and display it on the screen

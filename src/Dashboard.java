@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-
+import java.util.ArrayList;
 public class Dashboard extends JPanel {
 
     //Variables
@@ -15,13 +15,8 @@ public class Dashboard extends JPanel {
     private boolean backPressed;
     private boolean closePressed;
 
-    //Demo data (Genres + counts) for GUI only
-    private final String[] genres = {"Fantasy", "Action", "Drama", "Horror", "Comedy"};
-    private final int[] genreCounts = {6, 9, 4, 2, 3};
-
-    //Demo data (Countries + counts) for GUI only
-    private final String[] countries = {"USA", "UK", "Turkey", "Korea", "Italy"};
-    private final int[] countryCounts = {8, 5, 4, 3, 2};
+    private String[] genres;
+    private int[] genreCounts;
 
     //------------------------------------------------------------
 
@@ -88,6 +83,11 @@ public class Dashboard extends JPanel {
             //Get panel width and height
             int w = getWidth(), h = getHeight();
 
+            if (Appframe.currentUser != null) {
+                genres = DashboardManager.getGenreLabels(Appframe.currentUser.getEmail());
+                genreCounts = DashboardManager.getGenreCounts(Appframe.currentUser.getEmail());
+            }
+
             //Background
             g2.drawImage(bg, 0, 0, w, h, null);
 
@@ -101,7 +101,7 @@ public class Dashboard extends JPanel {
                     UIComponents.FONT_TITLE, UIComponents.TEXT_WHITE);
 
             //Card box
-            int cardX = 28, cardY = 120, cardW = w - 56, cardH = 390;
+            int cardX = 28, cardY = 120, cardW = w - 56, cardH = 250;
             drawCard(g2, new Rectangle(cardX, cardY, cardW, cardH));
 
             //Charts in the card
@@ -124,17 +124,6 @@ public class Dashboard extends JPanel {
             g2.setColor(new Color(235, 235, 235));
             g2.setStroke(new BasicStroke(1.4f));
             g2.drawLine(innerX, divY, innerX + innerW, divY);
-
-            //Second countries
-            int sec2TitleY = divY + 34;
-            g2.setFont(new Font("Arial", Font.BOLD, 16));
-            g2.setColor(Color.BLACK);
-            g2.drawString("Most watched countries", innerX, sec2TitleY);
-
-            int chart2X = innerX;
-            int chart2Y = sec2TitleY + 18;
-            int chart2H = 120;
-            drawBarChart(g2, chart2X, chart2Y, innerW, chart2H, countries, countryCounts);
 
             //Close button
             int btnW = 300, btnH = 55, btnX = (w - btnW) / 2, btnY = h - 90;

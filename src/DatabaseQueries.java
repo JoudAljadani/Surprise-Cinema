@@ -1,9 +1,10 @@
 import java.sql.*;
+import java.util.ArrayList;
 public class DatabaseQueries {
 
     //-------------------------------------------------------------------------------
     //User
-    // Add new user to USERS table
+    // Add new user to USERS table (signup)
     public static void addUser(User user) {
         Connection con = null;
 
@@ -65,10 +66,9 @@ public class DatabaseQueries {
         return false;
     }
 
+    //login
     public static User getUserByLogin(String email, String password) {
-
         Connection con = null;
-
         try {
             con = DatabaseManager.connect();
             Statement st = con.createStatement();
@@ -111,9 +111,9 @@ public class DatabaseQueries {
             // (3) Execute SQL statement
             String sql =
                     "INSERT INTO TICKETS " +
-                            "(MOVIE_NAME, CINEMA_NAME, HALL, SHOW_DATE, SHOW_TIME, SEAT, USER_EMAIL) " +
-                            "VALUES (" +
+                            "(MOVIE_NAME, MOVIE_GENRE, CINEMA_NAME, HALL, SHOW_DATE, SHOW_TIME, SEAT, USER_EMAIL) " +                            "VALUES (" +
                             "'" + ticket.getMovieName() + "', " +
+                            "'" + ticket.getMovieGenre() + "', " +
                             "'" + ticket.getCinemaName() + "', " +
                             "'" + ticket.getHall() + "', " +
                             "'" + ticket.getDate() + "', " +
@@ -131,4 +131,103 @@ public class DatabaseQueries {
             System.out.println(e.getMessage());
         }
     }
+
+    public static void addUserGenre(String email, String genre) {
+        Connection con = null;
+        try {
+            con = DatabaseManager.connect();
+            Statement st = con.createStatement();
+            String sql =
+                    "INSERT INTO USER_GENRES (USER_EMAIL, GENRE) " +
+                            "VALUES ('" + email + "', '" + genre + "')";
+
+            st.executeUpdate(sql);
+            con.close();
+
+        } catch (SQLException e) {
+            System.out.println("Genre insert error!");
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+    public static void deleteUserGenres(String email) {
+        Connection con = null;
+
+        try {
+            con = DatabaseManager.connect();
+            Statement st = con.createStatement();
+
+            String sql =
+                    "DELETE FROM USER_GENRES " +
+                            "WHERE USER_EMAIL = '" + email + "'";
+
+            st.executeUpdate(sql);
+            con.close();
+
+        } catch (SQLException e) {
+            System.out.println("Delete genres error!");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static Ticket getLatestTicketByEmail(String email) {
+        Connection con = null;
+        try {
+            con = DatabaseManager.connect();
+            Statement st = con.createStatement();
+            String sql =
+                    "SELECT * FROM TICKETS " +
+                            "WHERE USER_EMAIL = '" + email + "' " +
+                            "ORDER BY ID DESC LIMIT 1";
+
+            ResultSet rs = st.executeQuery(sql);
+            if (rs.next()) {
+                String movieName = rs.getString("MOVIE_NAME");
+                String movieGenre = rs.getString("MOVIE_GENRE");
+                String cinemaName = rs.getString("CINEMA_NAME");
+                String hall = rs.getString("HALL");
+                String date = rs.getString("SHOW_DATE");
+                String showTime = rs.getString("SHOW_TIME");
+                String seat = rs.getString("SEAT");
+                String userEmail = rs.getString("USER_EMAIL");
+                con.close();
+                return new Ticket(movieName, movieGenre, cinemaName, hall, date,
+                        showTime, seat, userEmail);
+            }
+            con.close();
+        } catch (SQLException e) {
+            System.out.println("Get latest ticket error!");
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    //to get user genre and its counts for dashboard
+    public static ArrayList<DashStat> getUserGenres(String email) {
+        ArrayList<DashStat> stats = new ArrayList<>();
+        Connection con = null;
+        try {
+            con = DatabaseManager.connect();
+            Statement st = con.createStatement();
+            String sql =
+                    "SELECT MOVIE_GENRE, COUNT(*) AS TOTAL " +
+                            "FROM TICKETS " +
+                            "WHERE USER_EMAIL = '" + email + "' " +
+                            "GROUP BY MOVIE_GENRE";
+
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next()) {
+                String genre = rs.getString("MOVIE_GENRE");
+                int count = rs.getInt("TOTAL");
+                stats.add(new DashStat(genre, count));
+            }
+            con.close();
+        } catch (SQLException e) {
+            System.out.println("Get genres error!");
+            System.out.println(e.getMessage());
+        }
+        return stats;
+    }
+
 }

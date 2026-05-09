@@ -1,78 +1,69 @@
+import javax.swing.*;
 import java.io.*;
+import java.awt.Desktop;
 
-    public class TicketFileManager {
+public class TicketFileManager {
 
-        private static final String FILE_NAME = "ticket_history.txt";
+    private static String getFileName(String email) {
+        return "ticket_history_" + email.replace("@", "_").replace(".", "_") + ".txt";
+    }
 
-        // Save ticket details into a text file
-        public static void saveTicketToFile(Ticket ticket) {
+    public static void saveTicketToFile(Ticket ticket) {
+        String fileName = getFileName(ticket.getUserEmail());
 
-            FileWriter fw = null;
-            PrintWriter pw = null;
+        try (FileWriter fw = new FileWriter(fileName, true);
+             PrintWriter pw = new PrintWriter(fw)) {
 
-            try {
-                // true means append, so old tickets will not be deleted
-                fw = new FileWriter(FILE_NAME, true);
-                pw = new PrintWriter(fw);
+            pw.println("----- Ticket Booking -----");
+            pw.println("Movie: " + ticket.getMovieName());
+            pw.println("Movie Genre: " + ticket.getMovieGenre());
+            pw.println("Cinema: " + ticket.getCinemaName());
+            pw.println("Hall: " + ticket.getHall());
+            pw.println("Date: " + ticket.getDate());
+            pw.println("Time: " + ticket.getShowTime());
+            pw.println("Seat: " + ticket.getSeat());
+            pw.println("--------------------------");
+            pw.println();
 
-                pw.println("----- Ticket Booking -----");
-                pw.println("User Email: " + ticket.getUserEmail());
-                pw.println("Movie: " + ticket.getMovieName());
-                pw.println("Cinema: " + ticket.getCinemaName());
-                pw.println("Hall: " + ticket.getHall());
-                pw.println("Date: " + ticket.getDate());
-                pw.println("Time: " + ticket.getShowTime());
-                pw.println("Seat: " + ticket.getSeat());
-                pw.println("--------------------------");
-                pw.println();
-
-                System.out.println("Ticket saved to file successfully");
-
-            } catch (IOException e) {
-                System.out.println("File writing error!");
-                System.out.println(e.getMessage());
-
-            } finally {
-                if (pw != null) {
-                    pw.close();
-                }
-            }
-        }
-
-        // Read all ticket history from the file
-        public static String readTicketHistory() {
-
-            String result = "";
-            FileReader fr = null;
-            BufferedReader br = null;
-
-            try {
-                fr = new FileReader(FILE_NAME);
-                br = new BufferedReader(fr);
-
-                String line;
-
-                while ((line = br.readLine()) != null) {
-                    result = result + line + "\n";
-                }
-
-            } catch (FileNotFoundException e) {
-                result = "No ticket history found.";
-
-            } catch (IOException e) {
-                result = "File reading error: " + e.getMessage();
-
-            } finally {
-                try {
-                    if (br != null) {
-                        br.close();
-                    }
-                } catch (IOException e) {
-                    System.out.println("File closing error!");
-                }
-            }
-
-            return result;
+        } catch (IOException e) {
+            System.out.println("File writing error!");
+            System.out.println(e.getMessage());
         }
     }
 
+    public static String readTicketHistory(String email) {
+        String fileName = getFileName(email);
+        String result = "";
+
+        try (FileReader fr = new FileReader(fileName);
+             BufferedReader br = new BufferedReader(fr)) {
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                result += line + "\n";
+            }
+
+        } catch (FileNotFoundException e) {
+            result = "No ticket history found.";
+        } catch (IOException e) {
+            result = "File reading error: " + e.getMessage();
+        }
+
+        return result;
+    }
+
+    public static void openTicketHistoryFile(String email) {
+        String fileName = getFileName(email);
+        File file = new File(fileName);
+
+        try {
+            if (!file.exists()) {
+                JOptionPane.showMessageDialog(null, "No history file found.");
+                return;
+            }
+            Desktop.getDesktop().open(file);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Could not open history file.");
+        }
+    }
+}

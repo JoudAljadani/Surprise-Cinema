@@ -5,7 +5,7 @@ public class DatabaseManager {
     // Database information
     public static final String URL = "jdbc:mysql://localhost:3306/SurpriseCinemaDB";
     public static final String USER = "root";
-    public static final String PASSWORD = "Lena2004";
+    public static final String PASSWORD = "JanaBajaba038";
 
     // Create connection
     public static Connection connect() {
@@ -65,6 +65,7 @@ public class DatabaseManager {
                     "CREATE TABLE IF NOT EXISTS TICKETS (" +
                             "ID INT PRIMARY KEY AUTO_INCREMENT, " +
                             "MOVIE_NAME VARCHAR(100), " +
+                            "MOVIE_GENRE VARCHAR(100), " +
                             "CINEMA_NAME VARCHAR(100), " +
                             "HALL VARCHAR(50), " +
                             "SHOW_DATE VARCHAR(50), " +
@@ -73,6 +74,14 @@ public class DatabaseManager {
                             "USER_EMAIL VARCHAR(100))"
             );
             System.out.println("TICKETS table created successfully");
+
+            st.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS USER_GENRES (" +
+                            "ID INT PRIMARY KEY AUTO_INCREMENT, " +
+                            "USER_EMAIL VARCHAR(100), " +
+                            "GENRE VARCHAR(50))"
+            );
+            System.out.println("USER_GENRES table created successfully");
             con.close();
         }catch (SQLException e) {
             System.out.println("Table creation error!");
