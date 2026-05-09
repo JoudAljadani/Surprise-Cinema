@@ -171,60 +171,64 @@ public class SignUp extends JPanel {
                         String gender = (String) genderField.getSelectedItem();
 
                         try {
-                            //Check empty fields
-                            if (name.isEmpty() || email.isEmpty() || pass.isEmpty() || age.isEmpty()) {
-                                JOptionPane.showMessageDialog(null, "Please fill all fields");
-                                return;
+
+                                // Check empty fields
+                                if (ValidationManager.isSignUpEmpty(name, email, pass, age)) {
+                                    JOptionPane.showMessageDialog(null, "Please fill all fields");
+                                    return;
+                                }
+
+                                // Check email format
+                                if (!ValidationManager.isValidEmail(email)) {
+                                    JOptionPane.showMessageDialog(null, "Please enter a valid email address");
+                                    return;
+                                }
+
+                                // Check password length
+                                if (!ValidationManager.isValidPassword(pass)) {
+                                    JOptionPane.showMessageDialog(null, "Password must be at least 9 characters");
+                                    return;
+                                }
+
+                                // Check age
+                                if (!ValidationManager.isValidAge(age)) {
+                                    JOptionPane.showMessageDialog(null, "Age must be a number");
+                                    return;
+                                }
+
+                                int ageNumber = ValidationManager.convertAge(age);
+
+                                // Check if email already exists
+                                if (DatabaseQueries.emailExists(email)) {
+                                    JOptionPane.showMessageDialog(null, "Email already exists");
+                                    return;
+                                }
+
+                                User user = new User(
+                                        name,
+                                        email,
+                                        pass,
+                                        ageNumber,
+                                        gender
+                                );
+
+                                DatabaseQueries.addUser(user);
+
+                                Appframe.currentUser = user;
+
+                                JOptionPane.showMessageDialog(null, "Account created successfully");
+
+                                app.showPage(Appframe.PREFERENCES_GENRES);
+
+                            } catch (Exception ex) {
+
+                                JOptionPane.showMessageDialog(null, "Sign up error: " + ex.getMessage());
                             }
-
-                            //Convert age from String to int
-                            int ageNumber = Integer.parseInt(age);
-
-                            //Check if email already exists
-                            if (DatabaseQueries.emailExists(email)) {
-                                JOptionPane.showMessageDialog(null, "Email already exists");
-                                return;
-                            }
-
-                            //Create User object
-                            User user = new User(name, email, pass, ageNumber, gender);
-                            //Save user in database
-                            DatabaseQueries.addUser(user);
-                            JOptionPane.showMessageDialog(null, "Account created successfully");
-                            //Show next page
-                            app.showPage(Appframe.PREFERENCES_GENRES);
-
-                        }catch (NumberFormatException ex) {
-                            JOptionPane.showMessageDialog(null, "Age must be a number");
-                        }
                     }
                     pressed = false;
                     repaint();
             }
-            //----------------------------------------------------------------------------
 
-                /*
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    //if back arrow, navigate to back page (Splash page)
-                    if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
-                        app.showPage(Appframe.SPLASH);
-                    }
-                    backPressed = false;
-
-                    //if Sign Up = true, perform Sign Up action (Navigate to preferences page)
-                    if (pressed && buttonRect != null && buttonRect.contains(e.getPoint())) {
-                        String name = nameField.getText().trim();
-                        String email = emailField.getText().trim();
-                        String pass = new String(passwordField.getPassword());
-                        String age = ageField.getText().trim();
-                        String gender = (String) genderField.getSelectedItem();
-
-                        app.showPage(Appframe.PREFERENCES_GENRES);//Show next page
-                    }
-                    pressed = false;
-                    repaint();
-                }*/
                 @Override
                 public void mouseExited(MouseEvent e) {
                     pressed = false;

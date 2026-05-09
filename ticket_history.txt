@@ -1,0 +1,50 @@
+----- Ticket Booking -----
+User Email: LeenaTayeb@gmail.com
+Movie: Interstellar
+Cinema: AMC Cinema
+Hall: Hall 2
+Date: 2026-05-07
+Time: 8:25 AM
+Seat: A10
+--------------------------
+
+----- Ticket Booking -----
+User Email: LeenaTayeb@gmail.com
+Movie: Interstellar
+Cinema: AMC Cinema
+Hall: Hall 3
+Date: 2026-05-07
+Time: 2:14 PM
+Seat: A6
+--------------------------
+
+----- Ticket Booking -----
+User Email: LeenaTayeb@gmail.com
+Movie: Interstellar
+Cinema: AMC Cinema
+Hall: Hall 2
+Date: 2026-05-07
+Time: 12:14 PM
+Seat: B3
+--------------------------
+
+----- Ticket Booking -----
+User Email: LeenaTayeb@gmail.com
+Movie: Interstellar
+Cinema: AMC Cinema
+Hall: Hall 2
+Date: 2026-05-07
+Time: 3:23 AM
+Seat: B12
+--------------------------
+
+----- Ticket Booking -----
+User Email: LeenaTayeb@gmail.com
+Movie: Interstellar
+Cinema: AMC Cinema
+Hall: Hall 3
+Date: 2026-05-07
+Time: 12:12 AM
+Seat: C7
+--------------------------
+

@@ -113,9 +113,12 @@ public class chooseTimePage extends JPanel {
                         // Create ticket object
                         Ticket ticket = new Ticket(movieName, cinemaName, hall, date,
                                 showTime, seat, userEmail);
+                        Appframe.currentTicket = ticket;
 
                         // Save ticket into database
                         DatabaseQueries.addTicket(ticket);
+                        // Save ticket into text file using IO Streams
+                        TicketFileManager.saveTicketToFile(ticket);
                         JOptionPane.showMessageDialog(null, "Ticket booked successfully");
                         // Go to success page
                         app.showPage(Appframe.TICKET_SUCCESS);

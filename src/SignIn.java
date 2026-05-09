@@ -150,8 +150,14 @@ public class SignIn extends JPanel {
                         String email = emailField.getText().trim();
                         String pass = new String(passwordField.getPassword());
 
-                        if (email.isEmpty() || pass.isEmpty()) {
+                        if (ValidationManager.isSignInEmpty(email, pass)) {
                             JOptionPane.showMessageDialog(null, "Please enter email and password");
+                            return;
+                        }
+
+                        //Check if email is Gmail
+                        if (!ValidationManager.isValidEmail(email)) {
+                            JOptionPane.showMessageDialog(null, "Please enter a valid email address");
                             return;
                         }
 
