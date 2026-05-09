@@ -158,9 +158,7 @@ public class SignIn extends JPanel {
                         User user = DatabaseQueries.getUserByLogin(email, pass);
                         if (user != null) {
                             Appframe.currentUser = user;
-
                             JOptionPane.showMessageDialog(null, "Login successful");
-
                             app.showPage(Appframe.HOME_PAGE);
 
                         } else {

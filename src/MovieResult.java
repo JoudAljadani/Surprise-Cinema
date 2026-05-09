@@ -73,6 +73,7 @@ public class MovieResult extends JPanel {
                     }
 
                     if (acceptPressed && acceptBtnRect != null && acceptBtnRect.contains(e.getPoint())) {
+                        Appframe.currentMovie = currentMovie;
                         app.showPage(Appframe.CHOOSE_TIME);
                     }
 
@@ -119,14 +120,8 @@ public class MovieResult extends JPanel {
             int titleY = 80;
             int x = w / 2;
 
-            UIComponents.drawCenteredText(
-                    g2,
-                    "Your surprise movie is",
-                    x,
-                    titleY,
-                    UIComponents.FONT_TITLE,
-                    UIComponents.TEXT_WHITE
-            );
+            UIComponents.drawCenteredText(g2, "Your surprise movie is", x, titleY,
+                    UIComponents.FONT_TITLE, UIComponents.TEXT_WHITE);
 
             int boxW = 250;
             int boxH = 300;
@@ -139,51 +134,25 @@ public class MovieResult extends JPanel {
             Movie m = currentMovie;
 
             if (m == null) {
-                UIComponents.drawCenteredText(
-                        g2,
-                        "Loading...",
-                        x,
-                        boxY + boxH / 2,
-                        UIComponents.FONT_BODY,
-                        UIComponents.TEXT_BLACK
-                );
+                UIComponents.drawCenteredText(g2, "Loading...", x, boxY + boxH / 2,
+                        UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
                 return;
             }
 
             if (m.posterImage != null) {
-
-                g2.drawImage(
-                        m.posterImage,
-                        boxX + 15,
-                        boxY + 15,
-                        boxW - 30,
-                        boxH - 30,
-                        null
-                );
-
+                g2.drawImage(m.posterImage, boxX + 15, boxY + 15,
+                        boxW - 30, boxH - 30, null);
             } else {
-
-                UIComponents.drawCenteredText(
-                        g2,
-                        "No Poster",
-                        x,
-                        boxY + boxH / 2,
-                        UIComponents.FONT_BODY,
-                        UIComponents.TEXT_BLACK
-                );
+                UIComponents.drawCenteredText(g2, "No Poster", x, boxY + boxH / 2,
+                        UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
             }
 
             int infoX = 60;
             int infoW = w - 2 * infoX;
             int topY = boxY + boxH + 35;
 
-            UIComponents.drawCenteredText(
-                    g2,
-                    m.name,
-                    x,
-                    topY,
-                    new Font("Arial", Font.BOLD, 20),
-                    UIComponents.TEXT_WHITE
+            UIComponents.drawCenteredText(g2, m.name, x, topY,
+                    new Font("Arial", Font.BOLD, 20), UIComponents.TEXT_WHITE
             );
 
             int storyY = topY + 34;
@@ -191,14 +160,8 @@ public class MovieResult extends JPanel {
             g2.setFont(UIComponents.FONT_BODY);
             g2.setColor(UIComponents.TEXT_WHITE);
 
-            int storyEndY = drawWrappedReturnEndY(
-                    g2,
-                    m.story,
-                    infoX,
-                    storyY,
-                    infoW,
-                    18
-            );
+            int storyEndY = drawWrappedReturnEndY(g2, m.story, infoX, storyY,
+                    infoW, 18);
 
             int metaY = storyEndY + 22;
 
@@ -249,10 +212,7 @@ public class MovieResult extends JPanel {
 
             FontMetrics fm = g2.getFontMetrics();
 
-            if (text == null
-                    || text.isEmpty()
-                    || text.equals("N/A")) {
-
+            if (text == null || text.isEmpty() || text.equals("N/A")) {
                 text = "No overview available.";
             }
 

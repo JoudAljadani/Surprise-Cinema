@@ -67,9 +67,7 @@ public class DatabaseQueries {
     }
 
     public static User getUserByLogin(String email, String password) {
-
         Connection con = null;
-
         try {
             con = DatabaseManager.connect();
             Statement st = con.createStatement();
@@ -112,10 +110,9 @@ public class DatabaseQueries {
             // (3) Execute SQL statement
             String sql =
                     "INSERT INTO TICKETS " +
-                            "(MOVIE_NAME, MOVIE_GENRE, MOVIE_COUNTRY, CINEMA_NAME, HALL, SHOW_DATE, SHOW_TIME, SEAT, USER_EMAIL) " +                            "VALUES (" +
+                            "(MOVIE_NAME, MOVIE_GENRE, CINEMA_NAME, HALL, SHOW_DATE, SHOW_TIME, SEAT, USER_EMAIL) " +                            "VALUES (" +
                             "'" + ticket.getMovieName() + "', " +
                             "'" + ticket.getMovieGenre() + "', " +
-                            "'" + ticket.getMovieCountry() + "', " +
                             "'" + ticket.getCinemaName() + "', " +
                             "'" + ticket.getHall() + "', " +
                             "'" + ticket.getDate() + "', " +
@@ -152,23 +149,6 @@ public class DatabaseQueries {
         }
     }
 
-    public static void addUserCountry(String email, String country) {
-        Connection con = null;
-        try {
-            con = DatabaseManager.connect();
-            Statement st = con.createStatement();
-
-            String sql =
-                    "INSERT INTO USER_COUNTRIES (USER_EMAIL, COUNTRY) " +
-                            "VALUES ('" + email + "', '" + country + "')";
-
-            st.executeUpdate(sql);
-            con.close();
-        } catch (SQLException e) {
-            System.out.println("Country insert error!");
-            System.out.println(e.getMessage());
-        }
-    }
 
     public static void deleteUserGenres(String email) {
         Connection con = null;
@@ -190,24 +170,6 @@ public class DatabaseQueries {
         }
     }
 
-    public static void deleteUserCountries(String email) {
-        Connection con = null;
-
-        try {
-            con = DatabaseManager.connect();
-            Statement st = con.createStatement();
-
-            String sql =
-                    "DELETE FROM USER_COUNTRIES " +
-                            "WHERE USER_EMAIL = '" + email + "'";
-            st.executeUpdate(sql);
-            con.close();
-        } catch (SQLException e) {
-            System.out.println("Delete countries error!");
-            System.out.println(e.getMessage());
-        }
-    }
-
     public static Ticket getLatestTicketByEmail(String email) {
 
         Connection con = null;
@@ -218,13 +180,12 @@ public class DatabaseQueries {
             String sql =
                     "SELECT * FROM TICKETS " +
                             "WHERE USER_EMAIL = '" + email + "' " +
-                            "ORDER BY ID DESC";
+                            "ORDER BY ID DESC LIMIT 1";
 
             ResultSet rs = st.executeQuery(sql);
             if (rs.next()) {
                 String movieName = rs.getString("MOVIE_NAME");
                 String movieGenre = rs.getString("MOVIE_GENRE");
-                String movieCountry = rs.getString("MOVIE_COUNTRY");
                 String cinemaName = rs.getString("CINEMA_NAME");
                 String hall = rs.getString("HALL");
                 String date = rs.getString("SHOW_DATE");
@@ -232,7 +193,7 @@ public class DatabaseQueries {
                 String seat = rs.getString("SEAT");
                 String userEmail = rs.getString("USER_EMAIL");
                 con.close();
-                return new Ticket(movieName, movieGenre, movieCountry, cinemaName, hall, date,
+                return new Ticket(movieName, movieGenre, cinemaName, hall, date,
                         showTime, seat, userEmail);
             }
             con.close();

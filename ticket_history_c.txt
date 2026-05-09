@@ -1,0 +1,45 @@
+----- Ticket Booking -----
+Movie: Interstellar
+Cinema: AMC Cinema
+Hall: Hall 1
+Date: 2026-05-09
+Time: 4:28 PM
+Seat: D8
+--------------------------
+
+----- Ticket Booking -----
+Movie: Interstellar
+Cinema: AMC Cinema
+Hall: Hall 1
+Date: 2026-05-09
+Time: 8:55 PM
+Seat: B11
+--------------------------
+
+----- Ticket Booking -----
+Movie: Interstellar
+Cinema: AMC Cinema
+Hall: Hall 1
+Date: 2026-05-09
+Time: 2:24 PM
+Seat: C14
+--------------------------
+
+----- Ticket Booking -----
+Movie: Interstellar
+Cinema: AMC Cinema
+Hall: Hall 1
+Date: 2026-05-09
+Time: 2:30 AM
+Seat: E10
+--------------------------
+
+----- Ticket Booking -----
+Movie: Interstellar
+Cinema: AMC Cinema
+Hall: Hall 2
+Date: 2026-05-09
+Time: 2:47 PM
+Seat: E5
+--------------------------
+

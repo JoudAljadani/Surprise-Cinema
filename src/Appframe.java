@@ -4,6 +4,7 @@ import java.awt.*;
 public class Appframe extends JFrame {
 
     public static User currentUser;
+    public static Movie currentMovie;
     public static Ticket currentTicket;
 
     public static final String SPLASH = "SPLASH";

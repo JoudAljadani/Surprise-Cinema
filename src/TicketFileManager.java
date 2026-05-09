@@ -16,6 +16,7 @@ public class TicketFileManager {
 
             pw.println("----- Ticket Booking -----");
             pw.println("Movie: " + ticket.getMovieName());
+            pw.println("Movie Genre: " + ticket.getMovieGenre());
             pw.println("Cinema: " + ticket.getCinemaName());
             pw.println("Hall: " + ticket.getHall());
             pw.println("Date: " + ticket.getDate());
