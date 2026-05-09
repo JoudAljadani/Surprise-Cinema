@@ -92,8 +92,11 @@ public class PreferencesGenres extends JPanel {
                             );
                         }
 
-                        // Go to next page
-                        app.showPage(Appframe.PREFERENCES_COUNTRIES);
+                        UserPreferences.selectedGenres.clear();
+
+                        UserPreferences.selectedGenres.addAll(selectedGenres);
+
+                        app.showPage(Appframe.HOME_PAGE);
                     }
                     nextPressed = false;
                     repaint();
@@ -146,7 +149,7 @@ public class PreferencesGenres extends JPanel {
             //Next button
             int btnW = 300, btnH = 55, btnX = (w - btnW) / 2, btnY = 600;
             nextBtnRect = new Rectangle(btnX, btnY, btnW, btnH);
-            UIComponents.drawButton(g2, nextBtnRect, "Next", nextPressed);
+            UIComponents.drawButton(g2, nextBtnRect, "Save", nextPressed);
         }
     }
 
