@@ -1,0 +1,30 @@
+----- Ticket Booking -----
+Movie: Lilo & Stitch
+Movie Genre: Comedy
+Cinema: VOX Cinema
+Hall: Hall 2
+Date: 2026-05-09
+Time: 12:26 PM
+Seat: E10
+--------------------------
+
+----- Ticket Booking -----
+Movie: The Red Line
+Movie Genre: Drama
+Cinema: Muvi Cinema
+Hall: Hall 3
+Date: 2026-05-09
+Time: 11:02 AM
+Seat: B14
+--------------------------
+
+----- Ticket Booking -----
+Movie: Dracula Untold
+Movie Genre: Horror
+Cinema: Muvi Cinema
+Hall: Hall 2
+Date: 2026-05-09
+Time: 6:50 PM
+Seat: B14
+--------------------------
+

@@ -86,37 +86,20 @@ public class chooseTimePage extends JPanel {
                             return;
                         }
 
-                        // -----------------------------
-                        // Ticket Implementation
-                        // -----------------------------
-
-                        // Movie name - WILL CHANGE
                         String movieName = Appframe.currentMovie.name;
                         String movieGenre = Appframe.currentMovie.genre;
 
-                        // Cinema name - WILL CHANGE
-                        String cinemaName = "AMC Cinema";
+                        String cinemaName = BookingManager.getRandomCinema();
+                        String hall = BookingManager.generateHall();
+                        String date = BookingManager.generateDate();
+                        String showTime = BookingManager.generateRandomTime(selectedSlot.label);
+                        String seat = BookingManager.generateSeat();
 
-                        // Random hall - WILL CHANGE
-                        int hallNumber = (int)(Math.random() * 3) + 1;
-                        String hall = "Hall " + hallNumber;
-                        // Current date
-                        String date = java.time.LocalDate.now().toString();
-                        // Selected show time
-                        String showTime = generateRandomTime(selectedSlot.label);
-                        // Random seat
-                        char row = (char)('A' + (int)(Math.random() * 5));
-                        int number = (int)(Math.random() * 15) + 1;
-                        String seat = row + String.valueOf(number);
-
-                        // Current logged in user
                         String userEmail = Appframe.currentUser.getEmail();
 
-                        // Create ticket object
                         Ticket ticket = new Ticket(movieName, movieGenre, cinemaName, hall, date,
                                 showTime, seat, userEmail);
                         Appframe.currentTicket = ticket;
-
 
                         // Save ticket into database
                         DatabaseQueries.addTicket(ticket);
@@ -195,38 +178,6 @@ public class chooseTimePage extends JPanel {
             int y = topY + row * (cardH + gapY);
             cards[i].rect = new Rectangle(x, y, cardW, cardH);
         }
-    }
-
-    private String generateRandomTime(String range) {
-
-        String[] parts = range.split(" - ");
-
-        java.time.format.DateTimeFormatter formatter =
-                java.time.format.DateTimeFormatter.ofPattern("h:mm a");
-
-        java.time.LocalTime start =
-                java.time.LocalTime.parse(parts[0], formatter);
-
-        java.time.LocalTime end =
-                java.time.LocalTime.parse(parts[1], formatter);
-
-        int startMinutes = start.getHour() * 60 + start.getMinute();
-        int endMinutes = end.getHour() * 60 + end.getMinute();
-
-        // Handle range that crosses midnight, مثل 9:00 PM - 5:59 AM
-        if (endMinutes < startMinutes) {
-            endMinutes += 24 * 60;
-        }
-
-        int randomMinutes =
-                startMinutes + (int)(Math.random() * (endMinutes - startMinutes + 1));
-
-        randomMinutes = randomMinutes % (24 * 60);
-
-        java.time.LocalTime randomTime =
-                java.time.LocalTime.of(randomMinutes / 60, randomMinutes % 60);
-
-        return randomTime.format(formatter);
     }
 
     //Data class for each showtime

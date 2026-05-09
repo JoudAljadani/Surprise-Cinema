@@ -19,6 +19,7 @@ public class Movie {
         this.rating = rating;
         this.story = story;
         this.posterUrl = posterUrl;
+
         try {
             posterImage = new ImageIcon(new java.net.URL(posterUrl)).getImage();
         } catch (Exception e) {

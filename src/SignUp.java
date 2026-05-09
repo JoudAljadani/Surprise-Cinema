@@ -150,9 +150,6 @@ public class SignUp extends JPanel {
                     repaint();
                 }
 
-            //----------------------------------------------------------------------------
-            //-----------------------SignUp Implementation HERE---------------------------
-            //----------------------------------------------------------------------------
             public void mouseReleased(MouseEvent e) {
                     //if back arrow, navigate to Splash page
                     if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
@@ -202,30 +199,7 @@ public class SignUp extends JPanel {
                     pressed = false;
                     repaint();
             }
-            //----------------------------------------------------------------------------
 
-                /*
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    //if back arrow, navigate to back page (Splash page)
-                    if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
-                        app.showPage(Appframe.SPLASH);
-                    }
-                    backPressed = false;
-
-                    //if Sign Up = true, perform Sign Up action (Navigate to preferences page)
-                    if (pressed && buttonRect != null && buttonRect.contains(e.getPoint())) {
-                        String name = nameField.getText().trim();
-                        String email = emailField.getText().trim();
-                        String pass = new String(passwordField.getPassword());
-                        String age = ageField.getText().trim();
-                        String gender = (String) genderField.getSelectedItem();
-
-                        app.showPage(Appframe.PREFERENCES_GENRES);//Show next page
-                    }
-                    pressed = false;
-                    repaint();
-                }*/
                 @Override
                 public void mouseExited(MouseEvent e) {
                     pressed = false;

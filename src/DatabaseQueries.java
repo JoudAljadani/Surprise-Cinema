@@ -4,7 +4,7 @@ public class DatabaseQueries {
 
     //-------------------------------------------------------------------------------
     //User
-    // Add new user to USERS table
+    // Add new user to USERS table (signup)
     public static void addUser(User user) {
         Connection con = null;
 
@@ -66,6 +66,7 @@ public class DatabaseQueries {
         return false;
     }
 
+    //login
     public static User getUserByLogin(String email, String password) {
         Connection con = null;
         try {
@@ -171,9 +172,7 @@ public class DatabaseQueries {
     }
 
     public static Ticket getLatestTicketByEmail(String email) {
-
         Connection con = null;
-
         try {
             con = DatabaseManager.connect();
             Statement st = con.createStatement();
@@ -204,6 +203,7 @@ public class DatabaseQueries {
         return null;
     }
 
+    //to get user genre and its counts for dashboard
     public static ArrayList<DashStat> getUserGenres(String email) {
         ArrayList<DashStat> stats = new ArrayList<>();
         Connection con = null;

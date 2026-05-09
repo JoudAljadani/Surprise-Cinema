@@ -85,14 +85,11 @@ public class PreferencesGenres extends JPanel {
                         DatabaseQueries.deleteUserGenres(Appframe.currentUser.getEmail());
                         // Save genres
                         for (String genre : selectedGenres) {
-
                             DatabaseQueries.addUserGenre(Appframe.currentUser.getEmail(), genre);
                         }
 
                         UserPreferences.selectedGenres.clear();
-
                         UserPreferences.selectedGenres.addAll(selectedGenres);
-
                         app.showPage(Appframe.HOME_PAGE);
                     }
                     nextPressed = false;
