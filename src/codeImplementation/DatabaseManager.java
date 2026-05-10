@@ -1,3 +1,5 @@
+package codeImplementation;
+import GUI.*;
 import java.sql.*;
 
 public class DatabaseManager {
@@ -5,7 +7,7 @@ public class DatabaseManager {
     // Database information
     public static final String URL = "jdbc:mysql://localhost:3306/SurpriseCinemaDB";
     public static final String USER = "root";
-    public static final String PASSWORD = "Lena2004";
+    public static final String PASSWORD = "JanaBajaba038";
 
     // Create connection
     public static Connection connect() {
@@ -117,7 +119,7 @@ public class DatabaseManager {
             System.out.println("MOVIES table created successfully");
 
             // SHOWS table
-            // UNIQUE means: same hall cannot have more than one show at the same date and time
+            // UNIQUE because same hall cannot have more than one show at the same date and time
             st.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS SHOWS (" +
                             "ID INT PRIMARY KEY AUTO_INCREMENT, " +
@@ -131,7 +133,7 @@ public class DatabaseManager {
             System.out.println("SHOWS table created successfully");
 
             // BOOKED_SEATS table
-            // UNIQUE means: same seat cannot be booked twice for the same show
+            // UNIQUE because same seat cannot be booked twice for the same show
             st.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS BOOKED_SEATS (" +
                             "ID INT PRIMARY KEY AUTO_INCREMENT, " +
@@ -141,9 +143,7 @@ public class DatabaseManager {
                             "UNIQUE (SHOW_ID, SEAT))"
             );
             System.out.println("BOOKED_SEATS table created successfully");
-
             con.close();
-
         } catch (SQLException e) {
             System.out.println("Table creation error!");
             System.out.println(e.getMessage());

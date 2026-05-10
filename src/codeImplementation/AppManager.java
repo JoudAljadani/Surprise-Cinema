@@ -1,8 +1,18 @@
+package codeImplementation;
+
+import GUI.*;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class AppManager {
+
+    // Custom exception inside AppManager
+    public static class ValidationException extends Exception {
+        public ValidationException(String message) {
+            super(message);
+        }
+    }
 
     //Booking
     public static final String CINEMA_NAME = "Surprise Cinema";
@@ -28,6 +38,7 @@ public class AppManager {
     public static synchronized boolean bookTicket(String selectedTime) {
 
         System.out.println("Booking started in: " + Thread.currentThread().getName());
+
         try {
             Thread.sleep(1500);
         } catch (InterruptedException e) {
@@ -38,10 +49,10 @@ public class AppManager {
             return false;
         }
 
-        String movieName = Appframe.currentMovie.name;
-        String movieGenre = Appframe.currentMovie.genre;
-        String posterUrl = Appframe.currentMovie.posterUrl;
-        String duration = Appframe.currentMovie.duration;
+        String movieName = Appframe.currentMovie.getName();
+        String movieGenre = Appframe.currentMovie.getGenre();
+        String posterUrl = Appframe.currentMovie.getPosterUrl();
+        String duration = Appframe.currentMovie.getDuration();
         String userEmail = Appframe.currentUser.getEmail();
 
         Show show = DatabaseQueries.getShowByMovieAndTime(
@@ -81,6 +92,108 @@ public class AppManager {
 
         return true;
     }
+
+    //--------------------------------------------------------
+    // Sign up / sign in implementation
+
+    public static User signUpUser(String name, String email, String password,
+                                  String age, String gender) throws ValidationException {
+
+        validateSignUpInput(name, email, password, age);
+
+        int ageNumber = convertAge(age);
+
+        if (DatabaseQueries.emailExists(email)) {
+            throw new ValidationException("Email already exists");
+        }
+
+        User user = new User(
+                name,
+                email,
+                password,
+                ageNumber,
+                gender
+        );
+
+        DatabaseQueries.addUser(user);
+
+        return user;
+    }
+
+    public static User signInUser(String email, String password) throws ValidationException {
+
+        validateSignInInput(email, password);
+
+        User user = DatabaseQueries.getUserByLogin(email, password);
+
+        if (user == null) {
+            throw new ValidationException("Wrong email or password");
+        }
+
+        return user;
+    }
+
+    //--------------------------------------------------------
+    // Validation with exception handling
+
+    public static void validateSignUpInput(String name, String email,
+                                           String password, String age)
+            throws ValidationException {
+
+        if (name.isEmpty() || email.isEmpty() || password.isEmpty() || age.isEmpty()) {
+            throw new ValidationException("Please fill all fields");
+        }
+
+        validateEmail(email);
+        validatePassword(password);
+        validateAge(age);
+    }
+
+    public static void validateSignInInput(String email, String password)
+            throws ValidationException {
+
+        if (email.isEmpty() || password.isEmpty()) {
+            throw new ValidationException("Please enter email and password");
+        }
+
+        validateEmail(email);
+    }
+
+    public static void validateEmail(String email) throws ValidationException {
+
+        if (!email.toLowerCase().endsWith("@gmail.com")) {
+            throw new ValidationException("Please enter a valid email address");
+        }
+    }
+
+    public static void validatePassword(String password) throws ValidationException {
+
+        if (password.length() <= 8) {
+            throw new ValidationException("Password must be at least 9 characters");
+        }
+    }
+
+    public static void validateAge(String age) throws ValidationException {
+
+        try {
+            Integer.parseInt(age);
+        } catch (NumberFormatException e) {
+            throw new ValidationException("Age must be a number");
+        }
+    }
+
+    public static int convertAge(String age) throws ValidationException {
+
+        try {
+            return Integer.parseInt(age);
+        } catch (NumberFormatException e) {
+            throw new ValidationException("Age must be a number");
+        }
+    }
+
+    //--------------------------------------------------------
+    // Rating
+
     public static boolean submitRating(int rating) {
 
         if (Appframe.currentUser == null) {
@@ -108,74 +221,45 @@ public class AppManager {
             return false;
         }
 
-        DatabaseQueries.addRating(Appframe.currentUser.getEmail(),
-                Appframe.currentTicket.getMovieName(), rating);
-        TicketFileManager.saveTicketToFile(Appframe.currentTicket, rating); // Pass rating here
+        DatabaseQueries.addRating(
+                Appframe.currentUser.getEmail(),
+                Appframe.currentTicket.getMovieName(),
+                rating
+        );
+
+        TicketFileManager.saveTicketToFile(Appframe.currentTicket, rating);
 
         return true;
     }
 
     //--------------------------------------------------------
-    //dashboard
-        public static String[] getGenreLabels(String email) {
-            ArrayList<DashStat> stats = DatabaseQueries.getUserGenres(email);
-            String[] labels = new String[stats.size()];
+    // Dashboard
 
-            for (int i = 0; i < stats.size(); i++) {
-                labels[i] = stats.get(i).getLabel();
-            }
-            return labels;
+    public static String[] getGenreLabels(String email) {
+        ArrayList<DashStat> stats = DatabaseQueries.getUserGenres(email);
+        String[] labels = new String[stats.size()];
+
+        for (int i = 0; i < stats.size(); i++) {
+            labels[i] = stats.get(i).getLabel();
         }
 
-        public static int[] getGenreCounts(String email) {
-            ArrayList<DashStat> stats = DatabaseQueries.getUserGenres(email);
-            int[] counts = new int[stats.size()];
+        return labels;
+    }
 
-            for (int i = 0; i < stats.size(); i++) {
-                counts[i] = stats.get(i).getCount();
-            }
+    public static int[] getGenreCounts(String email) {
+        ArrayList<DashStat> stats = DatabaseQueries.getUserGenres(email);
+        int[] counts = new int[stats.size()];
 
-            return counts;
+        for (int i = 0; i < stats.size(); i++) {
+            counts[i] = stats.get(i).getCount();
         }
+
+        return counts;
+    }
 
     //--------------------------------------------------------
-    //App validation
+    // Thread demo
 
-    // Check empty sign up fields
-    public static boolean isSignUpEmpty(String name, String email, String password, String age) {
-        return name.isEmpty() || email.isEmpty() || password.isEmpty() || age.isEmpty();
-    }
-
-    // Check empty sign in fields
-    public static boolean isSignInEmpty(String email, String password) {
-        return email.isEmpty() || password.isEmpty();
-    }
-
-    // Check email format
-    public static boolean isValidEmail(String email) {
-        return email.toLowerCase().endsWith("@gmail.com");
-    }
-
-    // Check password length
-    public static boolean isValidPassword(String password) {
-        return password.length() > 8;
-    }
-
-    // Check if age is a number
-    public static boolean isValidAge(String age) {
-        try {
-            Integer.parseInt(age);
-            return true;
-        }catch(NumberFormatException e) {
-            return false;
-        }
-    }
-    // Convert age to int
-    public static int convertAge(String age) {
-        return Integer.parseInt(age);
-    }
-
-    //thread
     public static void runTwoUsersSameSeatDemo(String selectedTime) {
 
         if (Appframe.currentMovie == null) {
@@ -239,5 +323,3 @@ public class AppManager {
         user2Thread.start();
     }
 }
-
-

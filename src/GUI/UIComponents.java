@@ -1,3 +1,5 @@
+package GUI;
+import codeImplementation.*;
 import java.awt.*;
 
 public class UIComponents {

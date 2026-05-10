@@ -1,20 +1,22 @@
+package GUI;
+import codeImplementation.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class TicketSuccess extends JPanel {
+public class MyTicket extends JPanel {
 
     //Variables
     private final Appframe app;//To navigate between pages
     private final Image bg;//Background image
 
     //Clickable button
-    private Rectangle backBtnRect;
-    private boolean backPressed = false;
+    private Rectangle closeBtnRect;
+    private boolean closePressed = false;
 
-//------------------------------------------------------------
+    //------------------------------------------------------------
 
-    public TicketSuccess(Appframe app) {
+    public MyTicket(Appframe app) {
         this.app = app;
 
         //Background
@@ -28,38 +30,38 @@ public class TicketSuccess extends JPanel {
     class TicketPanel extends JPanel {
 
         TicketPanel() {
-
             addMouseListener(new MouseAdapter() {
 
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    //if back to home is pressed
-                    if (backBtnRect != null && backBtnRect.contains(e.getPoint())) {
-                        backPressed = true;
+                    //if close is pressed
+                    if (closeBtnRect != null && closeBtnRect.contains(e.getPoint())) {
+                        closePressed = true;
                         repaint();
                     }
                 }
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    //if back, navigate to home page
-                    if (backPressed && backBtnRect != null && backBtnRect.contains(e.getPoint())) {
+                    //if close, navigate to home page
+                    if (closePressed && closeBtnRect != null && closeBtnRect.contains(e.getPoint())) {
                         app.showPage(Appframe.HOME_PAGE);
                     }
-                    backPressed = false;
+                    closePressed = false;
                     repaint();
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
-                    backPressed = false;
+                    closePressed = false;
                     repaint();
                 }
             });
         }
 
         @Override
-        protected void paintComponent(Graphics g) {//this is to draw UI elements
+        //Draw UI elements
+        protected void paintComponent(Graphics g) {
             super.paintComponent(g);
 
             Graphics2D g2 = (Graphics2D) g;
@@ -69,35 +71,50 @@ public class TicketSuccess extends JPanel {
             //Get panel width and height
             int w = getWidth(), h = getHeight();
 
-            g2.drawImage(bg, 0, 0, w, h, null);//background
+            //Background
+            g2.drawImage(bg, 0, 0, w, h, null);
 
             //Title
             int titleY = 95, x = w / 2;
-            UIComponents.drawCenteredText(g2,"Your Ticket is Ready!", x, titleY,
-                    UIComponents.FONT_TITLE, UIComponents.TEXT_WHITE);
+            UIComponents.drawCenteredText(g2, "Your current ticket", x, titleY,
+                    UIComponents.FONT_BRAND, UIComponents.TEXT_WHITE);
 
             //Ticket box
             int boxW = 260, boxH = 300, boxX = (w - boxW) / 2, boxY = titleY + 35;
             g2.setColor(Color.WHITE);
             g2.fillRoundRect(boxX, boxY, boxW, boxH, 22, 22);
 
+            // If no ticket in memory, get latest ticket from database
+            if (Appframe.currentTicket == null) {
+                Appframe.currentTicket = DatabaseQueries.getLatestTicketByEmail(Appframe.currentUser.getEmail());
+            }
 
-            //Text in the ticket box
+            // Check if the ticket is expired
+            if (Appframe.currentTicket != null) {
+
+                String ticketDate = Appframe.currentTicket.getDate();
+
+                String today = java.time.LocalDate.now().toString();
+
+                // If ticket date is not today, remove it
+                if (ticketDate.compareTo(today) < 0) {
+                    Appframe.currentTicket = null;
+                }
+            }
+
+            // Current ticket
             Ticket ticket = Appframe.currentTicket;
 
-            g2.setColor(Color.BLACK);
-            g2.setFont(new Font("Arial", Font.PLAIN, 14));
-
-            if (ticket == null) {
-                UIComponents.drawCenteredText(g2, "No ticket found", x,
-                        boxY + boxH / 2 + 6,
-                        UIComponents.FONT_BODY,
-                        UIComponents.TEXT_BLACK);
+            if (ticket == null) {//if there is not ticket booked
+                UIComponents.drawCenteredText(g2, "No ticket booked yet", x, boxY + boxH / 2 + 6,
+                        UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
             } else {
                 int textX = boxX + 25;
-                int textY = boxY + 55;
-                int lineGap = 28;
+                int textY = boxY + 50;
+                int lineGap = 30;
 
+                g2.setColor(Color.BLACK);
+                g2.setFont(new Font("Arial", Font.PLAIN, 14));
                 g2.drawString("Movie: " + ticket.getMovieName(), textX, textY);
                 g2.drawString("Duration: " + ticket.getDuration(), textX, textY + lineGap);
                 g2.drawString("Cinema: " + ticket.getCinemaName(), textX, textY + lineGap * 2);
@@ -106,16 +123,17 @@ public class TicketSuccess extends JPanel {
                 g2.drawString("Time: " + ticket.getShowTime(), textX, textY + lineGap * 5);
                 g2.drawString("Seat: " + ticket.getSeat(), textX, textY + lineGap * 6);
             }
+            // --------------------------------------------------------
 
             //Enjoying message
             int msgY = boxY + boxH + 70;
-            UIComponents.drawCenteredText(g2,"Lights off, volume up, just enjoy the ride!!!", x,
-                    msgY, new Font("Arial", Font.PLAIN, 18), UIComponents.TEXT_WHITE_SOFT);
+            UIComponents.drawCenteredText(g2, "Lights off, volume up, just enjoy the ride!", x, msgY,
+                    new Font("Arial", Font.PLAIN, 18), UIComponents.TEXT_WHITE_SOFT);
 
-            //Back to homepage button and text
+            //Close button
             int btnW = 300, btnH = 55, btnX = (w - btnW) / 2, btnY = 600;
-            backBtnRect = new Rectangle(btnX, btnY, btnW, btnH);
-            UIComponents.drawButton(g2, backBtnRect, "Back to Home", backPressed);
+            closeBtnRect = new Rectangle(btnX, btnY, btnW, btnH);
+            UIComponents.drawButton(g2, closeBtnRect, "Close", closePressed);
         }
     }
 }

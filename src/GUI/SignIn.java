@@ -1,3 +1,5 @@
+package GUI;
+import codeImplementation.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -139,36 +141,27 @@ public class SignIn extends JPanel {
 
                     //Sign In
                     if (pressed && buttonRect != null && buttonRect.contains(e.getPoint())) {
-                        //String email = emailField.getText().trim();
-                        //String pass = new String(passwordField.getPassword());
-                        //Navigate to next page (homepage)
-                        //app.showPage(Appframe.HOME_PAGE);
 
-                        //----------------------------------------------------------------------------
-                        //-----------------------SignIn Implementation HERE---------------------------
-                        //----------------------------------------------------------------------------
                         String email = emailField.getText().trim();
                         String pass = new String(passwordField.getPassword());
 
-                        if (AppManager.isSignInEmpty(email, pass)) {
-                            JOptionPane.showMessageDialog(null, "Please enter email and password");
-                            return;
-                        }
+                        try {
 
-                        //Check if email is Gmail
-                        if (!AppManager.isValidEmail(email)) {
-                            JOptionPane.showMessageDialog(null, "Please enter a valid email address");
-                            return;
-                        }
+                            User user = AppManager.signInUser(email, pass);
 
-                        User user = DatabaseQueries.getUserByLogin(email, pass);
-                        if (user != null) {
                             Appframe.currentUser = user;
+
                             JOptionPane.showMessageDialog(null, "Login successful");
+
                             app.showPage(Appframe.HOME_PAGE);
 
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Wrong email or password");
+                        } catch (AppManager.ValidationException ex) {
+
+                            JOptionPane.showMessageDialog(null, ex.getMessage());
+
+                        } catch (Exception ex) {
+
+                            JOptionPane.showMessageDialog(null, "Sign in error: " + ex.getMessage());
                         }
                     }
                     pressed = false;

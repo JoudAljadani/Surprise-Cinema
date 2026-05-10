@@ -1,0 +1,11 @@
+----- Ticket Booking -----
+Movie: The Shadow's Edge
+Movie Genre: DRAMA
+Duration: 97 min
+Cinema: Surprise Cinema
+Hall: Hall 13
+Date: 2026-05-11
+Time: 6:00 PM
+Seat: A15
+--------------------------
+

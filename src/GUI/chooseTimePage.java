@@ -1,3 +1,5 @@
+package GUI;
+import codeImplementation.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -92,14 +94,15 @@ public class chooseTimePage extends JPanel {
                             return;
                         }
 
+                        //------------------------------------------------------------------------
                         // Demo only: two users try to book the same seat
-                        AppManager.runTwoUsersSameSeatDemo(selectedSlot.label);
+                        //AppManager.runTwoUsersSameSeatDemo(selectedSlot.label);
+                        //------------------------------------------------------------------------
 
                         String selectedTime = selectedSlot.label;
 
                         //Booking process runs in a separate thread
                         Runnable bookingTask = () -> {
-
                             boolean booked = AppManager.bookTicket(selectedTime);
 
                             //Return to Swing GUI thread to update the interface

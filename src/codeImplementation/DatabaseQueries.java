@@ -1,5 +1,8 @@
+package codeImplementation;
+import GUI.*;
 import java.sql.*;
 import java.util.ArrayList;
+
 
 public class DatabaseQueries {
 
@@ -319,7 +322,6 @@ public class DatabaseQueries {
 
     //-------------------------------------------------------------------------------
     // Movies
-
     public static boolean isMoviesTableEmpty() {
         Connection con = null;
 
@@ -329,19 +331,14 @@ public class DatabaseQueries {
             String sql = "SELECT COUNT(*) FROM MOVIES";
 
             PreparedStatement ps = con.prepareStatement(sql);
-
             ResultSet rs = ps.executeQuery();
-
             if (rs.next()) {
                 int count = rs.getInt(1);
-
                 con.close();
-
                 return count == 0;
             }
 
             con.close();
-
         } catch (SQLException e) {
             System.out.println("Check movies table error!");
             System.out.println(e.getMessage());
@@ -363,12 +360,12 @@ public class DatabaseQueries {
 
             PreparedStatement ps = con.prepareStatement(sql);
 
-            ps.setString(1, movie.name);
-            ps.setString(2, movie.genre);
-            ps.setString(3, movie.duration);
-            ps.setString(4, movie.rating);
-            ps.setString(5, movie.story);
-            ps.setString(6, movie.posterUrl);
+            ps.setString(1, movie.getName());
+            ps.setString(2, movie.getGenre());
+            ps.setString(3, movie.getDuration());
+            ps.setString(4, movie.getRating());
+            ps.setString(5, movie.getStory());
+            ps.setString(6, movie.getPosterUrl());
 
             ps.executeUpdate();
 

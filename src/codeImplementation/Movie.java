@@ -1,16 +1,17 @@
+package codeImplementation;
 import javax.swing.*;
 import java.awt.*;
-
+import GUI.*;
 public class Movie {
 
     private int id;
-    String name;
-    String genre;
-    String duration;
-    String rating;
-    String story;
-    String posterUrl;
-    Image posterImage;
+    private String name;
+    private String genre;
+    private String duration;
+    private String rating;
+    private String story;
+    private String posterUrl;
+    private Image posterImage;
 
     Movie(int id, String name, String genre, String duration,
           String rating, String story, String posterUrl) {
@@ -53,5 +54,33 @@ public class Movie {
 
     public int getId() {
         return id;
+    }
+
+    public Image getPosterImage() {
+        return posterImage;
+    }
+
+    public String getPosterUrl() {
+        return posterUrl;
+    }
+
+    public String getStory() {
+        return story;
+    }
+
+    public String getRating() {
+        return rating;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public String getName() {
+        return name;
     }
 }

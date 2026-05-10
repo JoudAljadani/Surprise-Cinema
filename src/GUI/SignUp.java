@@ -1,3 +1,5 @@
+package GUI;
+import codeImplementation.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -149,7 +151,7 @@ public class SignUp extends JPanel {
                     pressed = (buttonRect != null && buttonRect.contains(e.getPoint()));
                     repaint();
                 }
-
+                @Override
             public void mouseReleased(MouseEvent e) {
                     //if back arrow, navigate to Splash page
                     if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
@@ -169,58 +171,28 @@ public class SignUp extends JPanel {
 
                         try {
 
-                                // Check empty fields
-                                if (AppManager.isSignUpEmpty(name, email, pass, age)) {
-                                    JOptionPane.showMessageDialog(null, "Please fill all fields");
-                                    return;
-                                }
+                            User user = AppManager.signUpUser(
+                                    name,
+                                    email,
+                                    pass,
+                                    age,
+                                    gender
+                            );
 
-                                // Check email format
-                                if (!AppManager.isValidEmail(email)) {
-                                    JOptionPane.showMessageDialog(null, "Please enter a valid email address");
-                                    return;
-                                }
+                            Appframe.currentUser = user;
 
-                                // Check password length
-                                if (!AppManager.isValidPassword(pass)) {
-                                    JOptionPane.showMessageDialog(null, "Password must be at least 9 characters");
-                                    return;
-                                }
+                            JOptionPane.showMessageDialog(null, "Account created successfully");
 
-                                // Check age
-                                if (!AppManager.isValidAge(age)) {
-                                    JOptionPane.showMessageDialog(null, "Age must be a number");
-                                    return;
-                                }
+                            app.showPage(Appframe.PREFERENCES_GENRES);
 
-                                int ageNumber = AppManager.convertAge(age);
+                        } catch (AppManager.ValidationException ex) {
 
-                                // Check if email already exists
-                                if (DatabaseQueries.emailExists(email)) {
-                                    JOptionPane.showMessageDialog(null, "Email already exists");
-                                    return;
-                                }
+                            JOptionPane.showMessageDialog(null, ex.getMessage());
 
-                                User user = new User(
-                                        name,
-                                        email,
-                                        pass,
-                                        ageNumber,
-                                        gender
-                                );
+                        } catch (Exception ex) {
 
-                                DatabaseQueries.addUser(user);
-
-                                Appframe.currentUser = user;
-
-                                JOptionPane.showMessageDialog(null, "Account created successfully");
-
-                                app.showPage(Appframe.PREFERENCES_GENRES);
-
-                            } catch (Exception ex) {
-
-                                JOptionPane.showMessageDialog(null, "Sign up error: " + ex.getMessage());
-                            }
+                            JOptionPane.showMessageDialog(null, "Sign up error: " + ex.getMessage());
+                        }
 
 
                     }

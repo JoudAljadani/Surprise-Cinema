@@ -1,0 +1,79 @@
+----- Ticket Booking -----
+Movie: Mortal Kombat II
+Movie Genre: ACTION
+Duration: 109 min
+Cinema: Surprise Cinema
+Hall: Hall 1
+Date: 2026-05-11
+Time: 8:00 PM
+Seat: A1
+Rating: 3
+--------------------------
+
+----- Ticket Booking -----
+Movie: Anaconda
+Movie Genre: HORROR
+Duration: 84 min
+Cinema: Surprise Cinema
+Hall: Hall 11
+Date: 2026-05-11
+Time: 4:00 PM
+Seat: A6
+--------------------------
+
+----- Ticket Booking -----
+Movie: Anaconda
+Movie Genre: HORROR
+Duration: 84 min
+Cinema: Surprise Cinema
+Hall: Hall 11
+Date: 2026-05-11
+Time: 4:00 PM
+Seat: A9
+--------------------------
+
+----- Ticket Booking -----
+Movie: Predator: Badlands
+Movie Genre: ACTION
+Duration: 132 min
+Cinema: Surprise Cinema
+Hall: Hall 8
+Date: 2026-05-11
+Time: 10:00 PM
+Seat: A4
+Rating: 1
+--------------------------
+
+----- Ticket Booking -----
+Movie: The Shadow's Edge
+Movie Genre: DRAMA
+Duration: 97 min
+Cinema: Surprise Cinema
+Hall: Hall 13
+Date: 2026-05-11
+Time: 2:00 PM
+Seat: A6
+--------------------------
+
+----- Ticket Booking -----
+Movie: The Super Mario Galaxy Movie
+Movie Genre: COMEDY
+Duration: 126 min
+Cinema: Surprise Cinema
+Hall: Hall 14
+Date: 2026-05-11
+Time: 6:00 PM
+Seat: A7
+--------------------------
+
+----- Ticket Booking -----
+Movie: Demon Slayer: Kimetsu no Yaiba Infinity Castle
+Movie Genre: FANTASY
+Duration: 104 min
+Cinema: Surprise Cinema
+Hall: Hall 5
+Date: 2026-05-11
+Time: 12:00 PM
+Seat: A5
+--------------------------
+

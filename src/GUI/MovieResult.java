@@ -1,3 +1,5 @@
+package GUI;
+import codeImplementation.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -153,8 +155,8 @@ public class MovieResult extends JPanel {
                 return;
             }
 
-            if (m.posterImage != null) {
-                g2.drawImage(m.posterImage, boxX + 15, boxY + 15,
+            if (m.getPosterImage() != null) {
+                g2.drawImage(m.getPosterImage(), boxX + 15, boxY + 15,
                         boxW - 30, boxH - 30, null);
             } else {
                 UIComponents.drawCenteredText(g2, "No Poster", x, boxY + boxH / 2,
@@ -165,7 +167,7 @@ public class MovieResult extends JPanel {
             int infoW = w - 2 * infoX;
             int topY = boxY + boxH + 35;
 
-            UIComponents.drawCenteredText(g2, m.name, x, topY,
+            UIComponents.drawCenteredText(g2, m.getName(), x, topY,
                     new Font("Arial", Font.BOLD, 20), UIComponents.TEXT_WHITE
             );
 
@@ -174,7 +176,7 @@ public class MovieResult extends JPanel {
             g2.setFont(UIComponents.FONT_BODY);
             g2.setColor(UIComponents.TEXT_WHITE);
 
-            int storyEndY = drawWrappedReturnEndY(g2, m.story, infoX, storyY,
+            int storyEndY = drawWrappedReturnEndY(g2, m.getStory(), infoX, storyY,
                     infoW, 18);
 
             int metaY = storyEndY + 22;
@@ -183,19 +185,19 @@ public class MovieResult extends JPanel {
             g2.setColor(UIComponents.TEXT_WHITE_SOFT);
 
             g2.drawString(
-                    "Genre: " + m.genre,
+                    "Genre: " + m.getGenre(),
                     infoX,
                     metaY
             );
 
             g2.drawString(
-                    "Duration: " + m.duration,
+                    "Duration: " + m.getDuration(),
                     infoX,
                     metaY + 20
             );
 
             g2.drawString(
-                    "Rating: " + m.rating,
+                    "Rating: " + m.getRating(),
                     infoX,
                     metaY + 40
             );
