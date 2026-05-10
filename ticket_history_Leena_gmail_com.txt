@@ -1,0 +1,22 @@
+----- Ticket Booking -----
+Movie: The Boy
+Movie Genre: HORROR
+Duration: 131 min
+Cinema: Surprise Cinema
+Hall: Hall 5
+Date: 2026-05-11
+Time: 8:00 PM
+Seat: A15
+--------------------------
+
+----- Ticket Booking -----
+Movie: Anaconda
+Movie Genre: HORROR
+Duration: 103 min
+Cinema: Surprise Cinema
+Hall: Hall 15
+Date: 2026-05-11
+Time: 4:00 PM
+Seat: A4
+--------------------------
+

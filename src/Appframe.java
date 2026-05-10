@@ -25,6 +25,8 @@ public class Appframe extends JFrame {
 
     private MovieResult movieResultPage;
 
+
+
     public Appframe() {
         setSize(390, 720);
         setLocationRelativeTo(null);

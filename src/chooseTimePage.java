@@ -1,11 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+
 public class chooseTimePage extends JPanel {
 
     //Variables
-    private final Appframe app;//To navigate between pages
-    private final Image bg;//Background image
+    private final Appframe app; //To navigate between pages
+    private final Image bg; //Background image
 
     //Clickable buttons
     private Rectangle nextBtnRect;
@@ -16,9 +17,9 @@ public class chooseTimePage extends JPanel {
     private Rectangle backRect;
     private boolean backPressed = false;
 
-//------------------------------------------------------------
+    //------------------------------------------------------------
 
-    //Time slots
+    //Fixed time slots
     private final Card[] timeCards = new Card[]{
             new Card("12:00 PM", "🕛", "12PM"),
             new Card("2:00 PM", "🕑", "2PM"),
@@ -46,14 +47,15 @@ public class chooseTimePage extends JPanel {
 
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    //if back arrow is pressed
+
+                    //If back arrow is pressed
                     if (backRect != null && backRect.contains(e.getPoint())) {
                         backPressed = true;
                         repaint();
                         return;
                     }
 
-                    //click one time cards (to avoid overlapping)
+                    //Select one time card
                     for (Card c : timeCards) {
                         if (c.rect != null && c.rect.contains(e.getPoint())) {
                             selectedSlot = c;
@@ -62,7 +64,7 @@ public class chooseTimePage extends JPanel {
                         }
                     }
 
-                    //if next button is pressed
+                    //If next button is pressed
                     if (nextBtnRect != null && nextBtnRect.contains(e.getPoint())) {
                         nextPressed = true;
                         repaint();
@@ -90,14 +92,33 @@ public class chooseTimePage extends JPanel {
                             return;
                         }
 
-                        boolean booked = AppManager.bookTicket(selectedSlot.label);
+                        // Demo only: two users try to book the same seat
+                        AppManager.runTwoUsersSameSeatDemo(selectedSlot.label);
 
-                        if (booked) {
-                            JOptionPane.showMessageDialog(null, "Ticket booked successfully");
-                            app.showPage(Appframe.TICKET_SUCCESS);
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Sorry, booking failed");
-                        }
+                        String selectedTime = selectedSlot.label;
+
+                        //Booking process runs in a separate thread
+                        Runnable bookingTask = () -> {
+
+                            boolean booked = AppManager.bookTicket(selectedTime);
+
+                            //Return to Swing GUI thread to update the interface
+                            SwingUtilities.invokeLater(() -> {
+
+                                if (booked) {
+                                    JOptionPane.showMessageDialog(null, "Ticket booked successfully");
+                                    app.showPage(Appframe.TICKET_SUCCESS);
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "Sorry, booking failed");
+                                }
+
+                                nextPressed = false;
+                                repaint();
+                            });
+                        };
+
+                        Thread bookingThread = new Thread(bookingTask, "Booking_Thread");
+                        bookingThread.start();
                     }
 
                     nextPressed = false;
@@ -114,43 +135,58 @@ public class chooseTimePage extends JPanel {
         }
 
         @Override
-        //Draw UI elements
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
 
             Graphics2D g2 = (Graphics2D) g;
-            //Make corner smoother
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            //Get panel width and height
-            int w = getWidth(), h = getHeight();
 
-            g2.drawImage(bg, 0, 0, w, h, null);//background
+            //Make corners smoother
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            //Get panel width and height
+            int w = getWidth();
+            int h = getHeight();
+
+            //Background
+            g2.drawImage(bg, 0, 0, w, h, null);
 
             //Back arrow
-            int backSize = 36, backX = 18, backY = 32;
+            int backSize = 36;
+            int backX = 18;
+            int backY = 32;
+
             backRect = new Rectangle(backX, backY, backSize, backSize);
             UIComponents.drawTextBackArrow(g2, backRect, backPressed);
 
             //Title
-            int titleY = 95, x = w/2;
-            UIComponents.drawCenteredText(g2,"Pick Your showtime!", x, titleY,
+            int titleY = 95;
+            int x = w / 2;
+
+            UIComponents.drawCenteredText(g2, "Pick Your showtime!", x, titleY,
                     UIComponents.FONT_TITLE, UIComponents.TEXT_WHITE);
 
             //Question
             int qY = titleY + 34;
-            UIComponents.drawCenteredText(g2,"When would you like to watch this movie tomorrow?", x, qY,
+
+            UIComponents.drawCenteredText(g2, "When would you like to watch this movie tomorrow?", x, qY,
                     UIComponents.FONT_SUBTITLE, UIComponents.TEXT_WHITE);
 
             //Time slots
             int topY = qY + 35;
+
             layoutCardsGrid(timeCards, w, topY, 2);
+
             for (Card c : timeCards) {
                 boolean selected = (selectedSlot == c);
                 UIComponents.drawSelectableCard(g2, c.rect, c.icon, c.label, selected);
             }
 
             //Next button
-            int btnW = 300, btnH = 55, btnX = (w - btnW) / 2, btnY = 600;
+            int btnW = 300;
+            int btnH = 55;
+            int btnX = (w - btnW) / 2;
+            int btnY = 600;
+
             nextBtnRect = new Rectangle(btnX, btnY, btnW, btnH);
             UIComponents.drawButton(g2, nextBtnRect, "Book Now!", nextPressed);
         }
@@ -159,22 +195,31 @@ public class chooseTimePage extends JPanel {
     //Lays out the card rectangles in a grid
     private void layoutCardsGrid(Card[] cards, int panelW, int topY, int cols) {
 
-        int cardW = 140, cardH = 82, gapX = 16, gapY = 14;
-        int totalW = cols * cardW + (cols - 1) * gapX, startX = (panelW - totalW) / 2;
+        int cardW = 140;
+        int cardH = 82;
+        int gapX = 16;
+        int gapY = 14;
+
+        int totalW = cols * cardW + (cols - 1) * gapX;
+        int startX = (panelW - totalW) / 2;
 
         //Assign rect for each card based on row and column
-        for (int i = 0; i < cards.length; i++){
+        for (int i = 0; i < cards.length; i++) {
             int row = i / cols;
             int col = i % cols;
+
             int x = startX + col * (cardW + gapX);
             int y = topY + row * (cardH + gapY);
+
             cards[i].rect = new Rectangle(x, y, cardW, cardH);
         }
     }
 
     //Data class for each showtime
     static class Card {
-        String label, icon, key;
+        String label;
+        String icon;
+        String key;
         Rectangle rect;
 
         Card(String label, String icon, String key) {

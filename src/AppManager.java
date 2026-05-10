@@ -25,7 +25,14 @@ public class AppManager {
         return "Hall " + hallNumber;
     }
 
-    public static boolean bookTicket(String selectedTime) {
+    public static synchronized boolean bookTicket(String selectedTime) {
+
+        System.out.println("Booking started in: " + Thread.currentThread().getName());
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            System.out.println("Booking thread interrupted");
+        }
 
         if (Appframe.currentUser == null || Appframe.currentMovie == null) {
             return false;
@@ -166,6 +173,70 @@ public class AppManager {
     // Convert age to int
     public static int convertAge(String age) {
         return Integer.parseInt(age);
+    }
+
+    //thread
+    public static void runTwoUsersSameSeatDemo(String selectedTime) {
+
+        if (Appframe.currentMovie == null) {
+            System.out.println("No movie selected for thread demo");
+            return;
+        }
+
+        Show show = DatabaseQueries.getShowByMovieAndTime(
+                Appframe.currentMovie.getId(),
+                selectedTime
+        );
+
+        if (show == null) {
+            System.out.println("No show found for thread demo");
+            return;
+        }
+
+        String sameSeat = DatabaseQueries.generateAvailableSeat(show.getId());
+
+        if (sameSeat == null) {
+            System.out.println("No available seat for thread demo");
+            return;
+        }
+
+        Runnable user1Task = () -> {
+            boolean booked = DatabaseQueries.tryBookSpecificSeat(
+                    show.getId(),
+                    sameSeat,
+                    "demo_user1@gmail.com"
+            );
+
+            if (booked) {
+                System.out.println(Thread.currentThread().getName()
+                        + " booked seat " + sameSeat);
+            } else {
+                System.out.println(Thread.currentThread().getName()
+                        + " could NOT book seat " + sameSeat);
+            }
+        };
+
+        Runnable user2Task = () -> {
+            boolean booked = DatabaseQueries.tryBookSpecificSeat(
+                    show.getId(),
+                    sameSeat,
+                    "demo_user2@gmail.com"
+            );
+
+            if (booked) {
+                System.out.println(Thread.currentThread().getName()
+                        + " booked seat " + sameSeat);
+            } else {
+                System.out.println(Thread.currentThread().getName()
+                        + " could NOT book seat " + sameSeat);
+            }
+        };
+
+        Thread user1Thread = new Thread(user1Task, "User_1_Booking_Thread");
+        Thread user2Thread = new Thread(user2Task, "User_2_Booking_Thread");
+
+        user1Thread.start();
+        user2Thread.start();
     }
 }
 

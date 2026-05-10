@@ -1,5 +1,6 @@
 import java.sql.*;
 import java.util.ArrayList;
+
 public class DatabaseQueries {
 
     //-------------------------------------------------------------------------------
@@ -23,8 +24,11 @@ public class DatabaseQueries {
             ps.setString(3, user.getPassword());
             ps.setInt(4, user.getAge());
             ps.setString(5, user.getGender());
+
             ps.executeUpdate();
+
             System.out.println("User added successfully");
+
             con.close();
 
         } catch (SQLException e) {
@@ -39,35 +43,45 @@ public class DatabaseQueries {
 
         try {
             con = DatabaseManager.connect();
-            String sql =
-                    "SELECT * FROM USERS WHERE EMAIL = ?";
+
+            String sql = "SELECT * FROM USERS WHERE EMAIL = ?";
+
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, email);
+
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
                 con.close();
                 return true;
             }
+
             con.close();
+
         } catch (SQLException e) {
             System.out.println("Email check error!");
             System.out.println(e.getMessage());
         }
+
         return false;
     }
 
-    //login
+    // Login
     public static User getUserByLogin(String email, String password) {
         Connection con = null;
+
         try {
             con = DatabaseManager.connect();
+
             String sql =
                     "SELECT * FROM USERS " +
                             "WHERE EMAIL = ? AND PASSWORD = ?";
+
             PreparedStatement ps = con.prepareStatement(sql);
+
             ps.setString(1, email);
             ps.setString(2, password);
+
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -78,9 +92,12 @@ public class DatabaseQueries {
                 String gender = rs.getString("GENDER");
 
                 con.close();
+
                 return new User(name, userEmail, userPassword, age, gender);
             }
+
             con.close();
+
         } catch (SQLException e) {
             System.out.println("Get user login error!");
             System.out.println(e.getMessage());
@@ -89,13 +106,10 @@ public class DatabaseQueries {
         return null;
     }
 
-
-
     //-------------------------------------------------------------------------------
     //Ticket
     // Add new ticket to TICKETS table
     public static void addTicket(Ticket ticket) {
-
         Connection con = null;
 
         try {
@@ -134,14 +148,22 @@ public class DatabaseQueries {
 
     public static void addUserGenre(String email, String genre) {
         Connection con = null;
+
         try {
             con = DatabaseManager.connect();
-            Statement st = con.createStatement();
-            String sql =
-                    "INSERT INTO USER_GENRES (USER_EMAIL, GENRE) " +
-                            "VALUES ('" + email + "', '" + genre + "')";
 
-            st.executeUpdate(sql);
+            String sql =
+                    "INSERT INTO USER_GENRES " +
+                            "(USER_EMAIL, GENRE) " +
+                            "VALUES (?, ?)";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, email);
+            ps.setString(2, genre);
+
+            ps.executeUpdate();
+
             con.close();
 
         } catch (SQLException e) {
@@ -150,19 +172,22 @@ public class DatabaseQueries {
         }
     }
 
-
     public static void deleteUserGenres(String email) {
         Connection con = null;
 
         try {
             con = DatabaseManager.connect();
-            Statement st = con.createStatement();
 
             String sql =
                     "DELETE FROM USER_GENRES " +
-                            "WHERE USER_EMAIL = '" + email + "'";
+                            "WHERE USER_EMAIL = ?";
 
-            st.executeUpdate(sql);
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, email);
+
+            ps.executeUpdate();
+
             con.close();
 
         } catch (SQLException e) {
@@ -172,7 +197,6 @@ public class DatabaseQueries {
     }
 
     public static Ticket getLatestTicketByEmail(String email) {
-
         Connection con = null;
 
         try {
@@ -184,6 +208,7 @@ public class DatabaseQueries {
                             "ORDER BY ID DESC LIMIT 1";
 
             PreparedStatement ps = con.prepareStatement(sql);
+
             ps.setString(1, email);
 
             ResultSet rs = ps.executeQuery();
@@ -228,50 +253,62 @@ public class DatabaseQueries {
         return null;
     }
 
-    //to get user genre and its counts for dashboard
+    // Get user genre and its counts for dashboard
     public static ArrayList<DashStat> getUserGenres(String email) {
         ArrayList<DashStat> stats = new ArrayList<>();
         Connection con = null;
+
         try {
             con = DatabaseManager.connect();
-            Statement st = con.createStatement();
+
             String sql =
                     "SELECT MOVIE_GENRE, COUNT(*) AS TOTAL " +
                             "FROM TICKETS " +
-                            "WHERE USER_EMAIL = '" + email + "' " +
+                            "WHERE USER_EMAIL = ? " +
                             "GROUP BY MOVIE_GENRE";
 
-            ResultSet rs = st.executeQuery(sql);
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, email);
+
+            ResultSet rs = ps.executeQuery();
+
             while (rs.next()) {
                 String genre = rs.getString("MOVIE_GENRE");
                 int count = rs.getInt("TOTAL");
+
                 stats.add(new DashStat(genre, count));
             }
+
             con.close();
+
         } catch (SQLException e) {
             System.out.println("Get genres error!");
             System.out.println(e.getMessage());
         }
+
         return stats;
     }
 
     public static void addRating(String email, String movieName, int rating) {
-
         Connection con = null;
 
         try {
             con = DatabaseManager.connect();
-            Statement st = con.createStatement();
 
             String sql =
                     "INSERT INTO RATINGS " +
                             "(USER_EMAIL, MOVIE_NAME, RATING) " +
-                            "VALUES (" +
-                            "'" + email + "', " +
-                            "'" + movieName + "', " +
-                            rating + ")";
+                            "VALUES (?, ?, ?)";
 
-            st.executeUpdate(sql);
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, email);
+            ps.setString(2, movieName);
+            ps.setInt(3, rating);
+
+            ps.executeUpdate();
+
             con.close();
 
         } catch (SQLException e) {
@@ -280,6 +317,9 @@ public class DatabaseQueries {
         }
     }
 
+    //-------------------------------------------------------------------------------
+    // Movies
+
     public static boolean isMoviesTableEmpty() {
         Connection con = null;
 
@@ -287,12 +327,16 @@ public class DatabaseQueries {
             con = DatabaseManager.connect();
 
             String sql = "SELECT COUNT(*) FROM MOVIES";
+
             PreparedStatement ps = con.prepareStatement(sql);
+
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
                 int count = rs.getInt(1);
+
                 con.close();
+
                 return count == 0;
             }
 
@@ -337,7 +381,6 @@ public class DatabaseQueries {
     }
 
     public static void prepareMoviesFromAPI() {
-
         if (!isMoviesTableEmpty()) {
             System.out.println("Movies already exist in database");
             return;
@@ -363,6 +406,9 @@ public class DatabaseQueries {
         System.out.println("Movies inserted from TMDB API");
     }
 
+    //-------------------------------------------------------------------------------
+    // Shows
+
     public static boolean isShowsTableEmpty() {
         Connection con = null;
 
@@ -370,12 +416,16 @@ public class DatabaseQueries {
             con = DatabaseManager.connect();
 
             String sql = "SELECT COUNT(*) FROM SHOWS";
+
             PreparedStatement ps = con.prepareStatement(sql);
+
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
                 int count = rs.getInt(1);
+
                 con.close();
+
                 return count == 0;
             }
 
@@ -390,7 +440,6 @@ public class DatabaseQueries {
     }
 
     public static void prepareShows() {
-
         if (!isShowsTableEmpty()) {
             System.out.println("Shows already exist in database");
             return;
@@ -401,29 +450,24 @@ public class DatabaseQueries {
         try {
             con = DatabaseManager.connect();
 
-            // Pick only 15 movies for one day because:
-            // 15 halls * 6 fixed times = 90 shows
             String selectSql =
                     "SELECT ID FROM MOVIES " +
                             "ORDER BY RAND() " +
                             "LIMIT 15";
 
             PreparedStatement selectPs = con.prepareStatement(selectSql);
+
             ResultSet rs = selectPs.executeQuery();
 
             int hallIndex = 0;
 
             while (rs.next()) {
-
                 int movieId = rs.getInt("ID");
 
-                // Each movie gets one hall for the whole day
                 String hall = AppManager.generateHallByIndex(hallIndex);
                 String date = AppManager.generateTomorrowDate();
 
-                // Same movie is shown in all fixed times
                 for (String time : AppManager.FIXED_TIMES) {
-
                     String insertSql =
                             "INSERT INTO SHOWS " +
                                     "(MOVIE_ID, CINEMA_NAME, HALL, SHOW_DATE, SHOW_TIME) " +
@@ -444,6 +488,7 @@ public class DatabaseQueries {
             }
 
             con.close();
+
             System.out.println("Shows created successfully");
 
         } catch (SQLException e) {
@@ -458,7 +503,6 @@ public class DatabaseQueries {
     }
 
     public static Movie getRandomMovieByUserPreferences(String email) {
-
         Connection con = null;
 
         try {
@@ -469,9 +513,16 @@ public class DatabaseQueries {
                             "JOIN USER_GENRES G ON M.GENRE = G.GENRE " +
                             "JOIN SHOWS S ON M.ID = S.MOVIE_ID " +
                             "WHERE G.USER_EMAIL = ? " +
+                            "AND S.ID IN ( " +
+                            "   SELECT SH.ID FROM SHOWS SH " +
+                            "   LEFT JOIN BOOKED_SEATS B ON SH.ID = B.SHOW_ID " +
+                            "   GROUP BY SH.ID " +
+                            "   HAVING COUNT(B.ID) < 15 " +
+                            ") " +
                             "ORDER BY RAND() LIMIT 1";
 
             PreparedStatement ps = con.prepareStatement(sql);
+
             ps.setString(1, email);
 
             ResultSet rs = ps.executeQuery();
@@ -501,7 +552,6 @@ public class DatabaseQueries {
     }
 
     public static Show getShowByMovieAndTime(int movieId, String showTime) {
-
         Connection con = null;
 
         try {
@@ -545,8 +595,10 @@ public class DatabaseQueries {
         return null;
     }
 
-    public static boolean isSeatBooked(int showId, String seat) {
+    //-------------------------------------------------------------------------------
+    // Seats
 
+    public static boolean isSeatBooked(int showId, String seat) {
         Connection con = null;
 
         try {
@@ -579,7 +631,6 @@ public class DatabaseQueries {
     }
 
     public static String generateAvailableSeat(int showId) {
-
         ArrayList<String> seats = new ArrayList<>();
 
         for (int i = 1; i <= 15; i++) {
@@ -587,8 +638,8 @@ public class DatabaseQueries {
         }
 
         while (!seats.isEmpty()) {
-
             int index = (int) (Math.random() * seats.size());
+
             String seat = seats.get(index);
 
             if (!isSeatBooked(showId, seat)) {
@@ -602,7 +653,6 @@ public class DatabaseQueries {
     }
 
     public static void addBookedSeat(int showId, String seat, String email) {
-
         Connection con = null;
 
         try {
@@ -627,5 +677,43 @@ public class DatabaseQueries {
             System.out.println("Add booked seat error!");
             System.out.println(e.getMessage());
         }
+    }
+
+    // Thread demo method
+    // Two users can try to book the same seat at the same time.
+    // synchronized makes only one thread enter this method at a time.
+    public static synchronized boolean tryBookSpecificSeat(int showId, String seat, String email) {
+        if (isSeatBooked(showId, seat)) {
+            return false;
+        }
+
+        Connection con = null;
+
+        try {
+            con = DatabaseManager.connect();
+
+            String sql =
+                    "INSERT INTO BOOKED_SEATS " +
+                            "(SHOW_ID, SEAT, USER_EMAIL) " +
+                            "VALUES (?, ?, ?)";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, showId);
+            ps.setString(2, seat);
+            ps.setString(3, email);
+
+            ps.executeUpdate();
+
+            con.close();
+
+            return true;
+
+        } catch (SQLException e) {
+            System.out.println("Thread demo booking error!");
+            System.out.println(e.getMessage());
+        }
+
+        return false;
     }
 }

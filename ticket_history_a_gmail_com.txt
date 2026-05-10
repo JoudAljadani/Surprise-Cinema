@@ -67,3 +67,15 @@ Seat: A4
 Rating: 5
 --------------------------
 
+----- Ticket Booking -----
+Movie: They Will Kill You
+Movie Genre: COMEDY
+Duration: 80 min
+Cinema: Surprise Cinema
+Hall: Hall 1
+Date: 2026-05-11
+Time: 6:00 PM
+Seat: A4
+Rating: 4
+--------------------------
+

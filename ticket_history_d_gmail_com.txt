@@ -1,0 +1,34 @@
+----- Ticket Booking -----
+Movie: They Will Kill You
+Movie Genre: COMEDY
+Duration: 80 min
+Cinema: Surprise Cinema
+Hall: Hall 1
+Date: 2026-05-11
+Time: 4:00 PM
+Seat: A7
+Rating: 2
+--------------------------
+
+----- Ticket Booking -----
+Movie: Zootopia 2
+Movie Genre: COMEDY
+Duration: 126 min
+Cinema: Surprise Cinema
+Hall: Hall 6
+Date: 2026-05-11
+Time: 2:00 PM
+Seat: A9
+--------------------------
+
+----- Ticket Booking -----
+Movie: Your Heart Will Be Broken
+Movie Genre: DRAMA
+Duration: 80 min
+Cinema: Surprise Cinema
+Hall: Hall 3
+Date: 2026-05-11
+Time: 8:00 PM
+Seat: A5
+--------------------------
+
