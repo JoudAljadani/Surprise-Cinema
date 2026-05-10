@@ -9,15 +9,7 @@ public class AppManager {
     //Booking
     private static final Random random = new Random();
 
-    private static final String[] CINEMAS = {
-            "AMC Cinema", "VOX Cinema",
-            "Muvi Cinema", "Empire Cinema"
-    };
-
-    public static String getRandomCinema() {
-        int index = random.nextInt(CINEMAS.length);
-        return CINEMAS[index];
-    }
+    public static final String CINEMA_NAME = "Surprise Cinema";
 
     public static String generateHall() {
         int hallNumber = random.nextInt(3) + 1;
@@ -85,6 +77,7 @@ public class AppManager {
 
         DatabaseQueries.addRating(Appframe.currentUser.getEmail(),
                 Appframe.currentTicket.getMovieName(), rating);
+        TicketFileManager.saveTicketToFile(Appframe.currentTicket, rating); // Pass rating here
 
         return true;
     }
