@@ -64,6 +64,7 @@ public class DatabaseManager {
             st.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS TICKETS (" +
                             "ID INT PRIMARY KEY AUTO_INCREMENT, " +
+                            "SHOW_ID INT, " +
                             "MOVIE_NAME VARCHAR(100), " +
                             "MOVIE_GENRE VARCHAR(100), " +
                             "POSTER_URL VARCHAR(500), " +
@@ -72,7 +73,8 @@ public class DatabaseManager {
                             "SHOW_DATE VARCHAR(50), " +
                             "SHOW_TIME VARCHAR(50), " +
                             "SEAT VARCHAR(20), " +
-                            "USER_EMAIL VARCHAR(100))"
+                            "USER_EMAIL VARCHAR(100), " +
+                            "DURATION VARCHAR(30))"
             );
             System.out.println("TICKETS table created successfully");
 
@@ -92,6 +94,39 @@ public class DatabaseManager {
                             "RATING INT)"
             );
             System.out.println("RATINGS table created successfully");
+
+            st.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS MOVIES (" +
+                            "ID INT PRIMARY KEY AUTO_INCREMENT, " +
+                            "TITLE VARCHAR(150), " +
+                            "GENRE VARCHAR(50), " +
+                            "DURATION VARCHAR(30), " +
+                            "RATING VARCHAR(20), " +
+                            "STORY VARCHAR(1000), " +
+                            "POSTER_URL VARCHAR(500))"
+            );
+            System.out.println("MOVIES table created successfully");
+
+            st.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS SHOWS (" +
+                            "ID INT PRIMARY KEY AUTO_INCREMENT, " +
+                            "MOVIE_ID INT, " +
+                            "CINEMA_NAME VARCHAR(100), " +
+                            "HALL VARCHAR(50), " +
+                            "SHOW_DATE VARCHAR(50), " +
+                            "SHOW_TIME VARCHAR(50), " +
+                            "UNIQUE (HALL, SHOW_DATE, SHOW_TIME))"
+            );
+            System.out.println("SHOWS table created successfully");
+
+            st.executeUpdate(
+                    "CREATE TABLE IF NOT EXISTS BOOKED_SEATS (" +
+                            "ID INT PRIMARY KEY AUTO_INCREMENT, " +
+                            "SHOW_ID INT, " +
+                            "SEAT VARCHAR(20), " +
+                            "USER_EMAIL VARCHAR(100))"
+            );
+            System.out.println("BOOKED_SEATS table created successfully");
 
             con.close();
         }catch (SQLException e) {

@@ -20,12 +20,12 @@ public class chooseTimePage extends JPanel {
 
     //Time slots
     private final Card[] timeCards = new Card[]{
-            new Card("6:00 AM - 8:59 AM", "🌅", "EARLY_MORNING"),
-            new Card("9:00 AM - 11:59 AM", "🌤️", "LATE_MORNING"),
-            new Card("12:00 PM - 2:59 PM", "☀️", "EARLY_AFTERNOON"),
-            new Card("3:00 PM - 5:59 PM", "🌥️", "LATE_AFTERNOON"),
-            new Card("6:00 PM - 8:59 PM", "🌙", "EVENING"),
-            new Card("9:00 PM - 5:59 AM", "🌌", "LATE_NIGHT")
+            new Card("12:00 PM", "🕛", "12PM"),
+            new Card("2:00 PM", "🕑", "2PM"),
+            new Card("4:00 PM", "🕓", "4PM"),
+            new Card("6:00 PM", "🕕", "6PM"),
+            new Card("8:00 PM", "🕗", "8PM"),
+            new Card("10:00 PM", "🕙", "10PM")
     };
 
     public chooseTimePage(Appframe app) {
@@ -71,44 +71,35 @@ public class chooseTimePage extends JPanel {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    //if back, navigate back to resultMovie page
+
+                    //Back to movie result page
                     if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
                         app.showPage(Appframe.MOVIERESULT);
                     }
+
                     backPressed = false;
 
-                    //if next button, navigate to ticket generation success page
+                    //Book ticket
                     if (nextPressed && nextBtnRect != null && nextBtnRect.contains(e.getPoint())) {
-                        // Force time selection
+
+                        //Force time selection
                         if (selectedSlot == null) {
+                            JOptionPane.showMessageDialog(null, "Please select a showtime");
                             nextPressed = false;
                             repaint();
                             return;
                         }
 
-                        String movieName = Appframe.currentMovie.name;
-                        String movieGenre = Appframe.currentMovie.genre;
-                        String posterUrl = Appframe.currentMovie.posterUrl;
+                        boolean booked = AppManager.bookTicket(selectedSlot.label);
 
-                        String cinemaName = AppManager.getRandomCinema();
-                        String hall = AppManager.generateHall();
-                        String date = AppManager.generateDate();
-                        String showTime = AppManager.generateRandomTime(selectedSlot.label);
-                        String seat = AppManager.generateSeat();
-
-                        String userEmail = Appframe.currentUser.getEmail();
-
-                        Ticket ticket = new Ticket(movieName, movieGenre, posterUrl, cinemaName, hall, date,
-                                showTime, seat, userEmail);
-                        Appframe.currentTicket = ticket;
-
-                        // Save ticket into database
-                        DatabaseQueries.addTicket(ticket);
-                        TicketFileManager.saveTicketToFile(ticket);
-                        JOptionPane.showMessageDialog(null, "Ticket booked successfully");
-                        // Go to success page
-                        app.showPage(Appframe.TICKET_SUCCESS);
+                        if (booked) {
+                            JOptionPane.showMessageDialog(null, "Ticket booked successfully");
+                            app.showPage(Appframe.TICKET_SUCCESS);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Sorry, booking failed");
+                        }
                     }
+
                     nextPressed = false;
                     repaint();
                 }
@@ -147,7 +138,7 @@ public class chooseTimePage extends JPanel {
 
             //Question
             int qY = titleY + 34;
-            UIComponents.drawCenteredText(g2,"When would you like to watch this movie today?", x, qY,
+            UIComponents.drawCenteredText(g2,"When would you like to watch this movie tomorrow?", x, qY,
                     UIComponents.FONT_SUBTITLE, UIComponents.TEXT_WHITE);
 
             //Time slots

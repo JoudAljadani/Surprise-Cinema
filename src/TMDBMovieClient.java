@@ -5,20 +5,18 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Set;
 
 public class TMDBMovieClient {
 
     private static final String API_KEY =
             "814ad94c655ebda174b9aabb77f4d2c8";
 
-    public static Movie getRandomMovie() {
-        try {
-            String selectedGenre = pickSelectedGenre();
-            String selectedGenreId = getGenreId(selectedGenre);
-            String selectedGenreName = getGenreName(selectedGenreId);
+    public static ArrayList<Movie> getMoviesByGenre(String genreKey) {
 
-            int randomPage = new Random().nextInt(20) + 1;
+        ArrayList<Movie> movieList = new ArrayList<>();
+
+        try {
+            String selectedGenreId = getGenreId(genreKey);
 
             String urlText =
                     "https://api.themoviedb.org/3/discover/movie"
@@ -28,7 +26,7 @@ public class TMDBMovieClient {
                             + "&include_adult=false"
                             + "&vote_count.gte=50"
                             + "&with_genres=" + selectedGenreId
-                            + "&page=" + randomPage;
+                            + "&page=1";
 
             URL url = new URL(urlText);
 
@@ -54,73 +52,49 @@ public class TMDBMovieClient {
 
             reader.close();
 
-            return extractMovie(json.toString(), selectedGenreName);
+            String[] movies = json.toString().split("\\{\"adult\"");
+
+            int count = 0;
+
+            for (int i = 1; i < movies.length && count < 10; i++) {
+
+                String movieJson = "{\"adult\"" + movies[i];
+
+                String title = extract(movieJson, "\"title\":\"", "\"");
+                String overview = extract(movieJson, "\"overview\":\"", "\"");
+                String rating = extract(movieJson, "\"vote_average\":", ",");
+                String posterPath = extract(movieJson, "\"poster_path\":\"", "\"");
+
+                if (!title.equals("N/A")) {
+
+                    String posterUrl = "";
+
+                    if (!posterPath.equals("N/A") && !posterPath.equals("null")) {
+                        posterUrl = "https://image.tmdb.org/t/p/w500" + posterPath;
+                    }
+
+                    String duration = (80 + new Random().nextInt(70)) + " min";
+
+                    Movie movie = new Movie(
+                            title,
+                            genreKey,
+                            duration,
+                            rating,
+                            overview,
+                            posterUrl
+                    );
+
+                    movieList.add(movie);
+                    count++;
+                }
+            }
 
         } catch (Exception e) {
-            return new Movie(
-                    "Network Error",
-                    "Genre unavailable",
-                    "Unknown",
-                    "0.0",
-                    "Could not connect to TMDB server.",
-                    ""
-            );
-        }
-    }
-
-    private static String pickSelectedGenre() {
-        Set<String> genres = UserPreferences.selectedGenres;
-
-        if (genres == null || genres.isEmpty()) {
-            return "COMEDY";
+            System.out.println("TMDB fetch error!");
+            System.out.println(e.getMessage());
         }
 
-        ArrayList<String> list = new ArrayList<>(genres);
-        return list.get(new Random().nextInt(list.size()));
-    }
-
-    private static Movie extractMovie(String json, String selectedGenreName) {
-        String[] movies = json.split("\\{\"adult\"");
-
-        if (movies.length <= 1) {
-            return new Movie(
-                    "No Movie Found",
-                    selectedGenreName,
-                    "Unknown",
-                    "0.0",
-                    "No movie matched your preferences.",
-                    ""
-            );
-        }
-
-        int index = new Random().nextInt(movies.length - 1) + 1;
-        String movieJson = "{\"adult\"" + movies[index];
-
-        String title = extract(movieJson, "\"title\":\"", "\"");
-        String overview = extract(movieJson, "\"overview\":\"", "\"");
-        String rating = extract(movieJson, "\"vote_average\":", ",");
-        String posterPath = extract(movieJson, "\"poster_path\":\"", "\"");
-
-        if (rating.equals("N/A")) {
-            rating = "0.0";
-        }
-
-        String posterUrl = "";
-
-        if (!posterPath.equals("N/A") && !posterPath.equals("null")) {
-            posterUrl = "https://image.tmdb.org/t/p/w500" + posterPath;
-        }
-
-        String duration = (80 + new Random().nextInt(70)) + " min";
-
-        return new Movie(
-                title,
-                selectedGenreName,
-                duration,
-                rating,
-                overview,
-                posterUrl
-        );
+        return movieList;
     }
 
     private static String extract(

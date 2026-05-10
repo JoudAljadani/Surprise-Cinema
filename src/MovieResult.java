@@ -29,8 +29,19 @@ public class MovieResult extends JPanel {
         pickAnotherMovie();
     }
 
-    public  void pickAnotherMovie() {
-        currentMovie = TMDBMovieClient.getRandomMovie();
+    //shoud seperate
+    public void pickAnotherMovie() {
+
+        if (Appframe.currentUser == null) {
+            currentMovie = null;
+            repaint();
+            return;
+        }
+
+        currentMovie = DatabaseQueries.getRandomMovieByUserPreferences(
+                Appframe.currentUser.getEmail()
+        );
+
         repaint();
     }
 
@@ -134,7 +145,10 @@ public class MovieResult extends JPanel {
             Movie m = currentMovie;
 
             if (m == null) {
-                UIComponents.drawCenteredText(g2, "Loading...", x, boxY + boxH / 2,
+                UIComponents.drawCenteredText(g2, "There is no movie available", x, boxY + boxH / 2,
+                        UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
+
+                UIComponents.drawCenteredText(g2, "for this genre tomorrow...", x, boxY + boxH / 2 + 22,
                         UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
                 return;
             }

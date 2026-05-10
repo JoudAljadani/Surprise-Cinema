@@ -99,11 +99,12 @@ public class TicketSuccess extends JPanel {
                 int lineGap = 28;
 
                 g2.drawString("Movie: " + ticket.getMovieName(), textX, textY);
-                g2.drawString("Cinema: " + ticket.getCinemaName(), textX, textY + lineGap);
-                g2.drawString("Hall: " + ticket.getHall(), textX, textY + lineGap * 2);
-                g2.drawString("Date: " + ticket.getDate(), textX, textY + lineGap * 3);
-                g2.drawString("Time: " + ticket.getShowTime(), textX, textY + lineGap * 4);
-                g2.drawString("Seat: " + ticket.getSeat(), textX, textY + lineGap * 5);
+                g2.drawString("Duration: " + ticket.getDuration(), textX, textY + lineGap);
+                g2.drawString("Cinema: " + ticket.getCinemaName(), textX, textY + lineGap * 2);
+                g2.drawString("Hall: " + ticket.getHall(), textX, textY + lineGap * 3);
+                g2.drawString("Date: " + ticket.getDate(), textX, textY + lineGap * 4);
+                g2.drawString("Time: " + ticket.getShowTime(), textX, textY + lineGap * 5);
+                g2.drawString("Seat: " + ticket.getSeat(), textX, textY + lineGap * 6);
             }
 
             //Enjoying message

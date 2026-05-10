@@ -1,53 +1,79 @@
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class AppManager {
 
     //Booking
-    private static final Random random = new Random();
-
     public static final String CINEMA_NAME = "Surprise Cinema";
 
-    public static String generateHall() {
-        int hallNumber = random.nextInt(3) + 1;
+    public static final String[] FIXED_TIMES = {
+            "12:00 PM",
+            "2:00 PM",
+            "4:00 PM",
+            "6:00 PM",
+            "8:00 PM",
+            "10:00 PM"
+    };
+
+    public static String generateTomorrowDate() {
+        return LocalDate.now().plusDays(1).toString();
+    }
+
+    public static String generateHallByIndex(int index) {
+        int hallNumber = (index % 15) + 1;
         return "Hall " + hallNumber;
     }
 
-    public static String generateDate() {
-        return LocalDate.now().toString();
-    }
+    public static boolean bookTicket(String selectedTime) {
 
-    public static String generateSeat() {
-        char row = (char) ('A' + random.nextInt(5));
-        int number = random.nextInt(15) + 1;
-
-        return row + String.valueOf(number);
-    }
-
-    public static String generateRandomTime(String range) {
-        String[] parts = range.split(" - ");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mm a");
-
-        LocalTime start = LocalTime.parse(parts[0], formatter);
-        LocalTime end = LocalTime.parse(parts[1], formatter);
-
-        int startMinutes = start.getHour() * 60 + start.getMinute();
-
-        int endMinutes = end.getHour() * 60 + end.getMinute();
-
-        // Handle range that crosses midnight
-        if (endMinutes < startMinutes) {
-            endMinutes += 24 * 60;
+        if (Appframe.currentUser == null || Appframe.currentMovie == null) {
+            return false;
         }
-        int randomMinutes = startMinutes + random.nextInt(endMinutes - startMinutes + 1);
-        randomMinutes = randomMinutes % (24 * 60);
-        LocalTime randomTime = LocalTime.of(randomMinutes / 60, randomMinutes % 60);
-        return randomTime.format(formatter);
-    }
 
+        String movieName = Appframe.currentMovie.name;
+        String movieGenre = Appframe.currentMovie.genre;
+        String posterUrl = Appframe.currentMovie.posterUrl;
+        String duration = Appframe.currentMovie.duration;
+        String userEmail = Appframe.currentUser.getEmail();
+
+        Show show = DatabaseQueries.getShowByMovieAndTime(
+                Appframe.currentMovie.getId(),
+                selectedTime
+        );
+
+        if (show == null) {
+            return false;
+        }
+
+        String seat = DatabaseQueries.generateAvailableSeat(show.getId());
+
+        if (seat == null) {
+            return false;
+        }
+
+        Ticket ticket = new Ticket(
+                show.getId(),
+                movieName,
+                movieGenre,
+                posterUrl,
+                show.getCinemaName(),
+                show.getHall(),
+                show.getShowDate(),
+                show.getShowTime(),
+                seat,
+                userEmail,
+                duration
+        );
+
+        Appframe.currentTicket = ticket;
+
+        DatabaseQueries.addBookedSeat(show.getId(), seat, userEmail);
+        DatabaseQueries.addTicket(ticket);
+        TicketFileManager.saveTicketToFile(ticket);
+
+        return true;
+    }
     public static boolean submitRating(int rating) {
 
         if (Appframe.currentUser == null) {

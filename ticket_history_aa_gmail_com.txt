@@ -1,0 +1,23 @@
+----- Ticket Booking -----
+Movie: Mortal Kombat II
+Movie Genre: ACTION
+Duration: 109 min
+Cinema: Surprise Cinema
+Hall: Hall 1
+Date: 2026-05-11
+Time: 10:00 PM
+Seat: A2
+Rating: 3
+--------------------------
+
+----- Ticket Booking -----
+Movie: The Super Mario Galaxy Movie
+Movie Genre: COMEDY
+Duration: 139 min
+Cinema: Surprise Cinema
+Hall: Hall 4
+Date: 2026-05-11
+Time: 6:00 PM
+Seat: A7
+--------------------------
+

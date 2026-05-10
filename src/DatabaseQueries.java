@@ -97,32 +97,37 @@ public class DatabaseQueries {
     public static void addTicket(Ticket ticket) {
 
         Connection con = null;
+
         try {
-            // (1) Create connection
             con = DatabaseManager.connect();
-            // (2) Create statement object
-            Statement st = con.createStatement();
-            // (3) Execute SQL statement
+
             String sql =
                     "INSERT INTO TICKETS " +
-                            "(MOVIE_NAME, MOVIE_GENRE, POSTER_URL, CINEMA_NAME, HALL, SHOW_DATE, SHOW_TIME, SEAT, USER_EMAIL) " +                            "VALUES (" +
-                            "'" + ticket.getMovieName() + "', " +
-                            "'" + ticket.getMovieGenre() + "', " +
-                            "'" + ticket.getPosterUrl() + "', " +
-                            "'" + ticket.getCinemaName() + "', " +
-                            "'" + ticket.getHall() + "', " +
-                            "'" + ticket.getDate() + "', " +
-                            "'" + ticket.getShowTime() + "', " +
-                            "'" + ticket.getSeat() + "', " +
-                            "'" + ticket.getUserEmail() + "')";
-            st.executeUpdate(sql);
+                            "(SHOW_ID, MOVIE_NAME, MOVIE_GENRE, POSTER_URL, CINEMA_NAME, HALL, SHOW_DATE, SHOW_TIME, SEAT, USER_EMAIL, DURATION) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, ticket.getShowId());
+            ps.setString(2, ticket.getMovieName());
+            ps.setString(3, ticket.getMovieGenre());
+            ps.setString(4, ticket.getPosterUrl());
+            ps.setString(5, ticket.getCinemaName());
+            ps.setString(6, ticket.getHall());
+            ps.setString(7, ticket.getDate());
+            ps.setString(8, ticket.getShowTime());
+            ps.setString(9, ticket.getSeat());
+            ps.setString(10, ticket.getUserEmail());
+            ps.setString(11, ticket.getDuration());
+
+            ps.executeUpdate();
+
             System.out.println("Ticket added successfully");
-            // (4) Close connection
+
             con.close();
+
         } catch (SQLException e) {
-
             System.out.println("Ticket insert error!");
-
             System.out.println(e.getMessage());
         }
     }
@@ -167,17 +172,24 @@ public class DatabaseQueries {
     }
 
     public static Ticket getLatestTicketByEmail(String email) {
+
         Connection con = null;
+
         try {
             con = DatabaseManager.connect();
-            Statement st = con.createStatement();
+
             String sql =
                     "SELECT * FROM TICKETS " +
-                            "WHERE USER_EMAIL = '" + email + "' " +
+                            "WHERE USER_EMAIL = ? " +
                             "ORDER BY ID DESC LIMIT 1";
 
-            ResultSet rs = st.executeQuery(sql);
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, email);
+
+            ResultSet rs = ps.executeQuery();
+
             if (rs.next()) {
+                int showId = rs.getInt("SHOW_ID");
                 String movieName = rs.getString("MOVIE_NAME");
                 String movieGenre = rs.getString("MOVIE_GENRE");
                 String posterUrl = rs.getString("POSTER_URL");
@@ -187,15 +199,32 @@ public class DatabaseQueries {
                 String showTime = rs.getString("SHOW_TIME");
                 String seat = rs.getString("SEAT");
                 String userEmail = rs.getString("USER_EMAIL");
+                String duration = rs.getString("DURATION");
+
                 con.close();
-                return new Ticket(movieName, movieGenre, posterUrl, cinemaName, hall, date,
-                        showTime, seat, userEmail);
+
+                return new Ticket(
+                        showId,
+                        movieName,
+                        movieGenre,
+                        posterUrl,
+                        cinemaName,
+                        hall,
+                        date,
+                        showTime,
+                        seat,
+                        userEmail,
+                        duration
+                );
             }
+
             con.close();
+
         } catch (SQLException e) {
             System.out.println("Get latest ticket error!");
             System.out.println(e.getMessage());
         }
+
         return null;
     }
 
@@ -251,4 +280,352 @@ public class DatabaseQueries {
         }
     }
 
+    public static boolean isMoviesTableEmpty() {
+        Connection con = null;
+
+        try {
+            con = DatabaseManager.connect();
+
+            String sql = "SELECT COUNT(*) FROM MOVIES";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                con.close();
+                return count == 0;
+            }
+
+            con.close();
+
+        } catch (SQLException e) {
+            System.out.println("Check movies table error!");
+            System.out.println(e.getMessage());
+        }
+
+        return true;
+    }
+
+    public static void addMovie(Movie movie) {
+        Connection con = null;
+
+        try {
+            con = DatabaseManager.connect();
+
+            String sql =
+                    "INSERT INTO MOVIES " +
+                            "(TITLE, GENRE, DURATION, RATING, STORY, POSTER_URL) " +
+                            "VALUES (?, ?, ?, ?, ?, ?)";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, movie.name);
+            ps.setString(2, movie.genre);
+            ps.setString(3, movie.duration);
+            ps.setString(4, movie.rating);
+            ps.setString(5, movie.story);
+            ps.setString(6, movie.posterUrl);
+
+            ps.executeUpdate();
+
+            con.close();
+
+        } catch (SQLException e) {
+            System.out.println("Add movie error!");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void prepareMoviesFromAPI() {
+
+        if (!isMoviesTableEmpty()) {
+            System.out.println("Movies already exist in database");
+            return;
+        }
+
+        String[] genres = {
+                "COMEDY",
+                "DRAMA",
+                "ROMANCE",
+                "ACTION",
+                "HORROR",
+                "FANTASY"
+        };
+
+        for (String genre : genres) {
+            ArrayList<Movie> movies = TMDBMovieClient.getMoviesByGenre(genre);
+
+            for (Movie movie : movies) {
+                addMovie(movie);
+            }
+        }
+
+        System.out.println("Movies inserted from TMDB API");
+    }
+
+    public static boolean isShowsTableEmpty() {
+        Connection con = null;
+
+        try {
+            con = DatabaseManager.connect();
+
+            String sql = "SELECT COUNT(*) FROM SHOWS";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                con.close();
+                return count == 0;
+            }
+
+            con.close();
+
+        } catch (SQLException e) {
+            System.out.println("Check shows table error!");
+            System.out.println(e.getMessage());
+        }
+
+        return true;
+    }
+
+    public static void prepareShows() {
+
+        if (!isShowsTableEmpty()) {
+            System.out.println("Shows already exist in database");
+            return;
+        }
+
+        Connection con = null;
+
+        try {
+            con = DatabaseManager.connect();
+
+            // Pick only 15 movies for one day because:
+            // 15 halls * 6 fixed times = 90 shows
+            String selectSql =
+                    "SELECT ID FROM MOVIES " +
+                            "ORDER BY RAND() " +
+                            "LIMIT 15";
+
+            PreparedStatement selectPs = con.prepareStatement(selectSql);
+            ResultSet rs = selectPs.executeQuery();
+
+            int hallIndex = 0;
+
+            while (rs.next()) {
+
+                int movieId = rs.getInt("ID");
+
+                // Each movie gets one hall for the whole day
+                String hall = AppManager.generateHallByIndex(hallIndex);
+                String date = AppManager.generateTomorrowDate();
+
+                // Same movie is shown in all fixed times
+                for (String time : AppManager.FIXED_TIMES) {
+
+                    String insertSql =
+                            "INSERT INTO SHOWS " +
+                                    "(MOVIE_ID, CINEMA_NAME, HALL, SHOW_DATE, SHOW_TIME) " +
+                                    "VALUES (?, ?, ?, ?, ?)";
+
+                    PreparedStatement insertPs = con.prepareStatement(insertSql);
+
+                    insertPs.setInt(1, movieId);
+                    insertPs.setString(2, AppManager.CINEMA_NAME);
+                    insertPs.setString(3, hall);
+                    insertPs.setString(4, date);
+                    insertPs.setString(5, time);
+
+                    insertPs.executeUpdate();
+                }
+
+                hallIndex++;
+            }
+
+            con.close();
+            System.out.println("Shows created successfully");
+
+        } catch (SQLException e) {
+            System.out.println("Prepare shows error!");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void prepareMovieSystem() {
+        prepareMoviesFromAPI();
+        prepareShows();
+    }
+
+    public static Movie getRandomMovieByUserPreferences(String email) {
+
+        Connection con = null;
+
+        try {
+            con = DatabaseManager.connect();
+
+            String sql =
+                    "SELECT DISTINCT M.* FROM MOVIES M " +
+                            "JOIN USER_GENRES G ON M.GENRE = G.GENRE " +
+                            "JOIN SHOWS S ON M.ID = S.MOVIE_ID " +
+                            "WHERE G.USER_EMAIL = ? " +
+                            "ORDER BY RAND() LIMIT 1";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, email);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int id = rs.getInt("ID");
+                String title = rs.getString("TITLE");
+                String genre = rs.getString("GENRE");
+                String duration = rs.getString("DURATION");
+                String rating = rs.getString("RATING");
+                String story = rs.getString("STORY");
+                String posterUrl = rs.getString("POSTER_URL");
+
+                con.close();
+
+                return new Movie(id, title, genre, duration, rating, story, posterUrl);
+            }
+
+            con.close();
+
+        } catch (SQLException e) {
+            System.out.println("Get random movie error!");
+            System.out.println(e.getMessage());
+        }
+
+        return null;
+    }
+
+    public static Show getShowByMovieAndTime(int movieId, String showTime) {
+
+        Connection con = null;
+
+        try {
+            con = DatabaseManager.connect();
+
+            String sql =
+                    "SELECT * FROM SHOWS " +
+                            "WHERE MOVIE_ID = ? " +
+                            "AND SHOW_TIME = ? " +
+                            "AND SHOW_DATE = ? " +
+                            "ORDER BY ID LIMIT 1";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, movieId);
+            ps.setString(2, showTime);
+            ps.setString(3, AppManager.generateTomorrowDate());
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int id = rs.getInt("ID");
+                int mId = rs.getInt("MOVIE_ID");
+                String cinemaName = rs.getString("CINEMA_NAME");
+                String hall = rs.getString("HALL");
+                String showDate = rs.getString("SHOW_DATE");
+                String time = rs.getString("SHOW_TIME");
+
+                con.close();
+
+                return new Show(id, mId, cinemaName, hall, showDate, time);
+            }
+
+            con.close();
+
+        } catch (SQLException e) {
+            System.out.println("Get show error!");
+            System.out.println(e.getMessage());
+        }
+
+        return null;
+    }
+
+    public static boolean isSeatBooked(int showId, String seat) {
+
+        Connection con = null;
+
+        try {
+            con = DatabaseManager.connect();
+
+            String sql =
+                    "SELECT * FROM BOOKED_SEATS " +
+                            "WHERE SHOW_ID = ? AND SEAT = ?";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, showId);
+            ps.setString(2, seat);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                con.close();
+                return true;
+            }
+
+            con.close();
+
+        } catch (SQLException e) {
+            System.out.println("Seat check error!");
+            System.out.println(e.getMessage());
+        }
+
+        return false;
+    }
+
+    public static String generateAvailableSeat(int showId) {
+
+        ArrayList<String> seats = new ArrayList<>();
+
+        for (int i = 1; i <= 15; i++) {
+            seats.add("A" + i);
+        }
+
+        while (!seats.isEmpty()) {
+
+            int index = (int) (Math.random() * seats.size());
+            String seat = seats.get(index);
+
+            if (!isSeatBooked(showId, seat)) {
+                return seat;
+            }
+
+            seats.remove(index);
+        }
+
+        return null;
+    }
+
+    public static void addBookedSeat(int showId, String seat, String email) {
+
+        Connection con = null;
+
+        try {
+            con = DatabaseManager.connect();
+
+            String sql =
+                    "INSERT INTO BOOKED_SEATS " +
+                            "(SHOW_ID, SEAT, USER_EMAIL) " +
+                            "VALUES (?, ?, ?)";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, showId);
+            ps.setString(2, seat);
+            ps.setString(3, email);
+
+            ps.executeUpdate();
+
+            con.close();
+
+        } catch (SQLException e) {
+            System.out.println("Add booked seat error!");
+            System.out.println(e.getMessage());
+        }
+    }
 }

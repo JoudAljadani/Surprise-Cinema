@@ -1,0 +1,69 @@
+----- Ticket Booking -----
+Movie: The Hidden
+Movie Genre: ACTION
+Duration: 107 min
+Cinema: Surprise Cinema
+Hall: Hall 1
+Date: 2026-05-11
+Time: 4:00 PM
+Seat: A7
+--------------------------
+
+----- Ticket Booking -----
+Movie: The Hidden
+Movie Genre: ACTION
+Duration: 107 min
+Cinema: Surprise Cinema
+Hall: Hall 1
+Date: 2026-05-11
+Time: 4:00 PM
+Seat: A7
+Rating: 3
+--------------------------
+
+----- Ticket Booking -----
+Movie: Zootopia 2
+Movie Genre: COMEDY
+Duration: 107 min
+Cinema: Surprise Cinema
+Hall: Hall 3
+Date: 2026-05-11
+Time: 6:00 PM
+Seat: A14
+--------------------------
+
+----- Ticket Booking -----
+Movie: Zootopia 2
+Movie Genre: COMEDY
+Duration: 107 min
+Cinema: Surprise Cinema
+Hall: Hall 3
+Date: 2026-05-11
+Time: 6:00 PM
+Seat: A14
+Rating: 5
+--------------------------
+
+----- Ticket Booking -----
+Movie: Demon Slayer: Kimetsu no Yaiba Infinity Castle
+Movie Genre: ACTION
+Duration: 101 min
+Cinema: Surprise Cinema
+Hall: Hall 13
+Date: 2026-05-11
+Time: 6:00 PM
+Seat: A4
+--------------------------
+
+----- Ticket Booking -----
+Movie: Demon Slayer: Kimetsu no Yaiba Infinity Castle
+Movie Genre: ACTION
+Duration: 101 min
+Cinema: Surprise Cinema
+Hall: Hall 13
+Date: 2026-05-11
+Time: 6:00 PM
+Seat: A4
+Rating: 5
+--------------------------
+
