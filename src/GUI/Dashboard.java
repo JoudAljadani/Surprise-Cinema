@@ -86,7 +86,9 @@ public class Dashboard extends JPanel {
             int w = getWidth(), h = getHeight();
 
             if (Appframe.currentUser != null) {
+                //Get the genres booked by this user.
                 genres = AppManager.getGenreLabels(Appframe.currentUser.getEmail());
+                //Get the counts of bookings for each genre.
                 genreCounts = AppManager.getGenreCounts(Appframe.currentUser.getEmail());
             }
 
@@ -116,6 +118,7 @@ public class Dashboard extends JPanel {
             g2.setColor(Color.BLACK);
             g2.drawString("Most watched genres", innerX, sec1TitleY);
 
+            //Drawing bar charts
             int chart1X = innerX;
             int chart1Y = sec1TitleY + 18;
             int chart1H = 120;
