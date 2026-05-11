@@ -51,15 +51,19 @@ public class History extends JPanel {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
+                    //if back button is pressed go to home page
                     if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
                         app.showPage(Appframe.HOME_PAGE);
                     }
 
+                    //if Dashboard button is pressed go to Dashboard page
                     if (dashboardPressed && dashboardBtnRect != null && dashboardBtnRect.contains(e.getPoint())) {
                         app.showPage(Appframe.DASHBOARD);
                     }
 
+                    //if OpenFile button is pressed
                     if (openPressed && openBtnRect != null && openBtnRect.contains(e.getPoint())) {
+                        //Call TicketFileManager class (IOStream) to open the text file that contains current user's booking history.
                         TicketFileManager.openTicketHistoryFile(Appframe.currentUser.getEmail());
                     }
 
@@ -109,7 +113,7 @@ public class History extends JPanel {
             Rectangle big = new Rectangle(cardX, cardY, cardW, cardH);
             drawBigBox(g2, big);
 
-            //Buttons
+            //Dashboard and Open File Buttons
             int btnW = 145;
             int btnH = 55;
             int gap = 14;
@@ -124,26 +128,32 @@ public class History extends JPanel {
             UIComponents.drawButton(g2, openBtnRect, "Open File", openPressed);
         }
 
+        //Implement the interface of the white box that will contain the ticket history
         private void drawBigBox(Graphics2D g2, Rectangle r) {
             g2.setColor(Color.WHITE);
             g2.fillRoundRect(r.x, r.y, r.width, r.height, 22, 22);
 
+            //Read the ticket history file for the current user.
             String history = TicketFileManager.readTicketHistory(Appframe.currentUser.getEmail());
 
             g2.setColor(Color.BLACK);
             g2.setFont(new Font("Arial", Font.PLAIN, 12));
 
+            //Text position
             int textX = r.x + 18;
             int textY = r.y + 30;
             int lineGap = 18;
 
-            String[] lines = history.split("\n");
-            int maxLines = 16;
+            // Split the file content into lines.
+            String[] lines = history.split("\n");//Split the file content into lines.
+            int maxLines = 16;//limited number of lines in the GUI.
 
+            //display the history line by line.
             for (int i = 0; i < lines.length && i < maxLines; i++) {
                 g2.drawString(lines[i], textX, textY + (i * lineGap));
             }
 
+            //    //If the file has more lines, tell the user to open the full file.
             if (lines.length > maxLines) {
                 g2.drawString("... Click Open File to view full history",
                         textX, textY + (maxLines * lineGap));
