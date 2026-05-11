@@ -84,28 +84,27 @@ public class MyTicket extends JPanel {
             g2.setColor(Color.WHITE);
             g2.fillRoundRect(boxX, boxY, boxW, boxH, 22, 22);
 
-            // If no ticket in memory, get latest ticket from database
+            //If no ticket in memory, get latest ticket from database
             if (Appframe.currentTicket == null) {
                 Appframe.currentTicket = DatabaseQueries.getLatestTicketByEmail(Appframe.currentUser.getEmail());
             }
 
-            // Check if the ticket is expired
+            //Check if the ticket is expired
             if (Appframe.currentTicket != null) {
 
-                String ticketDate = Appframe.currentTicket.getDate();
+                String ticketDate = Appframe.currentTicket.getDate();//get the ticket date
+                String today = java.time.LocalDate.now().toString();//git today date
 
-                String today = java.time.LocalDate.now().toString();
-
-                // If ticket date is not today, remove it
+                // If ticket date is not today (expired), remove it
                 if (ticketDate.compareTo(today) < 0) {
                     Appframe.currentTicket = null;
                 }
             }
 
-            // Current ticket
+            //Current ticket
             Ticket ticket = Appframe.currentTicket;
 
-            if (ticket == null) {//if there is not ticket booked
+            if (ticket == null) {//if there is no ticket booked yet
                 UIComponents.drawCenteredText(g2, "No ticket booked yet", x, boxY + boxH / 2 + 6,
                         UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
             } else {
@@ -115,6 +114,8 @@ public class MyTicket extends JPanel {
 
                 g2.setColor(Color.BLACK);
                 g2.setFont(new Font("Arial", Font.PLAIN, 14));
+
+                //Display the movie information from the current ticket.
                 g2.drawString("Movie: " + ticket.getMovieName(), textX, textY);
                 g2.drawString("Duration: " + ticket.getDuration(), textX, textY + lineGap);
                 g2.drawString("Cinema: " + ticket.getCinemaName(), textX, textY + lineGap * 2);
