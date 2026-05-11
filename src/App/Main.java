@@ -11,7 +11,8 @@ public class Main {
         //Create DB + tables
         DatabaseManager.createDatabase();
         DatabaseManager.createTables();
-        DatabaseQueries.prepareMovieSystem();
+        //prepare MoviesSystem
+        AppManager.prepareMovieSystem();
 
         //From here the program start execution
         SwingUtilities.invokeLater(() -> new Appframe().setVisible(true));
