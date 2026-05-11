@@ -20,6 +20,9 @@ public class MovieResult extends JPanel {
 
     private Movie currentMovie;
 
+    // This constructor prepares the MovieResult page.
+    // It loads the background, adds the main drawing panel,
+    // and picks the first suggested movie when the page is created.
     public MovieResult(Appframe app) {
         this.app = app;
 
@@ -34,15 +37,17 @@ public class MovieResult extends JPanel {
     //shoud seperate
     public void pickAnotherMovie() {
 
+        // If there is no logged-in user, the page cannot get preferences from the database.
+        // In this case, currentMovie becomes null and the page will show that no movie is available.
         if (Appframe.currentUser == null) {
             currentMovie = null;
             repaint();
             return;
         }
 
-        currentMovie = DatabaseQueries.getRandomMovieByUserPreferences(
-                Appframe.currentUser.getEmail()
-        );
+        // Get a random movie that matches the current user's preferences.
+        // The user's email is used to find their saved genres in the database.
+        currentMovie = DatabaseQueries.getRandomMovieByUserPreferences(Appframe.currentUser.getEmail());
 
         repaint();
     }
@@ -77,14 +82,18 @@ public class MovieResult extends JPanel {
                 @Override
                 public void mouseReleased(MouseEvent e) {
 
+                    // If the user releases on the back arrow, return to the HomePage.
                     if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
                         app.showPage(Appframe.HOME_PAGE);
                     }
 
+                    // If the user clicks Other, suggest another movie by calling pickAnotherMovie() again.
                     if (otherPressed && otherBtnRect != null && otherBtnRect.contains(e.getPoint())) {
                         pickAnotherMovie();
                     }
 
+                    // If the user accepts the suggested movie,
+                    // save it in Appframe.currentMovie so the ChooseTime page can use it for booking.
                     if (acceptPressed && acceptBtnRect != null && acceptBtnRect.contains(e.getPoint())) {
                         Appframe.currentMovie = currentMovie;
                         app.showPage(Appframe.CHOOSE_TIME);
@@ -146,6 +155,7 @@ public class MovieResult extends JPanel {
 
             Movie m = currentMovie;
 
+            // If no movie was found, show a message instead of leaving the movie box empty.
             if (m == null) {
                 UIComponents.drawCenteredText(g2, "There is no movie available", x, boxY + boxH / 2,
                         UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
@@ -154,7 +164,8 @@ public class MovieResult extends JPanel {
                         UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
                 return;
             }
-
+            // If the movie has a poster image, draw it inside the white box.
+            // Otherwise, show a simple "No Poster" message.
             if (m.getPosterImage() != null) {
                 g2.drawImage(m.getPosterImage(), boxX + 15, boxY + 15,
                         boxW - 30, boxH - 30, null);
@@ -217,6 +228,9 @@ public class MovieResult extends JPanel {
             UIComponents.drawButton(g2, acceptBtnRect, "Accept", acceptPressed);
         }
 
+        // This helper method draws long story text on multiple lines.
+        // It checks the width of each line so the story does not go outside the screen.
+        // It returns the last Y position so the genre, duration, and rating can be drawn after the story.
         private int drawWrappedReturnEndY(
                 Graphics2D g2,
                 String text,

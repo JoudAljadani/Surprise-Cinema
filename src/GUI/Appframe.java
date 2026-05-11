@@ -5,10 +5,14 @@ import java.awt.*;
 
 public class Appframe extends JFrame {
 
-    public static User currentUser;
-    public static Movie currentMovie;
-    public static Ticket currentTicket;
+    // These static variables store the current session data. They are static because different pages need to access the same shared data.
+    public static User currentUser; // stores the logged-in user.
+    public static Movie currentMovie; // stores the movie selected for the user.
+    public static Ticket currentTicket; // stores the latest ticket after booking.
 
+    // These constants are the page names used by CardLayout.
+    // Instead of writing the page name as a normal String every time,
+    // I use constants to make navigation easier and reduce spelling mistakes.
     public static final String SPLASH = "SPLASH";
     public static final String SIGNUP = "SIGNUP";
     public static final String SIGNIN = "SIGNIN";
@@ -22,20 +26,25 @@ public class Appframe extends JFrame {
     public static final String RATE = "Rate";
     public static final String DASHBOARD = "Dashboard";
 
-    private final CardLayout layout = new CardLayout();
-    private final JPanel root = new JPanel(layout);
+    private final CardLayout layout = new CardLayout(); // used to switch between pages inside the same JFrame.
+    private final JPanel root = new JPanel(layout); // The root panel holds all pages, and CardLayout decides which page is visible.
 
+    // This page is private because only Appframe needs to control it.
+    // I store it as a variable so Appframe can call pickAnotherMovie(). whenever the MovieResult page is opened.
     private MovieResult movieResultPage;
 
 
-
+    // This constructor prepares the main application window.
+    // It sets the window size, centers it on the screen, and adds all pages to the CardLayout.
     public Appframe() {
-        setSize(390, 720);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(390, 720);// Set the size of the application window.
+        setLocationRelativeTo(null); // Open the window in the center of the screen.
+        setDefaultCloseOperation(EXIT_ON_CLOSE); // Close the whole program when the user closes the window.
 
         movieResultPage = new MovieResult(this);
 
+        // Add all pages to the root panel.
+        // Each page is connected with a constant name, so showPage() can display it later.
         root.add(new Splash(this), SPLASH);
         root.add(new SignUp(this), SIGNUP);
         root.add(new SignIn(this), SIGNIN);
@@ -49,10 +58,13 @@ public class Appframe extends JFrame {
         root.add(new Rate(this), RATE);
         root.add(new Dashboard(this), DASHBOARD);
 
-        setContentPane(root);
-        showPage(SPLASH);
+        setContentPane(root); // Set the root panel as the main content of the JFrame.
+        showPage(SPLASH); // Start the application from the Splash page
     }
 
+    // This method is responsible for page navigation.
+    // It changes the window title based on the page,
+    // then tells CardLayout to show the selected page.
     public void showPage(String page) {
 
         switch (page) {
@@ -74,7 +86,8 @@ public class Appframe extends JFrame {
 
             case MOVIERESULT:
                 setTitle("Movie Result");
-                movieResultPage.pickAnotherMovie();
+                movieResultPage.pickAnotherMovie();  // Pick a new movie every time the MovieResult page is shown (supports the Surprise Me feature)
+
                 break;
 
             case CHOOSE_TIME:
@@ -106,6 +119,7 @@ public class Appframe extends JFrame {
                 break;
         }
 
-        layout.show(root, page);
+        layout.show(root, page); // Show the selected page inside the root panel.
+
     }
 }

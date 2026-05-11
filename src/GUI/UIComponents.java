@@ -2,6 +2,11 @@ package GUI;
 import codeImplementation.*;
 import java.awt.*;
 
+
+// This class contains shared drawing methods for the GUI.
+// Instead of repeating the same button, card, arrow, and text code in every page,
+// the pages call these methods to keep the design consistent.
+
 public class UIComponents {
 
     //----------------VARIABLES------------------
@@ -36,9 +41,15 @@ public class UIComponents {
 
     //--------------------------------------------------------------------------------------------------------------------
 
+    // Private constructor prevents creating objects from this class.
+    // All methods are static, so the class is used directly like:
+    // UIComponents.drawButton(...)
     private UIComponents() {}
 
     //Button
+    // This method draws a custom rounded button.
+    // It receives the button rectangle, text, and pressed state.
+    // If pressed is true, a red overlay is drawn to show that the button is being clicked.
     public static void drawButton(Graphics2D g2, Rectangle r, String text, boolean pressed) {
 
         //Base

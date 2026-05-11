@@ -99,19 +99,27 @@ public class chooseTimePage extends JPanel {
                         //AppManager.runTwoUsersSameSeatDemo(selectedSlot.label);
                         //------------------------------------------------------------------------
 
+                        // Store the selected showtime before starting the booking process.
+                        // This value will be sent to AppManager so it knows which show the user wants to book.
                         String selectedTime = selectedSlot.label;
 
-                        //Booking process runs in a separate thread
+                        // Runnable contains the work that will run inside the new thread.
+                        // I put the booking process here because booking may take time,
+                        // especially because it connects to the database and saves ticket information.
                         Runnable bookingTask = () -> {
+
+                            // Call AppManager to handle the real booking logic.
+                            // This method checks the selected movie, gets the show, finds an available seat,
+                            // creates the ticket, and saves the booking in the database and file.
                             boolean booked = AppManager.bookTicket(selectedTime);
 
                             //Return to Swing GUI thread to update the interface
                             SwingUtilities.invokeLater(() -> {
 
-                                if (booked) {
+                                if (booked) { // If booking succeeded, show a success message and move to TicketSuccess page.
                                     JOptionPane.showMessageDialog(null, "Ticket booked successfully");
                                     app.showPage(Appframe.TICKET_SUCCESS);
-                                } else {
+                                } else { // If booking failed, show an error message and stay on the same page.
                                     JOptionPane.showMessageDialog(null, "Sorry, booking failed");
                                 }
 
@@ -120,8 +128,10 @@ public class chooseTimePage extends JPanel {
                             });
                         };
 
+                        // Create a new thread for the booking task.
+                        // The name "Booking_Thread" helps identify it when printing/debugging.
                         Thread bookingThread = new Thread(bookingTask, "Booking_Thread");
-                        bookingThread.start();
+                        bookingThread.start(); // start() runs the booking task in a separate path of execution. I should not call run() directly because it would execute on the same GUI thread.
                     }
 
                     nextPressed = false;
