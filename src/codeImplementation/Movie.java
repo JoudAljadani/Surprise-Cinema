@@ -4,6 +4,7 @@ import java.awt.*;
 import GUI.*;
 public class Movie {
 
+    //Variables
     private int id;
     private String name;
     private String genre;
@@ -13,8 +14,8 @@ public class Movie {
     private String posterUrl;
     private Image posterImage;
 
-    Movie(int id, String name, String genre, String duration,
-          String rating, String story, String posterUrl) {
+    //movie object loaded from the database
+    Movie(int id, String name, String genre, String duration, String rating, String story, String posterUrl) {
         this.id = id;
         this.name = name;
         this.genre = genre;
@@ -23,12 +24,11 @@ public class Movie {
         this.story = story;
         this.posterUrl = posterUrl;
 
-        loadPoster();
+        loadPoster(); //Convert the poster URL into an image
     }
 
-    Movie(String name, String genre, String duration,
-          String rating, String story, String posterUrl) {
-
+    //movie object loaded from the API
+    Movie(String name, String genre, String duration, String rating, String story, String posterUrl) {
         this.id = 0;
         this.name = name;
         this.genre = genre;
@@ -37,21 +37,27 @@ public class Movie {
         this.story = story;
         this.posterUrl = posterUrl;
 
-        loadPoster();
+        loadPoster(); //Convert the poster URL into an image
     }
 
+    //Convert the poster URL into an image
     private void loadPoster() {
         try {
+            //checks if the URL exists
             if (posterUrl != null && !posterUrl.isEmpty()) {
+                //get the poster image from the URL
                 posterImage = new ImageIcon(new java.net.URL(posterUrl)).getImage();
+
             } else {
-                posterImage = null;
+                posterImage = null; //no poster URL available
             }
+
         } catch (Exception e) {
-            posterImage = null;
+            posterImage = null; //URL exists but loading failed
         }
     }
 
+    //Getters
     public int getId() {
         return id;
     }

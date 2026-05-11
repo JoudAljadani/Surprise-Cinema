@@ -13,11 +13,13 @@ public class PreferencesGenres extends JPanel {
     private final Image logo;//Logo image
 
     //Clickable button
-    private Rectangle nextBtnRect;
-    private boolean nextPressed = false;
+    private Rectangle saveBtnRect;
+    private boolean savePressed = false;
 
+    //Temporarily stores selected genres for UI
     private final Set<String> selectedGenres = new HashSet<>();
 
+    //Preferences
     private final Card[] cards = new Card[]{
             new Card("Comedy", "😂", "COMEDY"),
             new Card("Drama", "😢", "DRAMA"),
@@ -49,9 +51,9 @@ public class PreferencesGenres extends JPanel {
                 @Override
                 public void mousePressed(MouseEvent e) {
 
-                    //if next button is pressed
-                    if (nextBtnRect != null && nextBtnRect.contains(e.getPoint())) {
-                        nextPressed = true;
+                    //if save button is pressed
+                    if (saveBtnRect != null && saveBtnRect.contains(e.getPoint())) {
+                        savePressed = true;
                         repaint();
                     }
 
@@ -68,10 +70,10 @@ public class PreferencesGenres extends JPanel {
                 @Override
                 public void mouseReleased(MouseEvent e) {
 
-                    //if next, navigate to preferences genres page
-                    if (nextPressed && nextBtnRect != null && nextBtnRect.contains(e.getPoint())) {
+                    //if the user clicks the save button
+                    if (savePressed && saveBtnRect != null && saveBtnRect.contains(e.getPoint())) {
 
-                        // Force at least one selection
+                        //Force at least one selection
                         if (selectedGenres.isEmpty()) {
 
                             JOptionPane.showMessageDialog(
@@ -79,28 +81,31 @@ public class PreferencesGenres extends JPanel {
                                     "Please select at least one genre"
                             );
 
-                            nextPressed = false;
+                            savePressed = false;
                             repaint();
                             return;
                         }
 
+                        //delete the oldest genres from the database before saving new ones
                         DatabaseQueries.deleteUserGenres(Appframe.currentUser.getEmail());
-                        // Save genres
+
+                        //Save genres in database
                         for (String genre : selectedGenres) {
                             DatabaseQueries.addUserGenre(Appframe.currentUser.getEmail(), genre);
                         }
 
-                        UserPreferences.selectedGenres.clear();
-                        UserPreferences.selectedGenres.addAll(selectedGenres);
-                        app.showPage(Appframe.HOME_PAGE);
+                        UserPreferences.selectedGenres.clear(); //delete old saved genres
+                        UserPreferences.selectedGenres.addAll(selectedGenres); //save genres to the shared user preferences
+                        app.showPage(Appframe.HOME_PAGE); //move to home page
                     }
-                    nextPressed = false;
-                    repaint();
+                    savePressed = false;
+                    repaint(); //Refresh the UI
                 }
 
                 @Override
+                //mouse leaves the panel
                 public void mouseExited(MouseEvent e) {
-                    nextPressed = false;
+                    savePressed = false;
                     repaint();
                 }
             });
@@ -110,8 +115,8 @@ public class PreferencesGenres extends JPanel {
         //Draw UI elements
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-
             Graphics2D g2 = (Graphics2D) g;
+
             //Make corner smoother
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -144,27 +149,29 @@ public class PreferencesGenres extends JPanel {
 
             //Next button
             int btnW = 300, btnH = 55, btnX = (w - btnW) / 2, btnY = 600;
-            nextBtnRect = new Rectangle(btnX, btnY, btnW, btnH);
-            UIComponents.drawButton(g2, nextBtnRect, "Save", nextPressed);
+            saveBtnRect = new Rectangle(btnX, btnY, btnW, btnH);
+            UIComponents.drawButton(g2, saveBtnRect, "Save", savePressed);
         }
     }
 
     //Lays out the card rectangles in a grid
     private void layoutCardsGrid(Card[] cards, int panelW, int topY, int cols) {
-        int cardW = 140, cardH = 82;
-        int gapX = 16, gapY = 14;
 
-        int totalW = cols * cardW + (cols - 1) * gapX;
-        int startX = (panelW - totalW) / 2;
+        int cardW = 140, cardH = 82; //w and h for each card
+        int gapX = 16, gapY = 14; //gap between cards
+
+        int totalW = cols * cardW + (cols - 1) * gapX; //Calculate the total width of all cards + gaps
+        int startX = (panelW - totalW) / 2; //where the grid should start
 
         for (int i = 0; i < cards.length; i++) {
-            int row = i / cols;
-            int col = i % cols;
+            int row = i / cols; //row the card belongs to
+            int col = i % cols; //col the card belongs to
 
-            int x = startX + col * (cardW + gapX);
-            int y = topY + row * (cardH + gapY);
+            int x = startX + col * (cardW + gapX); //X position
+            int y = topY + row * (cardH + gapY);   //Y position
 
-            cards[i].rect = new Rectangle(x, y, cardW, cardH);
+            cards[i].rect = new Rectangle(x, y, cardW, cardH); //Create a rectangle for the card
+
         }
     }
 

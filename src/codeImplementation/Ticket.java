@@ -1,7 +1,7 @@
 package codeImplementation;
 
 public class Ticket {
-
+    //Variables
     private int showId;
     private String movieName;
     private String movieGenre;
@@ -15,7 +15,7 @@ public class Ticket {
     private String duration;
 
 
-    // Constructor
+    //Constructor
     public Ticket(int showId, String movieName, String movieGenre,String posterUrl, String cinemaName, String hall,
             String date, String showTime, String seat, String userEmail, String duration) {
         this.showId = showId;
@@ -32,7 +32,6 @@ public class Ticket {
     }
 
     //Getters
-
     public int getShowId() {
         return showId;
     }

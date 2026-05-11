@@ -8,7 +8,7 @@ public class DatabaseManager {
     //Database information
     public static final String URL = "jdbc:mysql://localhost:3306/SurpriseCinemaDB";
     public static final String USER = "root";
-    public static final String PASSWORD = "JanaBajaba038";
+    public static final String PASSWORD = "2306284";
 
     //Create connection method
     public static Connection connect() {
