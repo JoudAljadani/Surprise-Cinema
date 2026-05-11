@@ -73,12 +73,13 @@ public class Rate extends JPanel {
                     //if submit button, save rating then navigate to homepage
                     if (submitPressed && submitBtnRect != null && submitBtnRect.contains(e.getPoint())) {
 
+                        //to check if there is a current ticket and if the rating is valid.
                         boolean saved = AppManager.submitRating(rating);
 
                         if (saved) {
                             JOptionPane.showMessageDialog(null, "Rating submitted successfully");
                             app.showPage(Appframe.HOME_PAGE);
-                        } else {
+                        } else {//force selection
                             JOptionPane.showMessageDialog(null, "Please book a ticket and select a rating first");
                         }
                     }
@@ -107,7 +108,10 @@ public class Rate extends JPanel {
             //Get panel width and height
             int w = getWidth(), h = getHeight();
 
+            //if there is no ticket saved in memory
             if (Appframe.currentTicket == null && Appframe.currentUser != null) {
+
+                //get the recent ticket from database
                 Appframe.currentTicket = DatabaseQueries.getLatestTicketByEmail(Appframe.currentUser.getEmail());
             }
             //Background
@@ -132,45 +136,51 @@ public class Rate extends JPanel {
             g2.setColor(Color.WHITE);
             g2.fillRoundRect(posterX, posterY, posterW, posterH, 14, 14);
 
+            //if the user has a ticket, try to load and display the movie poster.
             if (Appframe.currentTicket != null) {
                 try {
+
                     String posterUrl = Appframe.currentTicket.getPosterUrl();
-
-                    ImageIcon posterIcon = new ImageIcon(new java.net.URL(posterUrl));
-
-                    Image posterImage = posterIcon.getImage();
-
+                    ImageIcon posterIcon = new ImageIcon(new java.net.URL(posterUrl));//loads the poster image from the internet.
+                    Image posterImage = posterIcon.getImage();//Convert the imageIcon to an image so it can be drawn in the interface
                     g2.drawImage(posterImage, posterX, posterY, posterW, posterH, null);
+                    String QuestionText = "What do you think about " + Appframe.currentTicket.getMovieName() + "?";
+
 
                 } catch (Exception e) {
-
                     UIComponents.drawCenteredText(g2, "Movie Poster", w / 2, posterY + posterH / 2 + 6,
                             UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
                 }
-
             } else {
-
                 UIComponents.drawCenteredText(g2, "Movie Poster", w / 2, posterY + posterH / 2 + 6,
                         UIComponents.FONT_BODY, UIComponents.TEXT_BLACK);
             }
-            //"Tap to rate" text
-            int movieY = posterY + posterH + 35;
-            String movieText = "Tap a star to rate";
+
+            //Text under the movie poster
+            int movieY = posterY + posterH + 25;
+
+            String movieText = "Book a ticket first to rate a movie";
 
             if (Appframe.currentTicket != null) {
                 movieText = "What do you think about " + Appframe.currentTicket.getMovieName() + "?";
             }
 
-            UIComponents.drawCenteredText(g2, movieText, w / 2, movieY + 22,
+            //movie question text
+            UIComponents.drawCenteredText(g2, movieText, w / 2, movieY + 11,
+                    UIComponents.FONT_SMALL, UIComponents.TEXT_BLACK);
+
+            //"Tap a star to rate" text under the movie question
+            UIComponents.drawCenteredText(g2, "Tap a star to rate", w / 2, movieY + 25,
                     UIComponents.FONT_SMALL, UIComponents.TEXT_GRAY);
 
-            //Stars
+            //Star
             int starSize = 44;
             int gap = 14;
             int totalStarsW = starSize * 5 + gap * 4;
             int startX = (w - totalStarsW) / 2;
             int starsY = movieY + 55;
 
+            //Drawing rate stars *****
             for (int i = 0; i < 5; i++) {
                 int sx = startX + i * (starSize + gap);
                 starRects[i] = new Rectangle(sx, starsY - starSize + 10, starSize, starSize);//Click area
@@ -184,7 +194,7 @@ public class Rate extends JPanel {
             UIComponents.drawButton(g2, submitBtnRect, "Submit Rating", submitPressed);
         }
 
-        //Draw stars rating
+        //Draw rating stars method *****
         private void drawStar(Graphics2D g2, int cx, int cy, double outerR, double innerR, boolean filled) {
 
             Path2D star = new Path2D.Double();
