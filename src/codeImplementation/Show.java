@@ -1,7 +1,7 @@
 package codeImplementation;
 
 public class Show {
-
+    //variables
     private int id;
     private int movieId;
     private String cinemaName;
@@ -9,9 +9,8 @@ public class Show {
     private String showDate;
     private String showTime;
 
-    public Show(int id, int movieId, String cinemaName,
-                String hall, String showDate, String showTime) {
-
+    //Constructor
+    public Show(int id, int movieId, String cinemaName, String hall, String showDate, String showTime) {
         this.id = id;
         this.movieId = movieId;
         this.cinemaName = cinemaName;
@@ -20,6 +19,7 @@ public class Show {
         this.showTime = showTime;
     }
 
+    //getters
     public int getId() {
         return id;
     }

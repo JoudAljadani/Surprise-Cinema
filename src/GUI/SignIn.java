@@ -23,8 +23,8 @@ public class SignIn extends JPanel {
     public SignIn(Appframe app) {
         this.app = app;
 
-        bg = new ImageIcon("resources/images/Background.png").getImage();
-        logo = new ImageIcon("resources/images/Logo.png").getImage();
+        bg = new ImageIcon("resources/images/Background.png").getImage(); //bg
+        logo = new ImageIcon("resources/images/Logo.png").getImage(); //logo
 
         //Set layout and add main panel to center
         setLayout(new BorderLayout());
@@ -97,8 +97,10 @@ public class SignIn extends JPanel {
 
     class SignInPanel extends JPanel {
 
+        //corner radius
         private final int FIELD_RADIUS = 50;
 
+        //create input fields
         private final RoundedEmailField emailField = new RoundedEmailField(FIELD_RADIUS);
         private final RoundedPasswordField passwordField = new RoundedPasswordField(FIELD_RADIUS);
 
@@ -110,6 +112,7 @@ public class SignIn extends JPanel {
             //The place and size of the both fields
             int w = 260, h = 42, gap = 33, y = 300, x = 57;
 
+            //placed input fields
             placeField("Email", emailField, x, y, w, h);
             placeField("Password", passwordField, x, y + (h + gap), w, h);
 
@@ -133,43 +136,44 @@ public class SignIn extends JPanel {
 
                 @Override
                 public void mouseReleased(MouseEvent e) {
-                    //Navigate to Splash page
+                    //if back btn pressed navigate to Splash page
                     if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
                         app.showPage(Appframe.SPLASH);
                     }
                     backPressed = false;
 
-                    //Sign In
+                    //if Sign In btn pressed
                     if (pressed && buttonRect != null && buttonRect.contains(e.getPoint())) {
 
                         String email = emailField.getText().trim();
                         String pass = new String(passwordField.getPassword());
 
                         try {
-
+                            //Authenticate the user using the entered email and password
                             User user = AppManager.signInUser(email, pass);
-
+                            //set the current user
                             Appframe.currentUser = user;
-
+                            //success log in msg
                             JOptionPane.showMessageDialog(null, "Login successful");
-
+                            //move to home page
                             app.showPage(Appframe.HOME_PAGE);
 
                         } catch (AppManager.ValidationException ex) {
-
+                            //handle validation errors
                             JOptionPane.showMessageDialog(null, ex.getMessage());
 
                         } catch (Exception ex) {
-
+                            //handle unexpected sign in errors
                             JOptionPane.showMessageDialog(null, "Sign in error: " + ex.getMessage());
                         }
                     }
-                    pressed = false;
-                    repaint();
+                    pressed = false; //reset button press state
+                    repaint(); //refresh ui
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
+                    //mouse leaves the panel
                     pressed = false;
                     backPressed = false;
                     repaint();

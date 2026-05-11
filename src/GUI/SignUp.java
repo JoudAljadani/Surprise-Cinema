@@ -24,8 +24,8 @@ public class SignUp extends JPanel {
     public SignUp(Appframe app) {
         this.app = app;
 
-        bg = new ImageIcon("resources/images/Background.png").getImage();
-        logo = new ImageIcon("resources/images/Logo.png").getImage();
+        bg = new ImageIcon("resources/images/Background.png").getImage(); //background
+        logo = new ImageIcon("resources/images/Logo.png").getImage(); //logo
 
         //Set layout and add main panel to center
         setLayout(new BorderLayout());
@@ -118,12 +118,16 @@ public class SignUp extends JPanel {
 
     class SignUpPanel extends JPanel {
 
+        //corner radius
         private final int FIELD_RADIUS = 50;
 
+        //User input fields
         private final RoundedField nameField = new RoundedField(FIELD_RADIUS);
         private final RoundedField emailField = new RoundedField(FIELD_RADIUS);
         private final RoundedPasswordField passwordField = new RoundedPasswordField(FIELD_RADIUS);
         private final RoundedField ageField = new RoundedField(FIELD_RADIUS);
+
+        //Gender selection dropdown
         private final RoundedComboBox genderField = new RoundedComboBox(new String[]{"Male", "Female"}, FIELD_RADIUS);
 
 
@@ -151,13 +155,14 @@ public class SignUp extends JPanel {
                     pressed = (buttonRect != null && buttonRect.contains(e.getPoint()));
                     repaint();
                 }
+
                 @Override
             public void mouseReleased(MouseEvent e) {
+
                     //if back arrow, navigate to Splash page
                     if (backPressed && backRect != null && backRect.contains(e.getPoint())) {
                         app.showPage(Appframe.SPLASH);
                     }
-
                     backPressed = false;
 
                     //if Sign Up = true, perform Sign Up action
@@ -170,37 +175,30 @@ public class SignUp extends JPanel {
                         String gender = (String) genderField.getSelectedItem();
 
                         try {
-
-                            User user = AppManager.signUpUser(
-                                    name,
-                                    email,
-                                    pass,
-                                    age,
-                                    gender
-                            );
-
+                            //create a new user account after validating the input data
+                            User user = AppManager.signUpUser(name, email, pass, age, gender);
+                            //set the current user
                             Appframe.currentUser = user;
-
+                            //success msg
                             JOptionPane.showMessageDialog(null, "Account created successfully");
-
+                            //move to preferences genres
                             app.showPage(Appframe.PREFERENCES_GENRES);
 
                         } catch (AppManager.ValidationException ex) {
-
+                            //handle validation errors
                             JOptionPane.showMessageDialog(null, ex.getMessage());
 
                         } catch (Exception ex) {
-
+                            //handle unexpected sign up errors
                             JOptionPane.showMessageDialog(null, "Sign up error: " + ex.getMessage());
                         }
-
-
                     }
-                    pressed = false;
-                    repaint();
+                    pressed = false; //reset button press state
+                    repaint(); //refresh ui
             }
 
                 @Override
+                //mouse leaves the panel
                 public void mouseExited(MouseEvent e) {
                     pressed = false;
                     backPressed = false;

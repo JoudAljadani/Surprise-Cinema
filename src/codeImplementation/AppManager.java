@@ -35,13 +35,18 @@ public class AppManager {
         return "Hall " + hallNumber;
     }
 
+    // This method is synchronized because booking is a shared process.
+    // If more than one thread tries to book at the same time,
+    // synchronized allows only one thread to enter this method at a time.
+    // This helps protect the booking process from conflicts.
     public static synchronized boolean bookTicket(String selectedTime) {
 
+        // Print the thread name to show which thread is running the booking process.
         System.out.println("Booking started in: " + Thread.currentThread().getName());
 
         try {
             Thread.sleep(1500);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException e) { // If the thread is interrupted while sleeping, this catch handles the interruption.
             System.out.println("Booking thread interrupted");
         }
 
@@ -258,18 +263,22 @@ public class AppManager {
     }
 
     //--------------------------------------------------------
-    // Thread demo
 
+    // This method is a demo for the Thread concept.
+    // It creates two different threads that try to book the same exact seat at the same time.
+    // This helps show how the system handles concurrent booking.
     public static void runTwoUsersSameSeatDemo(String selectedTime) {
 
+        // If no movie is selected, the demo cannot find the show or seat.
         if (Appframe.currentMovie == null) {
             System.out.println("No movie selected for thread demo");
             return;
         }
 
+        // Get the show based on the selected movie and selected showtime.
+        // The two demo users will try to book a seat from this same show.
         Show show = DatabaseQueries.getShowByMovieAndTime(
-                Appframe.currentMovie.getId(),
-                selectedTime
+                Appframe.currentMovie.getId(), selectedTime
         );
 
         if (show == null) {
@@ -277,6 +286,8 @@ public class AppManager {
             return;
         }
 
+        // Generate one available seat.
+        // Both demo threads will try to book this same seat to simulate a conflict.
         String sameSeat = DatabaseQueries.generateAvailableSeat(show.getId());
 
         if (sameSeat == null) {
@@ -284,41 +295,35 @@ public class AppManager {
             return;
         }
 
+        //User1 tries to book the exact same seat using demo_user1 email.
         Runnable user1Task = () -> {
-            boolean booked = DatabaseQueries.tryBookSpecificSeat(
-                    show.getId(),
-                    sameSeat,
-                    "demo_user1@gmail.com"
-            );
+            // The method returns true if the seat was booked successfully and false if the seat was already taken.
+            boolean booked = DatabaseQueries.tryBookSpecificSeat(show.getId(), sameSeat, "demo_user1@gmail.com");
 
             if (booked) {
-                System.out.println(Thread.currentThread().getName()
-                        + " booked seat " + sameSeat);
+                System.out.println(Thread.currentThread().getName() + " booked seat " + sameSeat);
             } else {
-                System.out.println(Thread.currentThread().getName()
-                        + " could NOT book seat " + sameSeat);
+                System.out.println(Thread.currentThread().getName() + " could NOT book seat " + sameSeat);
             }
         };
 
+        // User2 tries to book the exact same seat using demo_user2 email.
         Runnable user2Task = () -> {
-            boolean booked = DatabaseQueries.tryBookSpecificSeat(
-                    show.getId(),
-                    sameSeat,
-                    "demo_user2@gmail.com"
-            );
+            // The method returns true if the seat was booked successfully and false if the seat was already taken.
+            boolean booked = DatabaseQueries.tryBookSpecificSeat(show.getId(), sameSeat, "demo_user2@gmail.com");
 
             if (booked) {
-                System.out.println(Thread.currentThread().getName()
-                        + " booked seat " + sameSeat);
+                System.out.println(Thread.currentThread().getName() + " booked seat " + sameSeat);
             } else {
-                System.out.println(Thread.currentThread().getName()
-                        + " could NOT book seat " + sameSeat);
+                System.out.println(Thread.currentThread().getName() + " could NOT book seat " + sameSeat);
             }
         };
 
         Thread user1Thread = new Thread(user1Task, "User_1_Booking_Thread");
         Thread user2Thread = new Thread(user2Task, "User_2_Booking_Thread");
 
+        // Start both threads.
+        // This is where the two booking attempts begin at the same time.
         user1Thread.start();
         user2Thread.start();
     }

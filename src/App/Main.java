@@ -11,7 +11,6 @@ public class Main {
         //Create DB + tables
         DatabaseManager.createDatabase();
         DatabaseManager.createTables();
-
         DatabaseQueries.prepareMovieSystem();
 
         //From here the program start execution
