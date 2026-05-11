@@ -100,7 +100,6 @@ public class AppManager {
 
     //--------------------------------------------------------
     // Sign up / sign in implementation
-
     public static User signUpUser(String name, String email, String password,
                                   String age, String gender) throws ValidationException {
 
@@ -140,7 +139,6 @@ public class AppManager {
 
     //--------------------------------------------------------
     // Validation with exception handling
-
     public static void validateSignUpInput(String name, String email,
                                            String password, String age)
             throws ValidationException {
@@ -197,8 +195,14 @@ public class AppManager {
     }
 
     //--------------------------------------------------------
-    // Rating
+    //Prepare movies from api
+    public static void prepareMovieSystem() {
+        DatabaseQueries.prepareMoviesFromAPI();
+        DatabaseQueries.prepareShows();
+    }
 
+    //--------------------------------------------------------
+    // Rating
     public static boolean submitRating(int rating) {
 
         if (Appframe.currentUser == null) {
@@ -239,7 +243,6 @@ public class AppManager {
 
     //--------------------------------------------------------
     // Dashboard
-
     public static String[] getGenreLabels(String email) {
         ArrayList<DashStat> stats = DatabaseQueries.getUserGenres(email);
         String[] labels = new String[stats.size()];
@@ -250,7 +253,6 @@ public class AppManager {
 
         return labels;
     }
-
     public static int[] getGenreCounts(String email) {
         ArrayList<DashStat> stats = DatabaseQueries.getUserGenres(email);
         int[] counts = new int[stats.size()];
