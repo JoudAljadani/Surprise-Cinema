@@ -654,6 +654,7 @@ public class DatabaseQueries {
             ps.setString(2, seat);
             ps.setString(3, email);
 
+
             ps.executeUpdate();
 
             con.close();

@@ -196,9 +196,14 @@ public class AppManager {
         }
     }
 
+
+    public static void prepareMovieSystem() {
+        DatabaseQueries.prepareMoviesFromAPI();
+        DatabaseQueries.prepareShows();
+    }
+
     //--------------------------------------------------------
     // Rating
-
     public static boolean submitRating(int rating) {
 
         if (Appframe.currentUser == null) {
@@ -327,4 +332,6 @@ public class AppManager {
         user1Thread.start();
         user2Thread.start();
     }
+
+
 }
