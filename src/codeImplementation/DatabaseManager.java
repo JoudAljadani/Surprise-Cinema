@@ -2,14 +2,15 @@ package codeImplementation;
 import GUI.*;
 import java.sql.*;
 
+//This class for database setup and creating tables
 public class DatabaseManager {
 
-    // Database information
+    //Database information
     public static final String URL = "jdbc:mysql://localhost:3306/SurpriseCinemaDB";
     public static final String USER = "root";
     public static final String PASSWORD = "JanaBajaba038";
 
-    // Create connection
+    //Create connection method
     public static Connection connect() {
         Connection con = null;
 
@@ -19,11 +20,10 @@ public class DatabaseManager {
             System.out.println("Connection error!");
             System.out.println(e.getMessage());
         }
-
         return con;
     }
 
-    // Create database
+    //Create Database
     public static void createDatabase() {
 
         Connection con = null;
@@ -33,9 +33,7 @@ public class DatabaseManager {
             con = DriverManager.getConnection(connectionURL, USER, PASSWORD);
 
             Statement st = con.createStatement();
-
             st.executeUpdate("CREATE DATABASE IF NOT EXISTS SurpriseCinemaDB");
-
             System.out.println("Database created successfully");
 
             con.close();
@@ -56,19 +54,30 @@ public class DatabaseManager {
 
             Statement st = con.createStatement();
 
-            // USERS table
+            //USERS table
             st.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS USERS (" +
                             "ID INT PRIMARY KEY AUTO_INCREMENT, " +
-                            "NAME VARCHAR(50), " +
-                            "EMAIL VARCHAR(100), " +
-                            "PASSWORD VARCHAR(30), " +
-                            "AGE INT, " +
-                            "GENDER VARCHAR(20))"
+                            "NAME VARCHAR(50) NOT NULL, " +
+                            "EMAIL VARCHAR(100) NOT NULL UNIQUE, " +
+                            "PASSWORD VARCHAR(30) NOT NULL, " +
+                            "AGE INT NOT NULL, " +
+                            "GENDER VARCHAR(20) NOT NULL, " +
+
+                            //Database Restrictions
+                            //Email must end with @gmail.com
+                            "CHECK (EMAIL LIKE '%@gmail.com'), " +
+
+                            //Password must be at least 9 characters
+                            "CHECK (CHAR_LENGTH(PASSWORD) > 8), " +
+
+                            //Age must be positive
+                            "CHECK (AGE > 0))"
+
             );
             System.out.println("USERS table created successfully");
 
-            // TICKETS table
+            //TICKETS table
             st.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS TICKETS (" +
                             "ID INT PRIMARY KEY AUTO_INCREMENT, " +
@@ -86,7 +95,7 @@ public class DatabaseManager {
             );
             System.out.println("TICKETS table created successfully");
 
-            // USER_GENRES table
+            //USER_GENRES table
             st.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS USER_GENRES (" +
                             "ID INT PRIMARY KEY AUTO_INCREMENT, " +
@@ -95,7 +104,7 @@ public class DatabaseManager {
             );
             System.out.println("USER_GENRES table created successfully");
 
-            // RATINGS table
+            //RATINGS table
             st.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS RATINGS (" +
                             "ID INT PRIMARY KEY AUTO_INCREMENT, " +
@@ -105,7 +114,7 @@ public class DatabaseManager {
             );
             System.out.println("RATINGS table created successfully");
 
-            // MOVIES table
+            //MOVIES table
             st.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS MOVIES (" +
                             "ID INT PRIMARY KEY AUTO_INCREMENT, " +
@@ -118,8 +127,7 @@ public class DatabaseManager {
             );
             System.out.println("MOVIES table created successfully");
 
-            // SHOWS table
-            // UNIQUE because same hall cannot have more than one show at the same date and time
+            //SHOWS table -> UNIQUE because same hall cannot have more than one show at the same date and time
             st.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS SHOWS (" +
                             "ID INT PRIMARY KEY AUTO_INCREMENT, " +
@@ -132,8 +140,7 @@ public class DatabaseManager {
             );
             System.out.println("SHOWS table created successfully");
 
-            // BOOKED_SEATS table
-            // UNIQUE because same seat cannot be booked twice for the same show
+            // BOOKED_SEATS table -> UNIQUE because same seat cannot be booked twice for the same show
             st.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS BOOKED_SEATS (" +
                             "ID INT PRIMARY KEY AUTO_INCREMENT, " +
