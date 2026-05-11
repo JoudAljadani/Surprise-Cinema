@@ -84,15 +84,15 @@ public class TicketSuccess extends JPanel {
             g2.fillRoundRect(boxX, boxY, boxW, boxH, 22, 22);
 
 
-            //Text in the ticket box
+            //Text in the ticket box (This ticket was created after the user booked a movie.)
             Ticket ticket = Appframe.currentTicket;
 
+            //The text color and font to display ticket information.
             g2.setColor(Color.BLACK);
             g2.setFont(new Font("Arial", Font.PLAIN, 14));
 
-            if (ticket == null) {
-                UIComponents.drawCenteredText(g2, "No ticket found", x,
-                        boxY + boxH / 2 + 6,
+            if (ticket == null) {//If there is no ticket saved in currentTicket, show a message inside the ticket box.
+                UIComponents.drawCenteredText(g2, "No ticket found", x, boxY + boxH / 2 + 6,
                         UIComponents.FONT_BODY,
                         UIComponents.TEXT_BLACK);
             } else {
@@ -100,6 +100,7 @@ public class TicketSuccess extends JPanel {
                 int textY = boxY + 55;
                 int lineGap = 28;
 
+                //Display the movie information that are saved inside the ticket object.
                 g2.drawString("Movie: " + ticket.getMovieName(), textX, textY);
                 g2.drawString("Duration: " + ticket.getDuration(), textX, textY + lineGap);
                 g2.drawString("Cinema: " + ticket.getCinemaName(), textX, textY + lineGap * 2);
